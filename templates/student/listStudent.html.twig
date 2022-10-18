@@ -1,0 +1,32 @@
+<table border= "3 width = '50%'">
+ <tr>
+ <th>NumInscri</th>
+ <th>Nom</th>
+ <th>Prenom</th>
+ <th>DateNaissance</th>
+ <th>Details</th>
+ <th>Delete</th>
+ <th>Delete1</th>
+ </tr>
+{% for s in students %}
+<tr align="center">
+  <tr>
+   <td>
+{{s.numinscri}}
+</td>
+    <td>
+{{s.nom}}
+</td>
+    <td>
+{{s.prenom}}
+</td>
+    <td>
+{{s.dateN|date('d-m-Y')}}
+</td>
+<td><a href="{{ path('studentDetails',{numinscri: s.numinscri})}}">details </a></td>
+<td><a href="{{ path('studentDelete',{numinscri: s.numinscri})}}">delete </a></td>
+<td><a href="{{ path('studentDelete1',{numinscri: s.numinscri})}}">delete1 </a><br></td>
+</tr>
+{% endfor %}
+</table>
+{#}<br> <a href="{{ path('studentDetails',{numinscri: s.numinscri})}}" {#}
