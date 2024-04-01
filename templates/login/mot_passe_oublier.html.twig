@@ -1,0 +1,32 @@
+{% extends 'front_base.html.twig' %}
+
+{% block menu %}
+
+{% endblock %}
+
+{% block body %}
+ <!DOCTYPE  html>
+ </html>
+ <head>
+  <style>
+   .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+   .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+
+   body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   }
+
+  </style>
+ </head>
+ <body>
+{{ form_start(form,{'attr':{'novalidate':'novalidate'}}) }}
+ {{ form_widget(form.email) }}
+ {{ form_errors(form.email) }}
+{{ form_end(form) }}
+ </body>
+{% endblock %}
