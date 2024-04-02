@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reclamations index{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mt-4 mb-3">Reclamations</h1>
+        <a href="{{ path('app_reclamations_new') }}" class="btn btn-success">Create New</a>
+        <table class="table table-striped mt-3">
+            <thead class="table-warning">
+            <tr>
+                <th>IdReclamation</th>
+                <th>Email</th>
+                <th>IdProjet</th>
+                <th>IdTypeReclamation</th>
+                <th>IdUtilisateur</th>
+                <th>Objet</th>
+                <th>Texte</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for reclamation in reclamations %}
+                <tr>
+                    <td>{{ reclamation.idReclamation }}</td>
+                    <td>{{ reclamation.email }}</td>
+                    <td>{{ reclamation.idProjet ? reclamation.idProjet.nompr : 'N/A' }}</td>
+                    <td>{{ reclamation.idTypeReclamation ? reclamation.idTypeReclamation.NomTypeReclamation : 'N/A' }}</td>
+                    <td>{{ reclamation.idUtilisateur ? reclamation.idUtilisateur.nom : 'N/A' }}</td>
+                    <td>{{ reclamation.objet }}</td>
+                    <td>{{ reclamation.texte }}</td>
+                    <td>
+                        <a href="{{ path('app_reclamations_show', {'idReclamation': reclamation.idReclamation}) }}" class="btn btn-primary btn-sm">Show</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="8">No records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

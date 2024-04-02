@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Reponses index{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('path/to/your/css/file.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h1 style="color: #B0413E;">Reponses index</h1>
+    <a href="{{ path('app_reponses_new') }}" class="btn btn-primary" style="width: 100px;">Add</a>
+    <tr style="display:none;"></tr>
+
+   <table class="table table-striped mt-3">
+        <thead class="table-warning">
+        <tr>
+            <th>IdReponse</th>
+            <th>Email</th>
+            <th>IdUtilisateur</th>
+            <th>Objet</th>
+            <th>Texte</th>
+            <th>actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for reponse in reponses %}
+            <tr>
+                <td>{{ reponse.idReponse }}</td>
+                <td>{{ reponse.email }}</td>
+                <td>{{ reponse.idUtilisateur ? reponse.idUtilisateur.nom : 'N/A' }}</td>
+                <td>{{ reponse.objet }}</td>
+                <td>{{ reponse.texte }}</td>
+                <td>
+                    <a href="{{ path('app_reponses_show', {'idReponse': reponse.idReponse}) }}" class="btn btn-success">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('path/to/your/js/file.js') }}"></script>
+{% endblock %}
