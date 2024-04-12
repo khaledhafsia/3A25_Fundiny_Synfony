@@ -1,0 +1,15 @@
+{{ form_start(form,{'attr':{'novalidate':'novalidate'}}) }}
+   {{form_label(form.montant)}}
+   {{form_widget(form.montant)}}
+    {{form_errors(form.montant)}}
+     {{form_label(form.description)}}
+   {{form_widget(form.description)}}
+    {{form_errors(form.description)}}
+     {{form_label(form.userid)}}
+   {{form_widget(form.userid)}}
+   {{form_label(form.projetid)}}
+   {{form_widget(form.projetid)}}
+    <button class="btn">{{ button_label|default('Save') }}</button>
+   
+
+{{ form_end(form) }}
