@@ -1,0 +1,84 @@
+{% block stylesheet %}
+    <link rel="stylesheet" href="{{ asset('signup/css/signup.css') }}" media="screen">
+
+{% endblock %}
+
+{% block body %}
+    <title>Login page</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+
+    <section class="vh-100 gradient-custom">
+        <div class='bold-line'></div>
+        <div class='container'>
+            <div class='window'>
+                <div class='overlay'></div>
+                <div class='content'>
+                    <div class='welcome'>Hello There!</div>
+                    <div class='subtitle'>Enter your information to use the app.</div>
+                    <img src="{{ asset('/back/img/logo_projet.png') }}"   >
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4 pb-2">
+                            <div class="form-outline">
+                                {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-lg', 'id': 'emailAddress'}}) }}
+                                <label class="form-label" for="emailAddress">Email</label>
+                                {{ form_errors(form.email) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4 pb-2">
+                            <div class="form-outline">
+                                {{ form_widget(form.password, {'attr': {'class': 'form-control form-control-lg', 'id': 'emailAddress'}}) }}
+                                <label class="form-label" for="emailAddress">Password</label>
+                                {{ form_errors(form.password) }}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {% for flashError in app.flashes('error') %}
+                        <div class="alert alert-danger">{{ flashError }}</div>
+                    {% endfor %}
+
+
+                    {{ form_end(form) }}
+
+                    {#
+                    <div class="text-center pt-1 mb-5 pb-1">
+                        <a class="text-muted" href="#!">Forgot password?</a>
+
+                    </div> #}
+
+                    <div class="d-flex align-items-center justify-content-center pb-4">
+
+                           <a  href="{{ path('SignUp') }}"><button style="border-radius:15px;color:blue;border-color:blue;"  >Don't have an account ?</button></a>
+
+                    </div>
+                    <div class="d-flex align-items-center justify-content-center pb-4">
+
+                            <a class="nav-link" href="{{ path('SignUp') }}">
+                                <i class="fas fa-fw fa-table"></i>
+                                <span>Forgot password ?</span></a>
+
+
+                        {# <button href="{{ path('list_user') }}" type="button" class="btn btn-outline-danger">Create new</button>
+                        #}
+                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+
+
+                                </div>
+                            </div>
+                        </div>
+
+
+    </section>
+
+{% endblock %}

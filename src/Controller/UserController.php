@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Controller;
-use App\Entity\Poste;
-use App\Form\PosteType;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Controller\LoginController;
 use App\Entity\User;
@@ -26,8 +27,8 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/SignUp', name: 'SignUp')]
-    public function AddUser(ManagerRegistry $registry, Request $request,UserPasswordHasherInterface $passwordHasher): Response
+    #[Route('/SignUpp', name: 'SignUp')]
+    public function AddUser(ManagerRegistry $registry, Request $request, UserPasswordHasherInterface $passwordHasher, ValidatorInterface $validator): Response
     {
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -39,7 +40,6 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Populate $user object with form data
             $user = $form->getData();
 
             $email = $user->getEmail();
@@ -55,15 +55,17 @@ class UserController extends AbstractController
 
                 return $this->redirectToRoute('Login');
             } else {
-                return $this->render('user/SignUp.html.twig', [
-                    'registrationForm' => $form->createView(),
-                    'errors' => 'Email already in use',
+                // Prepare JavaScript pop-up message
+                $errorMessage = 'Email already in use. Please choose another email.';
+                $this->addFlash('error', $errorMessage); // Add flash message for Twig template
+
+                return $this->renderForm('SignUp/SignUp.twig', [
+                    'form' => $form,
                 ]);
             }
         }
 
-
-        return $this->renderForm('User/front/SignUp.twig', [
+        return $this->renderForm('SignUp/SignUp.twig', [
             'form' => $form,
         ]);
     }
@@ -111,51 +113,6 @@ class UserController extends AbstractController
             'form' => $form,
         ]);
     }
-/*
-    #[Route('/update_user{id}',name: 'update_user')]
-    public function UpdateUser(Request $request,ManagerRegistry $registry,$id,UserPasswordHasherInterface $passwordHasher)
-    {
-
-        $user = $registry->getRepository(User::class)->find($id);
-
-        $form = $this->createForm(UserType::class,$user);
-
-        $form->add('Modifier', SubmitType::class, [
-            'attr' => [
-                'class' => 'btn btn-primary btn-user btn-block'
-            ]
-        ]);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Populate $user object with form data
-            $user = $form->getData();
-
-            $email = $user->getEmail();
-            $existingUser = $registry->getRepository(User::class)->findOneBy(['email' => $email]);
-
-            if ($existingUser === null) {
-                $password = $passwordHasher->hashPassword($user, $user->getPassword());
-                $user->setPassword($password);
-
-                $em = $registry->getManager();
-                $em->persist($user);
-                $em->flush();
-
-                return $this->redirectToRoute('login');
-            }
-            else
-            {
-                return $this->render('registration/register.html.twig', [
-                    'registrationForm' => $form->createView(),
-                    'errors' => 'Email déjà utilisé',
-                ]);
-            }
-        }
-
-        return $this->renderForm('user/back/update_user.html.twig',
-            ['form'=>$form]);
-    }
-
-*/
 
     #[Route('/delete_user{id}', name: 'delete_user')]
     public function DropUser(ManagerRegistry $repository,$id): Response
