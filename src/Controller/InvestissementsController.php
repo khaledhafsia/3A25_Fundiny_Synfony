@@ -31,6 +31,28 @@ class InvestissementsController extends AbstractController
         ]);
     }
 
+    #[Route('/front/investissements/sort', name: 'app_investissements_sort', methods: ['GET'])]
+    public function sort(Request $request, InvestissementsRepository $investissementsRepository): Response
+    {
+        $sortOrder = $request->query->get('sort');
+
+        // Define the sorting criteria
+        $orderBy = [];
+        if ($sortOrder === 'asc') {
+            $orderBy = ['montant' => 'ASC'];
+        } elseif ($sortOrder === 'desc') {
+            $orderBy = ['montant' => 'DESC'];
+        }
+
+        // Fetch sorted investissements from the repository
+        $investissements = $investissementsRepository->findBy([], $orderBy);
+
+        // Render the sorted data as HTML or return as JSON
+        return $this->render('front/investissements/_table.html.twig', [
+            'investissements' => $investissements,
+        ]);
+    }
+
     #[Route('/front/investissements/new', name: 'app_investissements_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

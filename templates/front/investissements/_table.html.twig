@@ -1,7 +1,14 @@
+<thead>
+        <tr>
+            <th>Montant</th>
+            <th>Description</th>
+            <th>Date</th>
+            <th>actions</th>
+        </tr>
+</thead>
 <tbody>
     {% for investissement in investissements %}
         <tr>
-            <td>{{ investissement.id }}</td>
             <td>{{ investissement.montant }}</td>
             <td>{{ investissement.description }}</td>
             <td>{{ investissement.date ? investissement.date|date('Y-m-d H:i:s') : '' }}</td>

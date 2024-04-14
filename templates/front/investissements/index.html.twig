@@ -5,17 +5,20 @@
 {% block body %}
     <h1>Investissements index</h1>
 
-    <form action="{{ path('app_investissements_index') }}" method="GET">
-        <label>
-            Sort by amount:
-            <input type="radio" name="sort" value="montant" onchange="this.form.submit()">
-        </label>
-    </form>
+<form id="sortForm">
+    <label>
+        Sort by amount ASC:
+        <input type="radio" name="sort" value="asc">
+    </label>
+    <label>
+        Sort by amount DESC:
+        <input type="radio" name="sort" value="desc">
+    </label>
+</form>
 
-    <table class="table" style="border: 2px solid #000;">
+    <table class="table" >
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Montant</th>
                 <th>Description</th>
                 <th>Date</th>
@@ -25,7 +28,6 @@
         <tbody>
         {% for investissement in investissements %}
             <tr>
-                <td>{{ investissement.id }}</td>
                 <td>{{ investissement.montant }}</td>
                 <td>{{ investissement.description }}</td>
                 <td>{{ investissement.date ? investissement.date|date('Y-m-d H:i:s') : '' }}</td>
@@ -43,4 +45,29 @@
     </table>
 
     <a href="{{ path('app_investissements_new') }}">Create new</a>
+<script>
+    // Function to handle radio button click event
+    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+        radio.addEventListener('click', function() {
+            // Get the selected sorting option
+            var sortOrder = this.value;
+
+            // Send an AJAX request to the server
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{{ path('app_investissements_sort') }}' + '?sort=' + sortOrder, true);
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    // Update the table with the sorted data
+                    document.querySelector('.table').innerHTML = xhr.responseText;
+                } else {
+                    console.error(xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                console.error(xhr.statusText);
+            };
+            xhr.send();
+        });
+    });
+</script>
 {% endblock %}
