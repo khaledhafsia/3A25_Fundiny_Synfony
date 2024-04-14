@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <a  href="{{ path('login') }}"><span>Logout</span></a>
+
+    <div class="container">
+
+        <h1>Welcome to Your Owner Dashboard, {{ user.nom }}!</h1>
+
+        <p>Email: {{ user.email }}</p>
+        <p>Role: {{ user.role }}</p>
+        {# Add more user information as needed #}
+    </div>
+{% endblock %}

@@ -16,6 +16,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+
+
 class UserController extends AbstractController
 
 {
@@ -55,9 +57,8 @@ class UserController extends AbstractController
 
                 return $this->redirectToRoute('Login');
             } else {
-                // Prepare JavaScript pop-up message
                 $errorMessage = 'Email already in use. Please choose another email.';
-                $this->addFlash('error', $errorMessage); // Add flash message for Twig template
+                $this->addFlash('error', $errorMessage);
 
                 return $this->renderForm('SignUp/SignUp.twig', [
                     'form' => $form,
@@ -124,6 +125,44 @@ class UserController extends AbstractController
         $em->flush();
         return $this->redirectToRoute('list_user');
     }
+
+    #[Route('/ban_user/{id}', name: 'ban_user')]
+    public function banUser(ManagerRegistry $doctrine, $id): Response
+    {
+        $entityManager = $doctrine->getManager();
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+
+        // Set the ban state to true
+        $user->setBanState(true);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'User banned successfully.');
+
+        return $this->redirectToRoute('list_user');
+    }
+    #[Route('/ban_user/{id}', name: 'ban_user')]
+    public function UnbanUser(ManagerRegistry $doctrine, $id): Response
+    {
+        $entityManager = $doctrine->getManager();
+        $user = $entityManager->getRepository(User::class)->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException('User not found');
+        }
+
+        // Set the ban state to true
+        $user->setBanState(false);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'User banned successfully.');
+
+        return $this->redirectToRoute('list_user');
+    }
+
 
 
 }

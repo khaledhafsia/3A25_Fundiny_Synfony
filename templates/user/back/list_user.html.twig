@@ -44,6 +44,12 @@
                                             <td></td>
                                            <td> <a href="{{  path('delete_user',{'id':u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;"  >Delete</button></a>
                                                 <a href="{{  path('update_user',{'id':u.id }) }} "><button style="border-radius:15px;color:blue;border-color:blue;"  >Update</button></a>
+                                               {% if not u.banState %}
+                                                   <a href="{{ path('ban_user', {'id': u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;">Ban</button></a>
+                                               {% endif %}
+                                               {% if  u.banState %}
+                                                   <a href="{{ path('ban_user', {'id': u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;">unBan</button></a>
+                                               {% endif %}
                                             </td>
 
                                         </tr>
