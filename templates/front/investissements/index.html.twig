@@ -5,6 +5,13 @@
 {% block body %}
     <h1>Investissements index</h1>
 
+    <form action="{{ path('app_investissements_index') }}" method="GET">
+        <label>
+            Sort by amount:
+            <input type="radio" name="sort" value="montant" onchange="this.form.submit()">
+        </label>
+    </form>
+
     <table class="table" style="border: 2px solid #000;">
         <thead>
             <tr>

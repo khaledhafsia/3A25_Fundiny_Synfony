@@ -15,10 +15,19 @@ use Symfony\Component\Routing\Annotation\Route;
 class InvestissementsController extends AbstractController
 {
     #[Route('/front/investissements', name: 'app_investissements_index', methods: ['GET'])]
-    public function index(InvestissementsRepository $investissementsRepository): Response
+    public function index(InvestissementsRepository $investissementsRepository, Request $request): Response
     {
+        $sortBy = $request->query->get('sort');
+
+        // Default sorting by ID if no sorting option selected
+        if ($sortBy === 'montant') {
+            $investissements = $investissementsRepository->findBy([], ['montant' => 'DESC']);
+        } else {
+            $investissements = $investissementsRepository->findAll();
+        }
+
         return $this->render('front/investissements/index.html.twig', [
-            'investissements' => $investissementsRepository->findAll(),
+            'investissements' => $investissements,
         ]);
     }
 

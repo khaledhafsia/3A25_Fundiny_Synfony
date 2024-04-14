@@ -1,0 +1,18 @@
+<tbody>
+    {% for investissement in investissements %}
+        <tr>
+            <td>{{ investissement.id }}</td>
+            <td>{{ investissement.montant }}</td>
+            <td>{{ investissement.description }}</td>
+            <td>{{ investissement.date ? investissement.date|date('Y-m-d H:i:s') : '' }}</td>
+            <td>
+                <a href="{{ path('app_investissements_show', {'id': investissement.id}) }}">show</a>
+                <a href="{{ path('app_investissements_edit', {'id': investissement.id}) }}">edit</a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5">no records found</td>
+        </tr>
+    {% endfor %}
+</tbody>
