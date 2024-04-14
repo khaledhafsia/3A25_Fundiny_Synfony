@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\LoginType;
+use App\Form\UpdatePasswordType;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,6 +15,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class LoginController extends AbstractController
 {
@@ -30,8 +33,10 @@ class LoginController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
     {
         $request = $this->requestStack->getCurrentRequest();
-
-        $loginForm = $this->createForm(LoginType::class);
+        $loginForm = $this->createForm(LoginType::class, null, [
+            'reset_password_route' => $this->generateUrl('password_reset'),
+        ]);
+        //$loginForm = $this->createForm(LoginType::class);
         $loginForm->handleRequest($request, $authenticationUtils);
 
         if ($request->isMethod('POST')) {
@@ -44,6 +49,8 @@ class LoginController extends AbstractController
             $this->logger->info('Password: ' . $password);
 
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $formData->getEmail()]);
+
+            $this->setSessionUserEmail($email);
 
             // Log the fetched user data
             $this->logger->info('Fetched User Data: ' . json_encode($user));
@@ -69,7 +76,9 @@ class LoginController extends AbstractController
                 }
             }
         }
-
+        if ($request->query->get('password_reset')) {
+            return $this->redirectToRoute('password_reset');
+        }
         $error = $authenticationUtils->getLastAuthenticationError();
 
         return $this->render('login/login.twig', [
@@ -84,6 +93,7 @@ class LoginController extends AbstractController
         // Inject the request object through dependency injection
         $request = $this->requestStack->getCurrentRequest();
         $request->getSession()->set('user', $user);
+
     }
 
     private function getSessionUser(): ?User
@@ -125,5 +135,89 @@ class LoginController extends AbstractController
         return $this->render('Dashboard/dashboard.twig');
     }
 
+    private function setSessionUserEmail(string $email): void
+    {
+        // Inject the request object through dependency injection
+        $request = $this->requestStack->getCurrentRequest();
+        $request->getSession()->set('user_email', $email);
+    }
+    private function getSessionUserEmail(): ?string
+    {
+        // Inject the request object through dependency injection
+        $request = $this->requestStack->getCurrentRequest();
+        return $request->getSession()->get('user_email');
+    }
+    #[Route('/password_reset', name: 'password_reset')]
+    public function passwordReset(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    {
+
+        $email = $this->getSessionUserEmail();
+
+    if ($email === null) {
+        $this->addFlash('error', 'Email is required.');
+        return $this->redirectToRoute('login');
+    }
+
+    $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+
+        if ($user) {
+            $token = uniqid();
+
+            $user->setResetToken($token);
+            $user->setTokenExpiration(new \DateTime('+1 day'));
+            $entityManager->flush();
+
+            $email = (new Email())
+                ->from('leaguetrading4@gmail.com')
+                ->to($user->getEmail())
+                ->subject('Password Reset')
+                ->html($this->renderView('login/password_reset.twig', [
+                    'token' => $token,
+                ]));
+
+            $mailer->send($email);
+
+            $this->addFlash('success', 'Password reset email sent.');
+        } else {
+            $this->addFlash('error', 'User not found.');
+        }
+
+        return $this->redirectToRoute('login');
+    }
+
+
+
+    #[Route('/update_password/{token}', name: 'update_password')]
+    public function updatePassword(Request $request, string $token, UserPasswordHasherInterface $passwordHasher): Response
+    {
+        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['resetToken' => $token]);
+
+        if ($user && $user->getTokenExpiration() > new \DateTime()) {
+            $form = $this->createForm(UpdatePasswordType::class);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                $password = $passwordHasher->hashPassword($user, $user->getPassword());
+                $user->setPassword($password);
+                $user->setResetToken(null);
+                $user->setTokenExpiration(null);
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Your password has been updated successfully. You can now login with your new password.');
+                return $this->redirectToRoute('login');
+            }
+
+            return $this->render('login/update_password.twig', [
+                'form' => $form->createView(),
+            ]);
+        }
+
+        $this->addFlash('error', 'Invalid or expired token.');
+        return $this->redirectToRoute('update_password');
+    }
 
 }

@@ -2,13 +2,12 @@
 
 namespace App\Form;
 
-
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
@@ -32,6 +31,14 @@ class LoginType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Login'
+            ])
+            ->add('resetPassword', ButtonType::class, [
+                'label' => 'Forgot Password?',
+                'attr' => [
+                    'formnovalidate' => 'formnovalidate',
+                    'form' => 'login_form',
+                    'onclick' => 'window.location.href="' . $options['reset_password_route'] . '"', // Redirect to reset password route
+                ]
             ]);
     }
 
@@ -39,6 +46,7 @@ class LoginType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => User::class,
+            'reset_password_route' => 'password_reset', // Pass the route name as an option
         ]);
     }
 }

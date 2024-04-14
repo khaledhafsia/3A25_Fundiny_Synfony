@@ -36,7 +36,7 @@ class UserType extends AbstractType
                 ],
             ])
 
-            ->add('password', PasswordType::class, [ // Change EmailType to PasswordType
+            ->add('password', PasswordType::class, [
                 'constraints' => [
                     new NotBlank(),
                 ],
