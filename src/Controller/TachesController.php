@@ -39,8 +39,39 @@ class TachesController extends AbstractController
 
         return $this->render('front/taches/index.html.twig', [
             'taches' => $taches,
+            'investissement' => $investissement,
         ]);
     }
+
+    #[Route('/front/{id}/taches/sort', name: 'app_taches_sort', methods: ['POST'])]
+public function sortTaches(Request $request, TachesRepository $tachesRepository, $id): Response
+{
+    $investissement = $this->getDoctrine()->getRepository(Investissements::class)->find($id);
+
+    if (!$investissement) {
+        throw $this->createNotFoundException('Investissement not found');
+    }
+
+    $sortBy = $request->request->get('sort');
+
+    if ($sortBy === 'priority') {
+        $taches = $tachesRepository->findBy(['invid' => $investissement], ['priorite' => 'ASC']);
+        usort($taches, function($a, $b) {
+            $order = ['élevée', 'moyenne', 'faible'];
+            return array_search($a->getPriorite(), $order) - array_search($b->getPriorite(), $order);
+        });
+    } elseif ($sortBy === 'status') {
+        $taches = $tachesRepository->findBy(['invid' => $investissement], ['statut' => 'ASC']);
+    } else {
+        // Default sorting or error handling
+        $taches = $tachesRepository->findBy(['invid' => $investissement]);
+    }
+
+    return $this->render('front/taches/_taches_table.html.twig', [
+        'taches' => $taches,
+    ]);
+}
+
 
 
     #[Route('/front/taches/new', name: 'app_taches_new', methods: ['GET', 'POST'])]
@@ -85,7 +116,7 @@ class TachesController extends AbstractController
             $entityManager->persist($tach);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_taches_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_investissements_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('front/taches/new.html.twig', [
@@ -112,7 +143,7 @@ class TachesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_taches_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_investissements_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('front/taches/edit.html.twig', [
@@ -129,6 +160,6 @@ class TachesController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_taches_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_investissements_index', [], Response::HTTP_SEE_OTHER);
     }
 }

@@ -5,7 +5,18 @@
 {% block body %}
     <h1>Taches index</h1>
 
-    <table class="table">
+    <form id="sortForm">
+        <label>
+            Sort by Priority:
+            <input type="radio" name="sort" value="priority" id="sortPriority">
+        </label>
+        <label>
+            Sort by Status:
+            <input type="radio" name="sort" value="status" id="sortStatus">
+        </label>
+    </form>
+
+    <table class="table" id="tachesTable">
         <thead>
             <tr>
                 <th>Id</th>
@@ -37,5 +48,26 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_taches_new') }}">Create new</a>
+    <a href="{{ path('app_investissements_index') }}">back to invesments list</a>
+   <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sortForm = document.getElementById('sortForm');
+            const tachesTable = document.getElementById('tachesTable');
+            const investissementId = {{ investissement.id }}; // Assuming investissement is passed to this template
+
+            sortForm.addEventListener('change', function (event) {
+                const formData = new FormData(sortForm);
+                fetch('{{ path('app_taches_sort', {'id': 'INVESTISSEMENT_ID'}) }}'.replace('INVESTISSEMENT_ID', investissementId), {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(html => {
+                    tachesTable.innerHTML = html;
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+
 {% endblock %}
