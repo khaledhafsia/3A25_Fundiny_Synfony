@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Investissements;
 use App\Entity\Taches;
 use App\Form\TachesType;
 use App\Repository\TachesRepository;
@@ -22,11 +23,62 @@ class TachesController extends AbstractController
         ]);
     }
 
+    #[Route('/front/{id}/taches', name: 'app_taches_index2', methods: ['GET'])]
+    public function index2(TachesRepository $tachesRepository, $id): Response
+    {
+        // Fetch the Investissement entity based on the provided ID
+        $investissement = $this->getDoctrine()->getRepository(Investissements::class)->find($id);
+
+        // If the investissement is not found, you might want to handle this case appropriately (e.g., show an error message)
+        if (!$investissement) {
+            throw $this->createNotFoundException('Investissement not found');
+        }
+
+        // Fetch the tasks associated with the Investissement ID
+        $taches = $tachesRepository->findBy(['invid' => $investissement]);
+
+        return $this->render('front/taches/index.html.twig', [
+            'taches' => $taches,
+        ]);
+    }
+
+
     #[Route('/front/taches/new', name: 'app_taches_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $tach = new Taches();
         $form = $this->createForm(TachesType::class, $tach);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($tach);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_taches_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('front/taches/new.html.twig', [
+            'tach' => $tach,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/front/taches/new/{id}', name: 'app_taches_new2', methods: ['GET', 'POST'])]
+    public function new2(Request $request, EntityManagerInterface $entityManager, $id): Response
+    {
+        // Fetch the Investissement entity based on the provided ID
+        $investissement = $entityManager->getRepository(Investissements::class)->find($id);
+
+        // Create a new Taches instance
+        $tach = new Taches();
+
+        // Set the invID attribute of the Taches entity with the ID of the Investissement
+        $tach->setInvid($investissement);
+
+        // Create the Taches form
+        $form = $this->createForm(TachesType::class, $tach);
+
+        // Handle the form submission
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -49,6 +101,7 @@ class TachesController extends AbstractController
             'tach' => $tach,
         ]);
     }
+
 
     #[Route('/front/taches/{id}/edit', name: 'app_taches_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Taches $tach, EntityManagerInterface $entityManager): Response

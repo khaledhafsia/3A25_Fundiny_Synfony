@@ -30,5 +30,10 @@
 
     <a href="{{ path('app_investissements_edit', {'id': investissement.id}) }}">edit</a>
 
+    <a href="{{ path('app_taches_new2', {'id': investissement.id}) }}">add task</a>
+
+   <a href="{{ path('app_taches_index2', {'id': investissement.id}) }}">show task</a>
+
+
     {{ include('front/investissements/_delete_form.html.twig') }}
 {% endblock %}
