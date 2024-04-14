@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Taches;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\Investissements;
 
 /**
  * @extends ServiceEntityRepository<Taches>

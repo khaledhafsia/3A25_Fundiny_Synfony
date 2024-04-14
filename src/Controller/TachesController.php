@@ -11,6 +11,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 //#[Route('/taches')]
 class TachesController extends AbstractController
@@ -44,33 +46,33 @@ class TachesController extends AbstractController
     }
 
     #[Route('/front/{id}/taches/sort', name: 'app_taches_sort', methods: ['POST'])]
-public function sortTaches(Request $request, TachesRepository $tachesRepository, $id): Response
-{
-    $investissement = $this->getDoctrine()->getRepository(Investissements::class)->find($id);
+    public function sortTaches(Request $request, TachesRepository $tachesRepository, $id): Response
+    {
+        $investissement = $this->getDoctrine()->getRepository(Investissements::class)->find($id);
 
-    if (!$investissement) {
-        throw $this->createNotFoundException('Investissement not found');
+        if (!$investissement) {
+            throw $this->createNotFoundException('Investissement not found');
+        }
+
+        $sortBy = $request->request->get('sort');
+
+        if ($sortBy === 'priority') {
+            $taches = $tachesRepository->findBy(['invid' => $investissement], ['priorite' => 'ASC']);
+            usort($taches, function($a, $b) {
+                $order = ['élevée', 'moyenne', 'faible'];
+                return array_search($a->getPriorite(), $order) - array_search($b->getPriorite(), $order);
+            });
+        } elseif ($sortBy === 'status') {
+            $taches = $tachesRepository->findBy(['invid' => $investissement], ['statut' => 'ASC']);
+        } else {
+            // Default sorting or error handling
+            $taches = $tachesRepository->findBy(['invid' => $investissement]);
+        }
+
+        return $this->render('front/taches/_taches_table.html.twig', [
+            'taches' => $taches,
+        ]);
     }
-
-    $sortBy = $request->request->get('sort');
-
-    if ($sortBy === 'priority') {
-        $taches = $tachesRepository->findBy(['invid' => $investissement], ['priorite' => 'ASC']);
-        usort($taches, function($a, $b) {
-            $order = ['élevée', 'moyenne', 'faible'];
-            return array_search($a->getPriorite(), $order) - array_search($b->getPriorite(), $order);
-        });
-    } elseif ($sortBy === 'status') {
-        $taches = $tachesRepository->findBy(['invid' => $investissement], ['statut' => 'ASC']);
-    } else {
-        // Default sorting or error handling
-        $taches = $tachesRepository->findBy(['invid' => $investissement]);
-    }
-
-    return $this->render('front/taches/_taches_table.html.twig', [
-        'taches' => $taches,
-    ]);
-}
 
 
 

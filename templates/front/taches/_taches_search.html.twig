@@ -1,0 +1,29 @@
+<table class="table" id="tachesTable">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Priorite</th>
+                <th>Statut</th>
+                <th>Echeanced</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for tach in taches %}
+            <tr>
+                <td>{{ tach.titre }}</td>
+                <td>{{ tach.priorite }}</td>
+                <td>{{ tach.statut }}</td>
+                <td>{{ tach.echeanced ? tach.echeanced|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_taches_show', {'id': tach.id}) }}">show</a>
+                    <a href="{{ path('app_taches_edit', {'id': tach.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
