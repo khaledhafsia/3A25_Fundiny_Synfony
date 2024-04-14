@@ -15,7 +15,8 @@
         <input type="radio" name="sort" value="desc">
     </label>
 </form>
-
+<input type="text" id="searchInput" placeholder="Search by description...">
+<div id="investissementsTableContainer">
     <table class="table" >
         <thead>
             <tr>
@@ -43,31 +44,17 @@
         {% endfor %}
         </tbody>
     </table>
+    </div>
 
     <a href="{{ path('app_investissements_new') }}">Create new</a>
 <script>
-    // Function to handle radio button click event
-    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
-        radio.addEventListener('click', function() {
-            // Get the selected sorting option
-            var sortOrder = this.value;
-
-            // Send an AJAX request to the server
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '{{ path('app_investissements_sort') }}' + '?sort=' + sortOrder, true);
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    // Update the table with the sorted data
-                    document.querySelector('.table').innerHTML = xhr.responseText;
-                } else {
-                    console.error(xhr.statusText);
-                }
-            };
-            xhr.onerror = function() {
-                console.error(xhr.statusText);
-            };
-            xhr.send();
-        });
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        var searchTerm = this.value.trim();
+        fetch('/front/investissements/search?q=' + encodeURIComponent(searchTerm))
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('investissementsTableContainer').innerHTML = data.html;
+            });
     });
 </script>
 {% endblock %}

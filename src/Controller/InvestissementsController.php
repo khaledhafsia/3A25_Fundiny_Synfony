@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 //#[Route('/investissements')]
 class InvestissementsController extends AbstractController
@@ -17,18 +19,24 @@ class InvestissementsController extends AbstractController
     #[Route('/front/investissements', name: 'app_investissements_index', methods: ['GET'])]
     public function index(InvestissementsRepository $investissementsRepository, Request $request): Response
     {
-        $sortBy = $request->query->get('sort');
-
-        // Default sorting by ID if no sorting option selected
-        if ($sortBy === 'montant') {
-            $investissements = $investissementsRepository->findBy([], ['montant' => 'DESC']);
-        } else {
-            $investissements = $investissementsRepository->findAll();
-        }
+        $investissements = $investissementsRepository->findAll();
 
         return $this->render('front/investissements/index.html.twig', [
             'investissements' => $investissements,
         ]);
+    }
+    
+    #[Route('/front/investissements/search', name: 'app_investissements_search', methods: ['GET'])]
+    public function search(Request $request, InvestissementsRepository $investissementsRepository): JsonResponse
+    {
+        $searchTerm = $request->query->get('q');
+        $investissements = $investissementsRepository->findByDescription($searchTerm);
+
+        $html = $this->renderView('front/investissements/search.html.twig', [
+            'investissements' => $investissements,
+        ]);
+
+        return new JsonResponse(['html' => $html]);
     }
 
     #[Route('/front/investissements/sort', name: 'app_investissements_sort', methods: ['GET'])]
