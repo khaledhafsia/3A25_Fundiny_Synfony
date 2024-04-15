@@ -6,8 +6,10 @@ use App\Entity\User;
 use App\Form\LoginType;
 use App\Form\UpdatePasswordType;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,14 +50,14 @@ class LoginController extends AbstractController
 
             if (!$user) {
                 $this->addFlash('error', 'Account does not exist.');
-            } elseif (!$user->getBanState()) {
+            } elseif (!$user->getBanState() && $user->getBanState()==!NULL) {
                 return $this->redirectToRoute('ban_view');
             } else {
                 $this->setSessionUser($user);
 
                 switch ($user->getRole()) {
                     case 'Admin':
-                        return $this->redirectToRoute('dashboard');
+                        return $this->redirectToRoute('list_user');
                     case 'Funder':
                         return $this->redirectToRoute('dashboardFunder');
                     case 'Owner':
@@ -76,7 +78,6 @@ class LoginController extends AbstractController
         ]);
     }
 
-
     #[Route('/password_reset', name: 'password_reset')]
     public function passwordReset(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
@@ -90,7 +91,7 @@ class LoginController extends AbstractController
 
         $token = uniqid();
         $user->setResetToken($token);
-        $user->setTokenExpiration(new \DateTime('+1 day'));
+        //$user->setTokenExpiration(new \DateTime('+1 day'));
         $entityManager->flush();
 
         // Generate the URL with the token parameter
@@ -112,47 +113,36 @@ class LoginController extends AbstractController
     }
 
     #[Route('/update_password/{token}', name: 'update_password')]
-    public function updatePassword(Request $request, string $token, UserPasswordHasherInterface $passwordHasher): Response
+    public function updatePassword(ManagerRegistry $doctrine,Request $request, string $token, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(['resetToken' => $token]);
+        $user = $doctrine->getRepository(User::class)->findOneBy(['resetToken' => $token]);
+        $form = $this->createForm(UpdatePasswordType::class);
+        $form->add('Modifier', SubmitType::class, [
+            'attr' => [
+                'class' => 'btn btn-primary btn-user btn-block'
+            ]
+        ]);
 
-        if ($user && $user->getTokenExpiration() > new \DateTime()) {
-            $form = $this->createForm(UpdatePasswordType::class);
-            $form->handleRequest($request);
+        $form->handleRequest($request);
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $password = $passwordHasher->hashPassword($user, $user->getPassword());
-                $user->setPassword($password);
-                $user->setResetToken(null);
-                $user->setTokenExpiration(null);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $password = $passwordHasher->hashPassword($user, $form->get('password')->getData());
+            $user->setPassword($password);
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($user);
-                $entityManager->flush();
+            $user->setResetToken(null);
+            $user->setTokenExpiration(null);
 
-                $this->addFlash('success', 'Your password has been updated successfully. You can now login with your new password.');
-                return $this->redirectToRoute('login');
-            }
+            $entityManager = $doctrine->getManager();
+            $user = $form->getData();
 
-            return $this->render('login/update_password.twig', [
-                'form' => $form->createView(),
-            ]);
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', 'Your password has been updated successfully. You can now login with your new password.');
+            return $this->redirectToRoute('login');
         }
 
-        $this->addFlash('error', 'Invalid or expired token.');
-        return $this->redirectToRoute('update_password');
-    }
-    #[Route('/dashboardFunder', name: 'dashboardFunder')]
-    public function dashboardFunder(): Response
-    {
-        $user = $this->getSessionUser();
-
-        if (!$user) {
-            return $this->redirectToRoute('loginn');
-        }
-
-        return $this->render('Dashboard/dashboardFunder.twig', [
-            'user' => $user,
+        return $this->render('login/update_password.twig', [
+            'form' => $form->createView(),
         ]);
     }
 

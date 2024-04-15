@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Form\UpdateUserType;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -54,7 +55,7 @@ class UserController extends AbstractController
                 $em->persist($user);
                 $em->flush();
 
-                return $this->redirectToRoute('Login');
+                return $this->redirectToRoute('login');
             } else {
                 $errorMessage = 'Email already in use. Please choose another email.';
                 $this->addFlash('error', $errorMessage);
@@ -75,7 +76,7 @@ class UserController extends AbstractController
     public function updatePoste(ManagerRegistry $doctrine, Request $request, $id): Response
     {
         $user = $doctrine->getRepository(User::class)->find($id);
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UpdateUserType::class, $user);
         $form->add('Modifier', SubmitType::class, [
             'attr' => [
                 'class' => 'btn btn-primary btn-user btn-block'
@@ -84,13 +85,9 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $id = $user->getTitre();
-            $em = $doctrine->getManager();
-            $existingUser = $em->getRepository(User::class)->findOneBy(['id' => $id]);
 
-            if ($existingUser) {
-                $this->addFlash('error', 'User exists.');
-            } else {
-                $user = $form->getData();
+            $em = $doctrine->getManager();
+            $user = $form->getData();
 
                 $em->persist($user);
                 $em->flush();
@@ -99,7 +96,7 @@ class UserController extends AbstractController
                     'Modifié avec succès'
                 );
                 return $this->redirectToRoute('update_user', ['id' => $user    ->getId()]);
-            }
+          //  }
         }
         return $this->renderForm('user/back/update_user.html.twig', [
             'form' => $form,
@@ -127,7 +124,6 @@ class UserController extends AbstractController
             throw $this->createNotFoundException('User not found');
         }
 
-        // Set the ban state to true
         $user->setBanState(true);
         $entityManager->flush();
 
@@ -135,7 +131,7 @@ class UserController extends AbstractController
 
         return $this->redirectToRoute('list_user');
     }
-    #[Route('/ban_user/{id}', name: 'ban_user')]
+    #[Route('/unban_user/{id}', name: 'ban_user')]
     public function UnbanUser(ManagerRegistry $doctrine, $id): Response
     {
         $entityManager = $doctrine->getManager();
@@ -145,8 +141,7 @@ class UserController extends AbstractController
             throw $this->createNotFoundException('User not found');
         }
 
-        // Set the ban state to true
-        $user->setBanState(false);
+        $user->setBanState(true);
         $entityManager->flush();
 
         $this->addFlash('success', 'User banned successfully.');
