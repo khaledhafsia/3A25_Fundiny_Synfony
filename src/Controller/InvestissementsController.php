@@ -16,6 +16,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 //#[Route('/investissements')]
 class InvestissementsController extends AbstractController
 {
+    #[Route('/home', name: 'home')]
+    public function home(): Response
+    {
+        return $this->render('base.html.twig');
+    }
+
     #[Route('/front/investissements', name: 'app_investissements_index', methods: ['GET'])]
     public function index(InvestissementsRepository $investissementsRepository, Request $request): Response
     {

@@ -3,11 +3,17 @@
 {% block title %}Edit Taches{% endblock %}
 
 {% block body %}
-    <h1>Edit Taches</h1>
-
+               <!-- Section Title -->
+               <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Edit Task<br></span>
+        <h2 class="">Edit Task<br></h2>
+        <p>Edit the selected Task </p>
+      </div><!-- End Section Title -->
     {{ include('front/taches/_form.html.twig', {'button_label': 'Update'}) }}
 
     <a href="{{ path('app_investissements_index') }}">back to list</a>
-
+<br>
     {{ include('front/taches/_delete_form.html.twig') }}
+    <br><br><br>
 {% endblock %}

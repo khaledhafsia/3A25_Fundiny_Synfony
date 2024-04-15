@@ -3,9 +3,15 @@
 {% block title %}Investissements{% endblock %}
 
 {% block body %}
-    <h1>Investissements</h1>
+             <!-- Section Title -->
+             <br><br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Invesment<br></span>
+        <h2 class="">Invesment<br></h2>
+        <p>full details about the selected investment </p>
+      </div><!-- End Section Title -->
 
-    <table class="table">
+    <table class="table table-bordered">
         <tbody>
             <tr>
                 <th>Id</th>
@@ -33,7 +39,8 @@
     <a href="{{ path('app_taches_new2', {'id': investissement.id}) }}">add task</a>
 
    <a href="{{ path('app_taches_index2', {'id': investissement.id}) }}">show tasks</a>
-
+<br><br>
 
     {{ include('front/investissements/_delete_form.html.twig') }}
+    <br><br><br>
 {% endblock %}

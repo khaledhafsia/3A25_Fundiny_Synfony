@@ -3,9 +3,17 @@
 {% block title %}New Investissements{% endblock %}
 
 {% block body %}
-    <h1>Create new Investissements</h1>
+          <!-- Section Title -->
+          <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Create New Invesments<br></span>
+        <h2 class="">Create New Invesments<br></h2>
+        <p>fill the blanks to complete creating your invesment </p>
+      </div><!-- End Section Title -->
 
     {{ include('front/investissements/_form.html.twig') }}
+    <br>
 
     <a href="{{ path('app_investissements_index') }}">back to list</a>
+    <br><br><br><br>
 {% endblock %}

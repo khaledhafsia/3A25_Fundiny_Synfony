@@ -3,9 +3,16 @@
 {% block title %}New Taches{% endblock %}
 
 {% block body %}
-    <h1>Create new Taches</h1>
-
+          <!-- Section Title -->
+          <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Create New Task<br></span>
+        <h2 class="">Create New Task<br></h2>
+        <p>fill the blanks to complete creating your Task </p>
+      </div><!-- End Section Title -->
     {{ include('front/taches/_form.html.twig') }}
+    <br>
 
     <a href="{{ path('app_investissements_index') }}">back to list</a>
+    <br><br><br><br>
 {% endblock %}
