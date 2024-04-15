@@ -64,7 +64,7 @@ class Taches
      *   @ORM\JoinColumn(name="invID", referencedColumnName="id")
      * })
      */
-    #[Assert\NotBlank(message:'iinvestissement ID obligatoire')]
+    #[Assert\NotBlank(message:'investissement ID obligatoire')]
 
     
     private $invid;
