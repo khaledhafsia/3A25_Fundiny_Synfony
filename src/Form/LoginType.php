@@ -31,8 +31,8 @@ class LoginType extends AbstractType
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Login'
-            ])
-            ->add('resetPassword', ButtonType::class, [
+            ]);
+           /* ->add('resetPassword', ButtonType::class, [
                 'label' => 'Forgot Password?',
                 'attr' => [
                     'formnovalidate' => 'formnovalidate',
@@ -40,6 +40,7 @@ class LoginType extends AbstractType
                     'onclick' => 'window.location.href="' . $options['reset_password_route'] . '"', // Redirect to reset password route
                 ]
             ]);
+           */
     }
 
     public function configureOptions(OptionsResolver $resolver): void

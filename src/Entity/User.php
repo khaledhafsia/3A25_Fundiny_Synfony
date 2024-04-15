@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -48,6 +49,14 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
 
     #[ORM\Column(nullable: true)]
     private ?bool $banState = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $tokenExpiration = null;
+
+
 /*
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Investissements::class)]
     private Collection $investissementsList;
@@ -263,4 +272,30 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
     {
         // TODO: Implement @method string getUserIdentifier()
     }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    public function getTokenExpiration(): ?\DateTimeInterface
+    {
+        return $this->tokenExpiration;
+    }
+
+    public function setTokenExpiration(?\DateTimeInterface $tokenExpiration): static
+    {
+        $this->tokenExpiration = $tokenExpiration;
+
+        return $this;
+    }
+
+
 }

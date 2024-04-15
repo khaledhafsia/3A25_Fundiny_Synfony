@@ -3,7 +3,6 @@
 namespace App\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use App\Controller\LoginController;
 use App\Entity\User;
@@ -71,15 +70,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/list_user', name: 'list_user')]
-    public function ListUser(UserRepository $repository): Response
-    {
 
-        $users = $repository->findAll();
-        return $this->render('user/back/list_user.html.twig', [
-            'user' => $users,
-        ]);
-    }
     #[Route('/update_user/{id}', name: 'update_user')]
     public function updatePoste(ManagerRegistry $doctrine, Request $request, $id): Response
     {
@@ -163,6 +154,68 @@ class UserController extends AbstractController
         return $this->redirectToRoute('list_user');
     }
 
+    #[Route('/search_user', name: 'search_user')]
+    public function searchUser(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $query = $request->query->get('query');
 
+        // Example: Find users by username
+        $users = $userRepository->findByUsername($query);
 
+        // Prepare response data
+        $userData = [];
+        foreach ($users as $user) {
+            $userData[] = [
+                'id' => $user->getId(),
+                'username' => $user->getUsername(),
+            ];
+        }
+
+        // Return JSON response
+        return new JsonResponse($userData);
+    }
+    #[Route('/list_user', name: 'list_user')]
+    public function ListUser(UserRepository $repository): Response
+    {
+
+        $users = $repository->findAll();
+        return $this->render('user/back/list_user.html.twig', [
+            'user' => $users,
+        ]);
+    }/*
+    #[Route('/filter_user_by_role', name: 'filter_user_by_role')]
+    public function filterUserByRole(Request $request, UserRepository $userRepository): Response
+    {
+        $role = $request->query->get('role');
+        $users = $userRepository->findByRole($role);
+
+        return $this->render('user/back/list_user.html.twig', [
+            'user' => $users,
+        ]);
+    }
+*/
+    #[Route('/filter_user_by_role', name: 'filter_user_by_role')]
+    public function filterUserByRole(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $role = $request->query->get('role');
+
+        // Example: Find users by role
+        $users = $userRepository->findByRole($role);
+
+        // Prepare response data
+        $userData = [];
+        foreach ($users as $user) {
+            $userData[] = [
+                'id' => $user->getId(),
+                'nom' => $user->getNom(),
+                'prenom' => $user->getPrenom(),
+                'email' => $user->getEmail(),
+                'password' => $user->getPassword(),
+                // Add other user properties as needed
+            ];
+        }
+
+        // Return JSON response with filtered user data
+        return new JsonResponse($userData);
+    }
 }

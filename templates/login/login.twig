@@ -44,13 +44,15 @@
 
 {#                    <a href="{{ path('password_reset') }}" class="btn btn-link">Forgot password?</a>
 #}
-                    {{ form_widget(form.resetPassword) }}
+                {#  {{ form_widget(form.resetPassword) }}#}
 
                     {{ form_end(form) }}
 
                     <div class="d-flex align-items-center justify-content-center pb-4">
                         <a  href="{{ path('SignUp') }}"><button style="border-radius:15px;color:blue;border-color:blue;"  >Don't have an account ?</button></a>
                     </div>
+                    <a href="{{ path('password_reset') }}">Forgot Password?</a>
+
                 </div>
             </div>
         </div>
