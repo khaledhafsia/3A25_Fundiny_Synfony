@@ -17,7 +17,7 @@
 </form>
 <input type="text" id="searchInput" placeholder="Search by description...">
 <div id="investissementsTableContainer">
-    <table class="table" >
+    <table class="table" id="investissementsTable" >
         <thead>
             <tr>
                 <th>Montant</th>
@@ -73,13 +73,18 @@
     });
 </script>
 <script>
-    document.getElementById('searchInput').addEventListener('keyup', function() {
-        var searchTerm = this.value.trim();
-        fetch('/front/investissements/search?q=' + encodeURIComponent(searchTerm))
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('investissementsTableContainer').innerHTML = data.html;
-            });
+document.getElementById('searchInput').addEventListener('input', function() {
+    var searchValue = this.value.toLowerCase();
+    var rows = document.querySelectorAll('#investissementsTable tbody tr');
+
+    rows.forEach(function(row) {
+        var description = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        if (description.includes(searchValue)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
     });
+});
 </script>
 {% endblock %}

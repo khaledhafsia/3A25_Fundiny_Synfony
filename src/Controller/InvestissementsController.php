@@ -26,17 +26,17 @@ class InvestissementsController extends AbstractController
         ]);
     }
     
-    #[Route('/front/investissements/search', name: 'app_investissements_search', methods: ['GET'])]
-    public function search(Request $request, InvestissementsRepository $investissementsRepository): JsonResponse
+    #[Route('/front/investissements/search', name: 'app_investissements_search', methods: ['POST'])]
+    public function search(Request $request, InvestissementsRepository $investissementsRepository): Response
     {
-        $searchTerm = $request->query->get('q');
-        $investissements = $investissementsRepository->findByDescription($searchTerm);
-
-        $html = $this->renderView('front/investissements/search.html.twig', [
+        $searchTerm = $request->request->get('search');
+    
+        // Fetch investissements based on the search term
+        $investissements = $investissementsRepository->searchByDescription($searchTerm);
+    
+        return $this->render('front/investissements/index.html.twig', [
             'investissements' => $investissements,
         ]);
-
-        return new JsonResponse(['html' => $html]);
     }
 
     #[Route('/front/investissements/sort', name: 'app_investissements_sort', methods: ['GET'])]

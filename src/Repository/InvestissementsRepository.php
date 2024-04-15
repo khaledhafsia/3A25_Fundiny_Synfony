@@ -21,14 +21,14 @@ class InvestissementsRepository extends ServiceEntityRepository
         parent::__construct($registry, Investissements::class);
     }
     
-    public function findByDescription($searchTerm)
-{
-    return $this->createQueryBuilder('i')
-        ->andWhere('i.description LIKE :searchTerm')
-        ->setParameter('searchTerm', '%'.$searchTerm.'%')
-        ->getQuery()
-        ->getResult();
-}
+    public function searchByDescription($searchTerm)
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('LOWER(i.description) LIKE :searchTerm')
+            ->setParameter('searchTerm', '%'.strtolower($searchTerm).'%')
+            ->getQuery()
+            ->getResult();
+    }
 
 //    /**
 //     * @return Investissements[] Returns an array of Investissements objects
