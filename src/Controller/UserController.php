@@ -89,14 +89,14 @@ class UserController extends AbstractController
             $em = $doctrine->getManager();
             $user = $form->getData();
 
-                $em->persist($user);
-                $em->flush();
-                $this->addFlash(
-                    'info',
-                    'Modifié avec succès'
-                );
-                return $this->redirectToRoute('update_user', ['id' => $user    ->getId()]);
-          //  }
+            $em->persist($user);
+            $em->flush();
+            $this->addFlash(
+                'info',
+                'Modifié avec succès'
+            );
+            return $this->redirectToRoute('update_user', ['id' => $user->getId()]);
+            //  }
         }
         return $this->renderForm('user/back/update_user.html.twig', [
             'form' => $form,
@@ -104,7 +104,7 @@ class UserController extends AbstractController
     }
 
     #[Route('/delete_user{id}', name: 'delete_user')]
-    public function DropUser(ManagerRegistry $repository,$id): Response
+    public function DropUser(ManagerRegistry $repository, $id): Response
     {
 
         $users = $repository->getRepository(User::class)->find($id);
@@ -131,6 +131,7 @@ class UserController extends AbstractController
 
         return $this->redirectToRoute('list_user');
     }
+
     #[Route('/unban_user/{id}', name: 'ban_user')]
     public function UnbanUser(ManagerRegistry $doctrine, $id): Response
     {
@@ -149,26 +150,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute('list_user');
     }
 
-    #[Route('/search_user', name: 'search_user')]
-    public function searchUser(Request $request, UserRepository $userRepository): JsonResponse
-    {
-        $query = $request->query->get('query');
 
-        // Example: Find users by username
-        $users = $userRepository->findByUsername($query);
-
-        // Prepare response data
-        $userData = [];
-        foreach ($users as $user) {
-            $userData[] = [
-                'id' => $user->getId(),
-                'username' => $user->getUsername(),
-            ];
-        }
-
-        // Return JSON response
-        return new JsonResponse($userData);
-    }
     #[Route('/list_user', name: 'list_user')]
     public function ListUser(UserRepository $repository): Response
     {
@@ -177,18 +159,8 @@ class UserController extends AbstractController
         return $this->render('user/back/list_user.html.twig', [
             'user' => $users,
         ]);
-    }/*
-    #[Route('/filter_user_by_role', name: 'filter_user_by_role')]
-    public function filterUserByRole(Request $request, UserRepository $userRepository): Response
-    {
-        $role = $request->query->get('role');
-        $users = $userRepository->findByRole($role);
-
-        return $this->render('user/back/list_user.html.twig', [
-            'user' => $users,
-        ]);
     }
-*/
+
     #[Route('/filter_user_by_role', name: 'filter_user_by_role')]
     public function filterUserByRole(Request $request, UserRepository $userRepository): JsonResponse
     {
@@ -212,5 +184,26 @@ class UserController extends AbstractController
 
         // Return JSON response with filtered user data
         return new JsonResponse($userData);
+    }
+
+    #[Route('/search_user', name: 'search_user')]
+    public function searchUser(Request $request, UserRepository $userRepository): JsonResponse
+    {
+        $searchInput = $request->query->get('searchInput');
+        //if ($searchInput=!null){
+        $users = $userRepository->findByNom($searchInput);
+
+        $userData = [];
+        foreach ($users as $user) {
+            $userData[] = [
+                'id' => $user->getId(),
+                'nom' => $user->getNom(),
+                'prenom' => $user->getPrenom(),
+                'email' => $user->getEmail(),
+                // Add other user properties as needed
+            ];
+        }
+        return new JsonResponse($userData);
+
     }
 }

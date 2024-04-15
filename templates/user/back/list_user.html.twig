@@ -2,36 +2,46 @@
 
 {% block javascripts %}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#searchInput').on('input', function() {
-                var query = $(this).val();
 
-                $.ajax({
-                    url: "{{ path('search_user') }}",
-                    type: "GET",
-                    data: {
-                        query: query
-                    },
-                    success: function(response) {
-                        $('#searchResults').empty();
-                        response.forEach(function(user) {
-                            $('#searchResults').append('<li>' + user.username + '</li>');
-                        });
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
+        <script>
+            $(document).ready(function() {
+                // Search functionality
+                $('#searchInput').on('input', function () {
+                    var searchInput = $(this).val();
+
+                    $.ajax({
+                        url: "{{ path('search_user') }}",
+                        type: "GET",
+                        data: {
+                            searchInput: searchInput
+                        },
+                        success: function (response) {
+                            // Clear existing user list
+                            $('#dataTable tbody').empty();
+
+                            // Populate user list with filtered users
+                            response.forEach(function (user) {
+                                var row = '<tr>' +
+                                    '<td>' + user.nom + '</td>' +
+                                    '<td>' + user.prenom + '</td>' +
+                                    '<td>' + user.email + '</td>' +
+                                    '</tr>';
+                                $('#dataTable tbody').append(row);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
                 });
-            });
-        });
-    </script>
+            })
+        </script>
+
     <script>
+
         $(document).ready(function() {
             // Search functionality (existing code)
-            $('#searchInput').on('input', function() {
-                // AJAX request for searching users (existing code)
-            });
+
 
             // Filter by role functionality
             $('#roleFilter').on('change', function() {
@@ -99,7 +109,6 @@
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                         <tr>
-                                            <th>Id</th>
                                             <th>Nom</th>
                                             <th>Prenom</th>
                                             <th>Email</th>
@@ -113,7 +122,6 @@
                                         <tbody>
                                         {% for u in user %}
                                             <tr>
-                                                <td>{{ u.id }}</td>
                                                 <td>{{ u.nom }}</td>
                                                 <td>{{ u.prenom }}</td>
                                                 <td>{{ u.email }}</td>
