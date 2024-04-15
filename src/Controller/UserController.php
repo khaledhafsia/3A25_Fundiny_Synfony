@@ -165,11 +165,8 @@ class UserController extends AbstractController
     public function filterUserByRole(Request $request, UserRepository $userRepository): JsonResponse
     {
         $role = $request->query->get('role');
-
-        // Example: Find users by role
         $users = $userRepository->findByRole($role);
 
-        // Prepare response data
         $userData = [];
         foreach ($users as $user) {
             $userData[] = [
@@ -178,11 +175,9 @@ class UserController extends AbstractController
                 'prenom' => $user->getPrenom(),
                 'email' => $user->getEmail(),
                 'password' => $user->getPassword(),
-                // Add other user properties as needed
             ];
         }
 
-        // Return JSON response with filtered user data
         return new JsonResponse($userData);
     }
 
@@ -190,20 +185,23 @@ class UserController extends AbstractController
     public function searchUser(Request $request, UserRepository $userRepository): JsonResponse
     {
         $searchInput = $request->query->get('searchInput');
-        //if ($searchInput=!null){
-        $users = $userRepository->findByNom($searchInput);
 
-        $userData = [];
-        foreach ($users as $user) {
-            $userData[] = [
-                'id' => $user->getId(),
-                'nom' => $user->getNom(),
-                'prenom' => $user->getPrenom(),
-                'email' => $user->getEmail(),
-                // Add other user properties as needed
-            ];
+        if ($searchInput !== null) {
+            $users = $userRepository->findByPartialNom($searchInput);
+
+            $userData = [];
+            foreach ($users as $user) {
+                $userData[] = [
+                    'nom' => $user->getNom(),
+                    'prenom' => $user->getPrenom(),
+                    'email' => $user->getEmail(),
+                    'role' => $user->getRole(),
+                    'banstate' => $user->isBanState(),
+                ];
+            }
+            return new JsonResponse($userData);
+        } else {
+            return new JsonResponse(['message' => 'No search input provided'], Response::HTTP_BAD_REQUEST);
         }
-        return new JsonResponse($userData);
-
     }
 }

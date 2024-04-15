@@ -44,7 +44,7 @@ class LoginController extends AbstractController
         if ($request->isMethod('POST')) {
             $formData = $loginForm->getData();
 
-            $email = $formData->getEmail(); // Corrected accessing email
+            $email = $formData->getEmail();
 
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
@@ -91,6 +91,8 @@ class LoginController extends AbstractController
 
         $token = uniqid();
         $user->setResetToken($token);
+        $user->setTokenExpiration(new \DateTime('9999-12-31 23:59:59'));
+
         //$user->setTokenExpiration(new \DateTime('+1 day'));
         $entityManager->flush();
 
@@ -113,30 +115,38 @@ class LoginController extends AbstractController
     }
 
     #[Route('/update_password/{token}', name: 'update_password')]
-    public function updatePassword(ManagerRegistry $doctrine,Request $request, string $token, UserPasswordHasherInterface $passwordHasher): Response
+    public function updatePassword(ManagerRegistry $doctrine, Request $request, string $token, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $user = $doctrine->getRepository(User::class)->findOneBy(['resetToken' => $token]);
-        $form = $this->createForm(UpdatePasswordType::class);
-        $form->add('Modifier', SubmitType::class, [
-            'attr' => [
-                'class' => 'btn btn-primary btn-user btn-block'
-            ]
-        ]);
+        $entityManager = $doctrine->getManager();
 
+        //$user = $entityManager->getRepository(User::class)->findOneBy(['resetToken' => $token]);
+        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => 'khaledhafsia2@gmail.com']);
+
+        if (!$user) {
+            $this->addFlash('error', 'Invalid or expired token. Please request a new password reset.');
+            return $this->redirectToRoute('password_reset');
+        }
+
+        $tokenExpiration = $user->getTokenExpiration();
+        if ($tokenExpiration instanceof \DateTime && $tokenExpiration < new \DateTime()) {
+            $this->addFlash('error', 'Token expired. Please request a new password reset.');
+            return $this->redirectToRoute('password_reset');
+        }
+
+        $form = $this->createForm(UpdatePasswordType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Hash the new password
             $password = $passwordHasher->hashPassword($user, $form->get('password')->getData());
             $user->setPassword($password);
 
             $user->setResetToken(null);
-            $user->setTokenExpiration(null);
-
-            $entityManager = $doctrine->getManager();
-            $user = $form->getData();
+            $user->setTokenExpiration(null); // Set token expiration to null after password reset
 
             $entityManager->persist($user);
             $entityManager->flush();
+
             $this->addFlash('success', 'Your password has been updated successfully. You can now login with your new password.');
             return $this->redirectToRoute('login');
         }

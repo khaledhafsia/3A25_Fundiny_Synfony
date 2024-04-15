@@ -20,6 +20,10 @@ class UpdatePasswordType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                 ],
+            ])->add('Modifier', SubmitType::class, [
+                'attr' => [
+                    'class' => 'btn btn-primary btn-user btn-block'
+                ]
             ]);
 
     }
