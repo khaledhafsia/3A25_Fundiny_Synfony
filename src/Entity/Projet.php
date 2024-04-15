@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Projet
@@ -22,6 +23,9 @@ class Projet
      */
     private $id;
 
+    #[Assert\NotBlank(message:'description obligatoire')]
+    #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
+    
     /**
      * @var string
      *
@@ -29,6 +33,9 @@ class Projet
      */
     private $nompr;
 
+
+    #[Assert\NotBlank(message:'description obligatoire')]
+    #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
     /**
      * @var string
      *
@@ -43,6 +50,7 @@ class Projet
      */
     private $dated;
 
+    #[Assert\Type(type: 'numeric', message: 'The CA must be a number.')]
     /**
      * @var float
      *

@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 /**
  * Collaboration
@@ -22,6 +24,8 @@ class Collaboration
      */
     private $id;
 
+    #[Assert\NotBlank(message:'description obligatoire')]
+    #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
     /**
      * @var string
      *
@@ -29,6 +33,8 @@ class Collaboration
      */
     private $nomcoll;
 
+    #[Assert\NotBlank(message:'description obligatoire')]
+    #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
     /**
      * @var string
      *

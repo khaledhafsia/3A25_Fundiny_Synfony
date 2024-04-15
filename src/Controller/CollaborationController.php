@@ -38,7 +38,7 @@ class CollaborationController extends AbstractController
             return $this->redirectToRoute('app_collaboration_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('collaboration/new.html.twig', [
+        return $this->renderForm('front/collaboration/new.html.twig', [
             'collaboration' => $collaboration,
             'form' => $form,
         ]);
@@ -47,7 +47,7 @@ class CollaborationController extends AbstractController
     #[Route('/front/collaboration/{id}', name: 'app_collaboration_show', methods: ['GET'])]
     public function show(Collaboration $collaboration): Response
     {
-        return $this->render('collaboration/show.html.twig', [
+        return $this->render('front/collaboration/show.html.twig', [
             'collaboration' => $collaboration,
         ]);
     }
@@ -64,7 +64,7 @@ class CollaborationController extends AbstractController
             return $this->redirectToRoute('app_collaboration_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('collaboration/edit.html.twig', [
+        return $this->renderForm('front/collaboration/edit.html.twig', [
             'collaboration' => $collaboration,
             'form' => $form,
         ]);
