@@ -1,0 +1,19 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Edit Taches{% endblock %}
+
+{% block body %}
+               <!-- Section Title -->
+               <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Edit Task<br></span>
+        <h2 class="">Edit Task<br></h2>
+        <p>Edit the selected Task </p>
+      </div><!-- End Section Title -->
+    {{ include('back/taches/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_investissementsBack_index') }}">back to list</a>
+<br>
+    {{ include('back/taches/_delete_form.html.twig') }}
+    <br><br><br>
+{% endblock %}

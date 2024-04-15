@@ -1,0 +1,19 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}New Investissements{% endblock %}
+
+{% block body %}
+          <!-- Section Title -->
+          <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Create New Invesments<br></span>
+        <h2 class="">Create New Invesments<br></h2>
+        <p>fill the blanks to complete creating your invesment </p>
+      </div><!-- End Section Title -->
+
+    {{ include('back/investissements/_form.html.twig') }}
+    <br>
+
+    <a href="{{ path('app_investissementsBack_index') }}">back to list</a>
+    <br><br><br><br>
+{% endblock %}

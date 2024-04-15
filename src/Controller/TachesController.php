@@ -186,4 +186,93 @@ class TachesController extends AbstractController
 
         return $this->redirectToRoute('app_investissements_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/back/{id}/taches', name: 'app_tachesBack_index2', methods: ['GET'])]
+    public function index2Back(TachesRepository $tachesRepository, $id): Response
+    {
+        // Fetch the Investissement entity based on the provided ID
+        $investissement = $this->getDoctrine()->getRepository(Investissements::class)->find($id);
+
+        // If the investissement is not found, you might want to handle this case appropriately (e.g., show an error message)
+        if (!$investissement) {
+            throw $this->createNotFoundException('Investissement not found');
+        }
+
+        // Fetch the tasks associated with the Investissement ID
+        $taches = $tachesRepository->findBy(['invid' => $investissement]);
+
+        return $this->render('back/taches/index.html.twig', [
+            'taches' => $taches,
+            'investissement' => $investissement,
+        ]);
+    }
+
+    #[Route('/back/taches/{id}', name: 'app_tachesBack_show', methods: ['GET'])]
+    public function showBack(Taches $tach): Response
+    {
+        return $this->render('back/taches/show.html.twig', [
+            'tach' => $tach,
+        ]);
+    }
+
+    #[Route('/back/taches/{id}/edit', name: 'app_tachesBack_edit', methods: ['GET', 'POST'])]
+    public function editBack(Request $request, Taches $tach, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(TachesType::class, $tach);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('back/taches/edit.html.twig', [
+            'tach' => $tach,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/back/taches/{id}', name: 'app_tachesBack_delete', methods: ['POST'])]
+    public function deleteBack(Request $request, Taches $tach, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$tach->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($tach);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/back/taches/new/{id}', name: 'app_tachesBack_new2', methods: ['GET', 'POST'])]
+    public function new2Back(Request $request, EntityManagerInterface $entityManager, $id): Response
+    {
+        // Fetch the Investissement entity based on the provided ID
+        $investissement = $entityManager->getRepository(Investissements::class)->find($id);
+
+        // Create a new Taches instance
+        $tach = new Taches();
+
+        // Set the invID attribute of the Taches entity with the ID of the Investissement
+        $tach->setInvid($investissement);
+
+        // Create the Taches form
+        $form = $this->createForm(TachesType::class, $tach);
+
+        // Handle the form submission
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($tach);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('back/taches/new.html.twig', [
+            'tach' => $tach,
+            'form' => $form,
+        ]);
+    }
+
 }

@@ -22,6 +22,12 @@ class InvestissementsController extends AbstractController
         return $this->render('base.html.twig');
     }
 
+    #[Route('/back', name: 'back')]
+    public function back(): Response
+    {
+        return $this->render('baseBack.html.twig');
+    }
+
     #[Route('/front/investissements', name: 'app_investissements_index', methods: ['GET'])]
     public function index(InvestissementsRepository $investissementsRepository, Request $request): Response
     {
@@ -123,4 +129,94 @@ class InvestissementsController extends AbstractController
 
         return $this->redirectToRoute('app_investissements_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/back/investissements', name: 'app_investissementsBack_index', methods: ['GET'])]
+    public function indexBack(InvestissementsRepository $investissementsRepository, Request $request): Response
+    {
+        $investissements = $investissementsRepository->findAll();
+
+        return $this->render('back/investissements/index.html.twig', [
+            'investissements' => $investissements,
+        ]);
+    }
+
+    #[Route('/back/investissements/new', name: 'app_investissementsBack_new', methods: ['GET', 'POST'])]
+    public function newBack(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $investissement = new Investissements();
+        $form = $this->createForm(InvestissementsType::class, $investissement);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($investissement);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('back/investissements/new.html.twig', [
+            'investissement' => $investissement,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/back/investissements/{id}/edit', name: 'app_investissementsBack_edit', methods: ['GET', 'POST'])]
+    public function editBack(Request $request, Investissements $investissement, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(InvestissementsType::class, $investissement);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('back/investissements/edit.html.twig', [
+            'investissement' => $investissement,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/back/investissements/{id}', name: 'app_investissementsBack_delete', methods: ['POST'])]
+    public function deleteBack(Request $request, Investissements $investissement, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$investissement->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($investissement);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/back/investissements/{id}', name: 'app_investissementsBack_show', methods: ['GET'])]
+    public function showBack(Investissements $investissement): Response
+    {
+        return $this->render('back/investissements/show.html.twig', [
+            'investissement' => $investissement,
+        ]);
+    }
+
+    #[Route('/back/investissements/sort', name: 'app_investissementsBack_sort', methods: ['GET'])]
+    public function sortBack(Request $request, InvestissementsRepository $investissementsRepository): Response
+    {
+        $sortOrder = $request->query->get('sort');
+
+        // Define the sorting criteria
+        $orderBy = [];
+        if ($sortOrder === 'asc') {
+            $orderBy = ['montant' => 'ASC'];
+        } elseif ($sortOrder === 'desc') {
+            $orderBy = ['montant' => 'DESC'];
+        }
+
+        // Fetch sorted investissements from the repository
+        $investissements = $investissementsRepository->findBy([], $orderBy);
+
+        // Render the sorted data as HTML or return as JSON
+        return $this->render('back/investissements/_table.html.twig', [
+            'investissements' => $investissements,
+        ]);
+    }
+
 }
