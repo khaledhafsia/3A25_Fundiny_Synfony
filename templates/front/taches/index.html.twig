@@ -71,4 +71,20 @@
 
     </script>
 
+    <script>
+    document.getElementById('searchInputTaches').addEventListener('input', function() {
+        var searchValue = this.value.toLowerCase();
+        var rows = document.querySelectorAll('#tachesTable tbody tr');
+
+        rows.forEach(function(row) {
+            var titre = row.querySelector('td:first-child').textContent.toLowerCase();
+            if (titre.includes(searchValue)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>
+
 {% endblock %}

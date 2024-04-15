@@ -22,6 +22,17 @@ class TachesRepository extends ServiceEntityRepository
         parent::__construct($registry, Taches::class);
     }
 
+    public function searchByTitre(Investissements $investissement, $searchTerm)
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.invid = :invid')
+            ->andWhere('LOWER(t.titre) LIKE :searchTerm')
+            ->setParameter('invid', $investissement->getId())
+            ->setParameter('searchTerm', '%'.strtolower($searchTerm).'%')
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Taches[] Returns an array of Taches objects
 //     */

@@ -45,6 +45,28 @@ class TachesController extends AbstractController
         ]);
     }
 
+    #[Route('/front/{id}/taches/search', name: 'app_taches_search', methods: ['POST'])]
+    public function search(Request $request, TachesRepository $tachesRepository, $id): Response
+    {
+        // Fetch the Investissement entity based on the provided ID
+        $investissement = $this->getDoctrine()->getRepository(Investissements::class)->find($id);
+
+        // If the investissement is not found, you might want to handle this case appropriately (e.g., show an error message)
+        if (!$investissement) {
+            throw $this->createNotFoundException('Investissement not found');
+        }
+
+        $searchTerm = $request->request->get('search');
+
+        // Fetch tasks associated with the Investissement ID based on the search term
+        $taches = $tachesRepository->searchByTitre($investissement, $searchTerm);
+
+        return $this->render('front/taches/index.html.twig', [
+            'taches' => $taches,
+            'investissement' => $investissement,
+        ]);
+    }
+
     #[Route('/front/{id}/taches/sort', name: 'app_taches_sort', methods: ['POST'])]
     public function sortTaches(Request $request, TachesRepository $tachesRepository, $id): Response
     {
