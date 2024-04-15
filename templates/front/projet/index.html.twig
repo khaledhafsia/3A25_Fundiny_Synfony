@@ -8,7 +8,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
+                <!--<th>Id</th>-->
                 <th>Nompr</th>
                 <th>Nompo</th>
                 <th>Dated</th>
@@ -19,7 +19,7 @@
         <tbody>
         {% for projet in projets %}
             <tr>
-                <td>{{ projet.id }}</td>
+                <!--<td>{{ projet.id }}</td>-->
                 <td>{{ projet.nompr }}</td>
                 <td>{{ projet.nompo }}</td>
                 <td>{{ projet.dated ? projet.dated|date('Y-m-d') : '' }}</td>
