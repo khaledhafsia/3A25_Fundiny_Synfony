@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'front/base.html.twig' %}
 
 {% block title %}Collaboration{% endblock %}
 
@@ -30,5 +30,5 @@
 
     <a href="{{ path('app_collaboration_edit', {'id': collaboration.id}) }}">edit</a>
 
-    {{ include('front/collaboration/_delete_form.html.twig') }}
+    {{ include('collaboration/_delete_form.html.twig') }}
 {% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Collaboration index{% endblock %}
+
+{% block body %}
+    <h1>Collaboration index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <!--<th>Id</th>-->
+                <th>Nomcoll</th>
+                <th>Typecoll</th>
+                <th>Datecoll</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for collaboration in collaborations %}
+            <tr>
+               <!-- <td>{{ collaboration.id }}</td>-->
+                <td>{{ collaboration.nomcoll }}</td>
+                <td>{{ collaboration.typecoll }}</td>
+                <td>{{ collaboration.datecoll ? collaboration.datecoll|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_collaboration_show', {'id': collaboration.id}) }}">show</a>
+                    <a href="{{ path('app_collaboration_edit', {'id': collaboration.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_collaboration_new') }}">Create new</a>
+{% endblock %}

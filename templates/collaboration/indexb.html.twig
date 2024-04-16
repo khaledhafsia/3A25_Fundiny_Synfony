@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'back/base.html.twig' %}
 
 {% block title %}Collaboration index{% endblock %}
 
@@ -23,8 +23,8 @@
                 <td>{{ collaboration.typecoll }}</td>
                 <td>{{ collaboration.datecoll ? collaboration.datecoll|date('Y-m-d') : '' }}</td>
                 <td>
-                    <a href="{{ path('app_collaboration_show', {'id': collaboration.id}) }}">show</a>
-                    <a href="{{ path('app_collaboration_edit', {'id': collaboration.id}) }}">edit</a>
+                    <a href="{{ path('app_collaboration_showb', {'id': collaboration.id}) }}">show</a>
+                    <a href="{{ path('app_collaboration_editb', {'id': collaboration.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -35,5 +35,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_collaboration_new') }}">Create new</a>
+    <a href="{{ path('app_collaboration_newb') }}">Create new</a>
 {% endblock %}

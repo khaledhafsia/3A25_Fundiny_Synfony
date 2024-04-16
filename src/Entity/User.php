@@ -186,8 +186,9 @@ class User
     $montant = $this->montant ?? 'Not specified';
 
     return sprintf(
-        "User ID: %d, Nom: %s, Prenom: %s, Email: %s, Role: %s, Capital: %s, Montant: %s, Ban State: %s",
-        $this->id,
+        "User Nom: %s, Prenom: %s, Email: %s, Role: %s, Capital: %s, Montant: %s, Ban State: %s",
+        #"User ID: %d, Nom: %s, Prenom: %s, Email: %s, Role: %s, Capital: %s, Montant: %s, Ban State: %s",
+        #$this->id,
         $this->nom,
         $this->prenom,
         $this->email,

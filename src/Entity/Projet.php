@@ -136,8 +136,9 @@ class Projet
     public function __toString(): string
 {
     return sprintf(
-        "Projet ID: %d, NomPr: %s, NomPo: %s, DateD: %s, CA: %f",
-        $this->id,
+        "Projet NomPr: %s, NomPo: %s, DateD: %s, CA: %f",
+        #"Projet ID: %d, NomPr: %s, NomPo: %s, DateD: %s, CA: %f",
+        # $this->id, 
         $this->nompr,
         $this->nompo,
         $this->dated->format('Y-m-d'),

@@ -26,7 +26,7 @@ class ProjetType extends AbstractType
                 ],
             ])
             ->add('ca')
-            ->add('user')
+            #->add('user')
         ;
     }
 
