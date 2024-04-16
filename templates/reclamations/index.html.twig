@@ -4,8 +4,25 @@
 
 {% block body %}
     <div class="container">
-        <a href="/reclamations/new" class="btn btn-success">Add</a>
-        <a href="{{ path('app_reclamations_export_excel') }}" class="btn btn-primary">Export To Excel</a>
+
+        <h1 class="mt-4 mb-3">Reclamations</h1>
+        <div class="row mb-3">
+            <div class="col-md-6 text-right">
+                <a href="{{ path('app_reclamations_new') }}" class="btn btn-primary mr-2">Add</a>
+                <a href="{{ path('app_reclamations_export_excel') }}" class="btn btn-info mr-2">Export Excel</a>
+                <a href="{{ path('reclamations_pdf') }}" class="btn btn-danger">Export PDF</a>
+            </div>
+            <div class="col-md-6">
+                <form action="{{ path('app_reclamations_search') }}" method="get" class="form-inline">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Recherche...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">Rechercher</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <table class="table table-striped mt-3">
             <thead class="table-warning">
@@ -15,8 +32,6 @@
                 <th>IdProjet</th>
                 <th>IdTypeReclamation</th>
                 <th>IdUtilisateur</th>
-                <th>Objet</th>
-                <th>Texte</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -28,10 +43,8 @@
                     <td>{{ reclamation.idProjet ? reclamation.idProjet.nompr : 'N/A' }}</td>
                     <td>{{ reclamation.idTypeReclamation ? reclamation.idTypeReclamation.NomTypeReclamation : 'N/A' }}</td>
                     <td>{{ reclamation.idUtilisateur ? reclamation.idUtilisateur.nom : 'N/A' }}</td>
-                    <td>{{ reclamation.objet }}</td>
-                    <td>{{ reclamation.texte }}</td>
                     <td>
-
+                        <a href="{{ path('app_reclamations_show', {'idReclamation': reclamation.idReclamation}) }}" class="btn btn-primary btn-sm">Show</a>
                     </td>
                 </tr>
             {% else %}
@@ -42,5 +55,15 @@
             </tbody>
         </table>
 
+        <!-- Pagination Container with Striped Style -->
+        <div class="row">
+            <div class="col">
+                <div class="pagination mt-3 d-flex justify-content-center table-striped" style="font-size: 24px;">
+                    {{ knp_pagination_render(reclamations, 'custom_pagination.html.twig') }}
+                </div>
+            </div>
+        </div>
+
     </div>
 {% endblock %}
+
