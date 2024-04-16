@@ -1,3 +1,16 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+# app_article_comments_edit:
+#     path: '/article/{articleId}/comments/{commentId}/edit'
+#     controller: 'App\Controller\ArticleController::editComment'
+#     methods: ['GET', 'POST']
+
+# app_article_comments_new:
+#     path: '/article/{articleId}/comments/new'
+#     controller: 'App\Controller\ArticleController::newComment'
+#     methods: ['GET', 'POST']
+# app_article_combined:
+#     path: '/article
+#     controller: App\Controller\ArticleController::combined
+#     methods: GET
+ #index:
+ #path: /
+ # Controller : App\Controller\DefaultController :: index
