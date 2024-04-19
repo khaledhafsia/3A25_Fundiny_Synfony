@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Collaboration;
+use App\Entity\Projet;
 use App\Form\CollaborationType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -86,5 +87,38 @@ class CollaborationController extends AbstractController
     /////////
     ////////
     /////////
+
+    /**
+ * @Route("/statistics", name="app_statistics")
+ */
+  public function statistics(EntityManagerInterface $entityManager): Response
+  {
+    $collaborationsByProjectId = $entityManager->createQueryBuilder()
+    ->select('IDENTITY(c.idProjet) as idProjet, COUNT(c.id) as numCollaborations')
+    ->from(Collaboration::class, 'c')
+    ->groupBy('c.idProjet')
+    ->getQuery()
+    ->getResult();
+
+    return $this->render('collaboration/statistic.html.twig', [
+        'collaborationsByProjectId' => $collaborationsByProjectId,
+    ]);
+  }
+
+  /**
+ * @Route("/projet/{idProjet}", name="app_project_show", methods={"GET"})
+ */
+public function searchProjetById(int $idProjet, EntityManagerInterface $entityManager): Response
+{
+    $project = $entityManager->find(Projet::class, $idProjet);
+
+    if (!$project) {
+        throw $this->createNotFoundException('The project does not exist.');
+    }
+
+    return $this->render('project/show.html.twig', [
+        'project' => $project,
+    ]);
+}
 
 }

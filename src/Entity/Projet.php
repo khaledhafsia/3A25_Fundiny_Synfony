@@ -27,9 +27,9 @@ class Projet
     #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
     
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="nomPr", type="string", length=255, nullable=false)
+     * @ORM\Column(name="nomPr", type="string", length=255, nullable=true)
      */
     private $nompr;
 
@@ -37,9 +37,9 @@ class Projet
     #[Assert\NotBlank(message:'description obligatoire')]
     #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="nomPo", type="string", length=50, nullable=false)
+     * @ORM\Column(name="nomPo", type="string", length=50, nullable=true)   
      */
     private $nompo;
 
