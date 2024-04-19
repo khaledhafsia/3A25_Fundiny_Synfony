@@ -106,19 +106,20 @@ class CollaborationController extends AbstractController
   }
 
   /**
- * @Route("/projet/{idProjet}", name="app_project_show", methods={"GET"})
+ * @Route("/searchProjetByNomPr/{idProjet}", name="app_searchProjetByNomPr", methods={"GET"})
  */
-public function searchProjetById(int $idProjet, EntityManagerInterface $entityManager): Response
+public function searchProjetByNomPr(int $idProjet, EntityManagerInterface $entityManager): Response
 {
-    $project = $entityManager->find(Projet::class, $idProjet);
+    $projet = $entityManager->getRepository(Projet::class)->findOneBy(['id' => $idProjet]);
 
-    if (!$project) {
+    if (!$projet) {
         throw $this->createNotFoundException('The project does not exist.');
     }
 
-    return $this->render('project/show.html.twig', [
-        'project' => $project,
+    return $this->render('projet/show.html.twig', [
+        'projet' => $projet,
     ]);
 }
+  
 
 }

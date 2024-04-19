@@ -5,4 +5,4 @@ app_statistics:
     path: /statistics
     controller: App\Controller\CollaborationController::statistics
 
-    
+   
