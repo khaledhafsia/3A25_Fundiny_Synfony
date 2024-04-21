@@ -9,6 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 class ProjetController extends AbstractController
@@ -46,12 +50,14 @@ class ProjetController extends AbstractController
     }
 
     #[Route('/front/Projet/{id}', name: 'app_projet_show', methods: ['GET'])]
-    public function show(Projet $projet): Response
-    {
-        return $this->render('projet/show.html.twig', [
-            'projet' => $projet,
-        ]);
-    }
+#[ParamConverter('projet', class: Projet::class, options: ['id' => 'id'])]
+public function show(Projet $projet): Response
+{
+    return $this->render('projet/show.html.twig', [
+        'projet' => $projet,
+    ]);
+}
+
 
     #[Route('/front/Projet/{id}/edit', name: 'app_projet_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Projet $projet, EntityManagerInterface $entityManager): Response
@@ -80,5 +86,48 @@ class ProjetController extends AbstractController
         }
         return $this->redirectToRoute('app_projet_index', [], Response::HTTP_SEE_OTHER);
     }//l'exception ici
+    
+    #[Route('/front/projet/export', name: 'app_projet_export', methods: ['GET'])]
+    public function export(EntityManagerInterface $entityManager, UrlGeneratorInterface $urlGenerator): Response
+    {
+        $projets = $entityManager->getRepository(Projet::class)->findAll();
+    
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Id');
+        $sheet->setCellValue('B1', 'Nompr');
+        $sheet->setCellValue('C1', 'Nompo');
+        $sheet->setCellValue('D1', 'Dated');
+        $sheet->setCellValue('E1', 'Ca');
+    
+        $row = 2;
+        foreach ($projets as $projet) {
+            $sheet->setCellValue('A'. $row, $projet->getId());
+            $sheet->setCellValue('B'. $row, $projet->getNompr());
+            $sheet->setCellValue('C'. $row, $projet->getNompo());
+            $sheet->setCellValue('D'. $row, $projet->getDated()->format('Y-m-d'));
+            $sheet->setCellValue('E'. $row, $projet->getCa());
+            $row++;
+        }
+    
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'export_projet.xlsx';
+        $writer->save($filename);
+    
+        $response = new Response(file_get_contents($filename));
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'. $filename. '"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+    
+        return $response->send();
+        
+        $projectId = 1; // Replace this with the actual project ID
+        $showUrl = $urlGenerator->generate('app_projet_show', ['id' => $projectId]);
+    
+        // Redirect to the show route
+        return $this->redirect($showUrl);
+    }
+    
+
 }
                                                                                                                                                                                                                                                                                                                                                                                                                                         

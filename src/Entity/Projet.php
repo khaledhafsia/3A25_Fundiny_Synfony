@@ -32,7 +32,7 @@ class Projet
      * @ORM\Column(name="nomPr", type="string", length=255, nullable=true)
      */
     private $nompr;
-
+    
 
     #[Assert\NotBlank(message:'description obligatoire')]
     #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
