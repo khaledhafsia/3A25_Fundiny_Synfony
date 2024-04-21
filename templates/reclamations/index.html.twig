@@ -5,19 +5,23 @@
 {% block body %}
     <div class="container">
 
-        <h1 class="mt-4 mb-3">Reclamations</h1>
+        <div class="text-center">
+            <h1 class="mb-4" style="color: #B0413E;"><i class="fas fa-exclamation-circle"></i> Reclamations</h1>
+        </div>
+
         <div class="row mb-3">
             <div class="col-md-6 text-right">
-                <a href="{{ path('app_reclamations_new') }}" class="btn btn-primary mr-2">Add</a>
-                <a href="{{ path('app_reclamations_export_excel') }}" class="btn btn-info mr-2">Export Excel</a>
-                <a href="{{ path('reclamations_pdf') }}" class="btn btn-danger">Export PDF</a>
+                <a href="{{ path('app_reclamations_new') }}" class="btn btn-primary mr-2"><i class="fas fa-plus"></i> Add</a>
+                <a href="{{ path('app_reclamations_export_excel') }}" class="btn btn-info mr-2"><i class="fas fa-file-excel"></i> Export Excel</a>
+                <a href="{{ path('reclamations_pdf') }}" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Export PDF</a>
+
             </div>
             <div class="col-md-6">
                 <form action="{{ path('app_reclamations_search') }}" method="get" class="form-inline">
                     <div class="input-group">
                         <input type="text" name="q" class="form-control" placeholder="Recherche...">
                         <div class="input-group-append">
-                            <button type="submit" class="btn btn-primary">Rechercher</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Rechercher</button>
                         </div>
                     </div>
                 </form>
@@ -27,11 +31,13 @@
         <table class="table table-striped mt-3">
             <thead class="table-warning">
             <tr>
-                <th>IdReclamation</th>
-                <th>Email</th>
-                <th>IdProjet</th>
-                <th>IdTypeReclamation</th>
-                <th>IdUtilisateur</th>
+                <th>{{ knp_pagination_sortable(reclamations, 'IdReclamation', 'IdReclamation') }}</th>
+                <th>{{ knp_pagination_sortable(reclamations, 'Email demandeur', 'Email') }}</th>
+                <th>{{ knp_pagination_sortable(reclamations, 'Demandeur', 'Demandeur') }}</th>
+                <th>{{ knp_pagination_sortable(reclamations, 'Projet', 'Projet') }}</th>
+                <th>{{ knp_pagination_sortable(reclamations, 'Type Reclamation', 'Type reclamation') }}</th>
+                <th>{{ knp_pagination_sortable(reclamations, 'Date de Création', 'Date de Création') }}</th>
+                <th>{{ knp_pagination_sortable(reclamations, 'Etat Réponse', 'Etat Réponse') }}</th>
                 <th>Actions</th>
             </tr>
             </thead>
@@ -40,11 +46,23 @@
                 <tr>
                     <td>{{ reclamation.idReclamation }}</td>
                     <td>{{ reclamation.email }}</td>
+                    <td>{{ reclamation.idUtilisateur ? reclamation.idUtilisateur.nom : 'N/A' }}</td>
                     <td>{{ reclamation.idProjet ? reclamation.idProjet.nompr : 'N/A' }}</td>
                     <td>{{ reclamation.idTypeReclamation ? reclamation.idTypeReclamation.NomTypeReclamation : 'N/A' }}</td>
-                    <td>{{ reclamation.idUtilisateur ? reclamation.idUtilisateur.nom : 'N/A' }}</td>
+                    <td>{{ reclamation.dateCreation|date('d-m-Y H:i') }}</td> <!-- Afficher la date de création -->
                     <td>
-                        <a href="{{ path('app_reclamations_show', {'idReclamation': reclamation.idReclamation}) }}" class="btn btn-primary btn-sm">Show</a>
+                        {% if reclamation.etat %}
+                            <span class="badge badge-success">Répondu</span>
+                        {% else %}
+                            <span class="badge badge-warning">En attente</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_reclamations_show', {'idReclamation': reclamation.idReclamation}) }}" class="btn btn-primary btn-sm"><i class="fas fa-eye"></i> Show</a>
+
+                        <a href="{{ path('app_reclamations_repondre', {'idReclamation': reclamation.idReclamation}) }}" class="btn btn-danger btn-sm">Répondre</a>
+
+
                     </td>
                 </tr>
             {% else %}
@@ -66,4 +84,3 @@
 
     </div>
 {% endblock %}
-

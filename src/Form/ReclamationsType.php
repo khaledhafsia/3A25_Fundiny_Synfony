@@ -8,14 +8,16 @@ use App\Entity\Typesreclamation;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface; // Import EntityManagerInterface
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType; // Import correct
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType; // Import correct
+use Symfony\Component\Form\Extension\Core\Type\TextareaType; // Import correct
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType; // Import correct pour les entités
 
 class ReclamationsType extends AbstractType
 {
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -25,73 +27,36 @@ class ReclamationsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email',)
-
+            ->add('email', TextType::class) // Correction du type de champ
             ->add('idProjet', EntityType::class, [
                 'class' => Projet::class,
-                'choice_label' => 'nompr', // Assurez-vous que 'nomPr' est le champ contenant le nom du projet
-                'label' => 'Projet', // Personnalisez le label selon vos besoins
-
+                'choice_label' => 'nompr', // Afficher le nom du projet
             ])
-
             ->add('idTypeReclamation', EntityType::class, [
                 'class' => Typesreclamation::class,
-                'choice_label' => 'NomTypeReclamation', // Assurez-vous que 'nomPr' est le champ contenant le nom du projet
-                'label' => 'Nom TypeReclamation', // Customize the label as needed
+                'choice_label' => 'NomTypeReclamation', // Afficher le type de réclamation
             ])
-
             ->add('idUtilisateur', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'nom', // Assurez-vous que 'nomPr' est le champ contenant le nom du projet
-                'label' => 'nom utilisateur', // Customize the label as needed
+                'choice_label' => 'nom', // Afficher le nom de l'utilisateur
             ])
-            ->add('objet')
-            ->add('texte');
-    }
+            ->add('objet', TextType::class) // Champ de texte pour l'objet
+            ->add('texte', TextareaType::class); // Champ de texte plus grand pour le contenu de la réclamation
 
-    private function getProjectChoices()
-    {
-        $projects = $this->entityManager->getRepository(Projet::class)->findAll();
-
-        $choices = [];
-        foreach ($projects as $project) {
-            // Utiliser l'ID du projet comme clé et le nom du projet comme valeur
-            $choices[$project->getId()] = $project->getNomPr();
+        if ($options['disable_etat']) {
+            $builder->add('etat', null, [
+                'disabled' => true, // Désactiver le champ 'etat'
+            ]);
+        } else {
+            $builder->add('etat'); // Activer le champ 'etat'
         }
-
-        return $choices;
-    }
-
-    private function getTypeReclamationChoices()
-    {
-        $typesReclamation = $this->entityManager->getRepository(Typesreclamation::class)->findAll();
-
-        $choices = [];
-        foreach ($typesReclamation as $typeReclamation) {
-            // Assuming 'Nom_Type_Reclamation' returns the type name and 'getIdTypeReclamation' returns the type ID
-            $choices[$typeReclamation->getIdTypeReclamation()] = $typeReclamation->getNomTypeReclamation();
-        }
-
-        return $choices;
-    }
-
-    private function getUserChoices()
-    {
-        $users = $this->entityManager->getRepository(User::class)->findAll();
-
-        $choices = [];
-        foreach ($users as $user) {
-            // Assuming 'getNom' returns the user's name and 'getId' returns the user's ID
-            $choices[$user->getId()] = $user->getNom();
-        }
-
-        return $choices;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => Reclamations::class,
+            'disable_etat' => false, // Par défaut, le champ 'etat' est activé
         ]);
     }
 }

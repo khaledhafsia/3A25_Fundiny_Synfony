@@ -55,7 +55,6 @@ class Reclamations
      */
     private $objet;
 
-
     /**
      * @ORM\Column(name="texte", type="text", length=65535, nullable=true)
      * @Assert\NotBlank(message="Le champ texte ne peut pas être vide.")
@@ -63,7 +62,17 @@ class Reclamations
      */
     private $texte;
 
-    // Getters et setters...
+    /**
+     * @ORM\Column(name="date_creation", type="datetime", nullable=false, options={"default": "CURRENT_TIMESTAMP"})
+     */
+    private $dateCreation;
+
+    /**
+     * @ORM\Column(name="etat", type="boolean", nullable=false, options={"default" : 0})
+     */
+    private $etat;
+
+    // Getters and setters...
 
     public function getIdReclamation(): ?int
     {
@@ -133,6 +142,28 @@ class Reclamations
     public function setTexte(?string $texte): self
     {
         $this->texte = $texte;
+        return $this;
+    }
+
+    public function getDateCreation(): ?\DateTimeInterface
+    {
+        return $this->dateCreation;
+    }
+
+    public function setDateCreation(\DateTimeInterface $dateCreation): self
+    {
+        $this->dateCreation = $dateCreation;
+        return $this;
+    }
+
+    public function getEtat(): ?bool
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(bool $etat): self
+    {
+        $this->etat = $etat;
         return $this;
     }
 }

@@ -70,6 +70,15 @@
                 </div>
             </div>
 
+        <!-- Ajouter le champ "état" juste après le champ "texte" -->
+        <div class="form-group row">
+            <label for="etat" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">État</label>
+            <div class="col-sm-6">
+                {{ form_widget(form.etat, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter the status'}}) }}
+                {{ form_errors(form.etat, {'attr': {'class': 'text-danger'}}) }}
+            </div>
+        </div>
+
             <br>
             <br>
 

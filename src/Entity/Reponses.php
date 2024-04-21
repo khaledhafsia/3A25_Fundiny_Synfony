@@ -23,6 +23,12 @@ class Reponses
     private $idReponse;
 
     /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Reclamations")
+     * @ORM\JoinColumn(name="ID_Reclamation", referencedColumnName="ID_Reclamation", nullable=true)
+     */
+    private $idReclamation;
+
+    /**
      * @ORM\Column(name="email", type="string", length=50, nullable=true)
      * @Assert\NotBlank(message="L'adresse email ne peut pas être vide.")
      * @Assert\Regex(
@@ -52,6 +58,13 @@ class Reponses
      */
     private $texte;
 
+    /**
+     * @ORM\Column(name="date_reponse", type="datetime", nullable=false, options={"default": "CURRENT_TIMESTAMP"})
+     */
+    private $dateReponse;
+
+    // Getters and setters...
+
     public function getIdReponse(): ?int
     {
         return $this->idReponse;
@@ -65,7 +78,6 @@ class Reponses
     public function setEmail(string $email): self
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -77,7 +89,6 @@ class Reponses
     public function setIdUtilisateur(?User $user): self
     {
         $this->idUtilisateur = $user;
-
         return $this;
     }
 
@@ -89,7 +100,6 @@ class Reponses
     public function setObjet(?string $objet): self
     {
         $this->objet = $objet;
-
         return $this;
     }
 
@@ -101,9 +111,28 @@ class Reponses
     public function setTexte(?string $texte): self
     {
         $this->texte = $texte;
-
         return $this;
     }
 
+    public function getDateReponse(): ?\DateTimeInterface
+    {
+        return $this->dateReponse;
+    }
 
+    public function setDateReponse(\DateTimeInterface $dateReponse): self
+    {
+        $this->dateReponse = $dateReponse;
+        return $this;
+    }
+
+    public function getIdReclamation(): ?Reclamations
+    {
+        return $this->idReclamation;
+    }
+
+    public function setIdReclamation(?Reclamations $reclamation): self
+    {
+        $this->idReclamation = $reclamation;
+        return $this;
+    }
 }

@@ -1,3 +1,8 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+# config/routes.yaml
+app_reclamations_repondre:
+  path: /reclamations/{idReclamation}/repondre
+  controller: App\Controller\ReclamationsController::repondre
+  methods: [GET, POST]

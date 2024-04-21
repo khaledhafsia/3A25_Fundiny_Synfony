@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Reclamations;
 use App\Entity\Projet;
 use App\Entity\User;
+use App\Entity\Reponses;
 use App\Entity\Typesreclamation;
 use App\Form\ReclamationsType;
 use App\Repository\ReclamationsRepository;
@@ -51,41 +52,68 @@ class ReclamationsController extends AbstractController
         ]);
     }
 
+    #[Route('/reclamations/{idReclamation}/repondre', name: 'app_reclamations_repondre', methods: ['GET', 'POST'])]
+    public function repondre(int $idReclamation, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        // Récupérer la réclamation par son ID
+        $reclamation = $entityManager->getRepository(Reclamations::class)->find($idReclamation);
+
+        if (!$reclamation) {
+            throw $this->createNotFoundException('Réclamation introuvable');
+        }
+
+        // Si la requête est POST, nous voulons traiter le formulaire
+        if ($request->isMethod('POST')) {
+            // Récupérer les données du formulaire
+            $email = $request->request->get('objet');
+            $objet = $request->request->get('objet');
+            $texte = $request->request->get('texte');
+
+            // Créer une nouvelle entrée Reponses
+            $reponse = new Reponses();
+            $reponse->setIdReclamation($reclamation); // Utiliser l'objet réclamation
+            $reponse->setEmail($email);
+            $reponse->setObjet($objet);
+            $reponse->setTexte($texte);
+
+            // Persister dans la base de données
+            $entityManager->persist($reponse);
+            $entityManager->flush();
+
+            // Rediriger ou afficher un message de succès
+            $this->addFlash('success', 'Réponse enregistrée avec succès.');
+
+            // Rediriger vers une autre page après soumission
+            return $this->redirectToRoute('app_reclamations_index');
+        }
+
+        // Récupérer les utilisateurs associés à cette réclamation pour le formulaire
+        $users = $entityManager->getRepository(User::class)->findAll();
+
+        // Rendre le gabarit avec les données appropriées
+        return $this->render('reclamations/rep_rec.html.twig', [
+            'reclamation' => $reclamation,
+            'users' => $users,
+        ]);
+    }
+
     #[Route('/new', name: 'app_reclamations_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $reclamation = new Reclamations();
-        $form = $this->createForm(ReclamationsType::class, $reclamation);
+        $form = $this->createForm(ReclamationsType::class, $reclamation, [
+            'disable_etat' => true, // Désactiver le champ 'etat' lors de la création
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $nomProjet = $form->get('idProjet')->getData()->getNompr();
-            $nomTypeRec = $form->get('idTypeReclamation')->getData()->getNomTypeReclamation();
-            $nomUs = $form->get('idUtilisateur')->getData()->getNom();
-
-            // Recherchez les objets correspondants dans la base de données
-            $projet = $entityManager->getRepository(Projet::class)->findOneBy(['nompr' => $nomProjet]);
-            $typeReclam = $entityManager->getRepository(Typesreclamation::class)->findOneBy(['nomTypeReclamation' => $nomTypeRec]);
-            $utilis = $entityManager->getRepository(User::class)->findOneBy(['nom' => $nomUs]);
-
-            // Vérifiez si toutes les données sont trouvées
-            if ($projet && $typeReclam && $utilis) {
-                // Affectez les objets à la réclamation
-                $reclamation->setIdProjet($projet);
-                $reclamation->setIdTypeReclamation($typeReclam);
-                $reclamation->setIdUtilisateur($utilis);
-
-                // Persistez la réclamation
-                $entityManager->persist($reclamation);
-                $entityManager->flush();
-
-                // Redirection vers la page d'index des réclamations
-                return $this->redirectToRoute('app_reclamations_index', [], Response::HTTP_SEE_OTHER);
-            } else {
-                // Gérer le cas où les données ne sont pas trouvées
-                $this->addFlash('error', 'Certaines données associées à la réclamation n\'ont pas été trouvées.');
-                // Vous pouvez rediriger vers une autre page ou afficher un message d'erreur dans le formulaire
+            if ($reclamation->getEtat() === null) {
+                $reclamation->setEtat(0); // Assurez-vous que 'etat' a une valeur par défaut
             }
+            $entityManager->persist($reclamation);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_reclamations_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('reclamations/new.html.twig', [
@@ -110,10 +138,30 @@ class ReclamationsController extends AbstractController
         ]);
     }
 
+    #[Route('/reclamations/{idReclamation}', name: 'app_reclamations_display', methods: ['GET'])]
+    public function display($idReclamation, ReclamationsRepository $reclamationsRepository): Response
+    {
+        // Fetch the Reclamations entity by ID
+        $reclamation = $reclamationsRepository->find($idReclamation);
+
+        // Check if the entity exists
+        if (!$reclamation) {
+            throw $this->createNotFoundException('Reclamations object not found');
+        }
+
+        // Render the template with the fetched entity
+        return $this->render('reclamations/rep-rec.html.twig', [
+            'reclamation' => $reclamation,
+        ]);
+    }
+
     #[Route('/{idReclamation}/edit', name: 'app_reclamations_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Reclamations $reclamation, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ReclamationsType::class, $reclamation);
+        // Passer l'option 'disable_etat' à 'true' pour désactiver le champ
+        $form = $this->createForm(ReclamationsType::class, $reclamation, [
+            'disable_etat' => true, // Désactiver le champ 'état'
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
