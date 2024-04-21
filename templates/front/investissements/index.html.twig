@@ -61,17 +61,13 @@
     <br><br><br><br><br><br>
 
     <script>
-    // Function to handle radio button click event
     document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
         radio.addEventListener('click', function() {
-            // Get the selected sorting option
             var sortOrder = this.value;
-            // Send an AJAX request to the server
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '{{ path('app_investissements_sort') }}' + '?sort=' + sortOrder, true);
             xhr.onload = function() {
                 if (xhr.status >= 200 && xhr.status < 300) {
-                    // Update the table with the sorted data
                     document.querySelector('.table').innerHTML = xhr.responseText;
                 } else {
                     console.error(xhr.statusText);
@@ -99,4 +95,5 @@ document.getElementById('searchInput').addEventListener('input', function() {
     });
 });
 </script>
+
 {% endblock %}

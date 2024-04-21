@@ -197,7 +197,7 @@ class InvestissementsController extends AbstractController
         ]);
     }
 
-    #[Route('/back/investissements/sort', name: 'app_investissementsBack_sort', methods: ['GET'])]
+    #[Route('/back/investissements/sort', name: 'app_investissements2_sort', methods: ['GET'])]
     public function sortBack(Request $request, InvestissementsRepository $investissementsRepository): Response
     {
         $sortOrder = $request->query->get('sort');
@@ -218,5 +218,6 @@ class InvestissementsController extends AbstractController
             'investissements' => $investissements,
         ]);
     }
+    
 
 }

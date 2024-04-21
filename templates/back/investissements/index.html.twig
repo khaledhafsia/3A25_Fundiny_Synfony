@@ -15,11 +15,11 @@
 <form id="sortForm">
     <label>
         Sort by amount ASC:
-        <input class="form-check-input" type="radio" name="sort" value="asc">
+        <br><input class="form-check-input" type="radio" name="sort" value="asc">
     </label>
     <label>
         Sort by amount DESC:
-        <input class="form-check-input" type="radio" name="sort" value="desc">
+        <br><input class="form-check-input" type="radio" name="sort" value="desc">
     </label>
 </form>
 <br>
@@ -43,7 +43,6 @@
                 <td>{{ investissement.date ? investissement.date|date('Y-m-d H:i:s') : '' }}</td>
                 <td>
                     <a href="{{ path('app_investissementsBack_show', {'id': investissement.id}) }}">show</a>
-                    <a href="{{ path('app_investissementsBack_edit', {'id': investissement.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -54,22 +53,16 @@
         </tbody>
     </table>
     </div>
-
-    <a href="{{ path('app_investissementsBack_new') }}">Create new</a>
     
 
     <script>
-    // Function to handle radio button click event
     document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
         radio.addEventListener('click', function() {
-            // Get the selected sorting option
             var sortOrder = this.value;
-            // Send an AJAX request to the server
             var xhr = new XMLHttpRequest();
             xhr.open('GET', '{{ path('app_investissements_sort') }}' + '?sort=' + sortOrder, true);
             xhr.onload = function() {
                 if (xhr.status >= 200 && xhr.status < 300) {
-                    // Update the table with the sorted data
                     document.querySelector('.table').innerHTML = xhr.responseText;
                 } else {
                     console.error(xhr.statusText);

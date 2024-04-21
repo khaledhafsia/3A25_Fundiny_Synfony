@@ -43,7 +43,6 @@
                 <td>{{ tach.echeanced ? tach.echeanced|date('Y-m-d') : '' }}</td>
                 <td>
                     <a href="{{ path('app_tachesBack_show', {'id': tach.id}) }}">show</a>
-                    <a href="{{ path('app_tachesBack_edit', {'id': tach.id}) }}">edit</a>
                 </td>
             </tr>
         {% else %}
@@ -61,7 +60,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const sortForm = document.getElementById('sortForm');
             const tachesTable = document.getElementById('tachesTable');
-            const investissementId = {{ investissement.id }}; // Assuming investissement is passed to this template
+            const investissementId = {{ investissement.id }}; 
 
             sortForm.addEventListener('change', function (event) {
                 const formData = new FormData(sortForm);

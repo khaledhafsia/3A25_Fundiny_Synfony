@@ -37,7 +37,7 @@ class Investissements
      #[Assert\NotBlank(message:'montant obligatoire')]
      #[Assert\Regex(
         pattern: '/^\d+(\.\d+)?$/',
-        message: 'Le montant doit être un nombre.'
+        message: 'Le montant doit être un nombre positif.'
     )]
         private $montant;
 

@@ -14,7 +14,6 @@
             <td>{{ investissement.date ? investissement.date|date('Y-m-d H:i:s') : '' }}</td>
             <td>
                 <a href="{{ path('app_investissementsBack_show', {'id': investissement.id}) }}">show</a>
-                <a href="{{ path('app_investissementsBack_edit', {'id': investissement.id}) }}">edit</a>
             </td>
         </tr>
     {% else %}
