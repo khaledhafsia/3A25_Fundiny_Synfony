@@ -16,7 +16,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormInterface;
 
 class UserController extends AbstractController
 
@@ -29,7 +30,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/SignUpp', name: 'SignUp')]
+    #[Route('/SignUpp', name: 'SignUpp')]
     public function AddUser(ManagerRegistry $registry, Request $request, UserPasswordHasherInterface $passwordHasher, ValidatorInterface $validator): Response
     {
         $user = new User();
@@ -42,14 +43,21 @@ class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user = $form->getData();
+            $password = $form->get('password')->getData();
+            if (!$this->isPasswordComplex($password)) {
+                $errorMessage = 'Password must contain at least 8 characters and include both numbers and letters.';
+                $form->get('password')->addError(new FormError($errorMessage));
+                return $this->renderForm('SignUp/SignUp.twig', [
+                    'form' => $form,
+                ]);
+            }
 
             $email = $user->getEmail();
             $existingUser = $registry->getRepository(User::class)->findOneBy(['email' => $email]);
 
             if ($existingUser === null) {
-                $password = $passwordHasher->hashPassword($user, $user->getPassword());
-                $user->setPassword($password);
+                $hashedPassword = $passwordHasher->hashPassword($user, $password);
+                $user->setPassword($hashedPassword);
 
                 $em = $registry->getManager();
                 $em->persist($user);
@@ -65,15 +73,15 @@ class UserController extends AbstractController
                 ]);
             }
         }
+     //   return $this->redirectToRoute('loginn');
 
         return $this->renderForm('SignUp/SignUp.twig', [
             'form' => $form,
         ]);
+
     }
-
-
     #[Route('/update_user/{id}', name: 'update_user')]
-    public function updatePoste(ManagerRegistry $doctrine, Request $request, $id): Response
+    public function updatePoste(ManagerRegistry $doctrine, Request $request, $id, UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $doctrine->getRepository(User::class)->find($id);
         $form = $this->createForm(UpdateUserType::class, $user);
@@ -85,6 +93,10 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $id = $user->getTitre();
+            $password = $form->get('password')->getData();
+
+            $hashedPassword = $passwordHasher->hashPassword($user, $password);
+            $user->setPassword($hashedPassword);
 
             $em = $doctrine->getManager();
             $user = $form->getData();
@@ -102,6 +114,17 @@ class UserController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    private function isPasswordComplex(string $password): bool
+    {
+        $lengthRequirement = strlen($password) >= 8;
+
+        $containsNumbers = preg_match('/\d/', $password) > 0;
+        $containsLetters = preg_match('/[a-zA-Z]/', $password) > 0;
+
+        return $lengthRequirement && $containsNumbers && $containsLetters;
+    }
+
 
     #[Route('/delete_user{id}', name: 'delete_user')]
     public function DropUser(ManagerRegistry $repository, $id): Response
@@ -142,7 +165,7 @@ class UserController extends AbstractController
             throw $this->createNotFoundException('User not found');
         }
 
-        $user->setBanState(true);
+        $user->setBanState(false);
         $entityManager->flush();
 
         $this->addFlash('success', 'User banned successfully.');

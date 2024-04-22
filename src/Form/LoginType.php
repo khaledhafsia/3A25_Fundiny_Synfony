@@ -8,10 +8,12 @@ use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 class LoginType extends AbstractType
 {
@@ -29,18 +31,11 @@ class LoginType extends AbstractType
                     new NotBlank(),
                 ],
             ])
+
             ->add('submit', SubmitType::class, [
                 'label' => 'Login'
             ]);
-           /* ->add('resetPassword', ButtonType::class, [
-                'label' => 'Forgot Password?',
-                'attr' => [
-                    'formnovalidate' => 'formnovalidate',
-                    'form' => 'login_form',
-                    'onclick' => 'window.location.href="' . $options['reset_password_route'] . '"', // Redirect to reset password route
-                ]
-            ]);
-           */
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

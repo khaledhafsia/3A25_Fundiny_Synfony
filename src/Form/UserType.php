@@ -13,6 +13,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Mime\MimeTypes;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+
 class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -35,16 +37,19 @@ class UserType extends AbstractType
                     new Email(),
                 ],
             ])
-
-            ->add('password', PasswordType::class, [
-                'constraints' => [
-                    new NotBlank(),
-                ],
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'invalid_message' => 'The password fields must match.',
+                'options' => ['attr' => ['class' => 'form-control form-control-lg']],
+                'first_options'  => ['label' => 'Password'],
+                'second_options' => ['label' => 'Repeat Password'],
+                'required' => true,
+                'mapped' => false, // This field is not mapped to any property in your entity
             ])
             ->add('role', ChoiceType::class, [
                 'label' => 'role',
                 'choices' => [
-                    'Admin' => 'Admin',
+                    //'Admin' => 'Admin',
                     'Owner' => 'Owner',
                     'Funder' => 'Funder',
                     //'Autre' => 'autre',

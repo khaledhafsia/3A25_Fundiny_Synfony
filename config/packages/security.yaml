@@ -11,17 +11,14 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            lazy: true
-            provider: users_in_memory
-
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+            # ...
+            form_login:
+                login_path: loginn # Route name for login page
+                check_path: loginn # Route name for login form submission
+                default_target_path: dashboard # Default route after successful login
+            logout:
+                path: logout # Route name for logout
+                target: login # Route name to redirect after logout
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

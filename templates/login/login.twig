@@ -2,6 +2,18 @@
     <link rel="stylesheet" href="{{ asset('signup/css/signup.css') }}" media="screen">
 {% endblock %}
 
+
+{% block javascripts %}
+
+<script>
+    function resetPassword() {
+        var email = document.getElementById('login_email').value;
+        window.location.href = "{{ path('password_reset') }}?email=" + email;
+    }
+</script>
+
+{% endblock %}
+
 {% block body %}
     <title>Login page</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
@@ -43,15 +55,15 @@
                     {% endfor %}
 
 {#                    <a href="{{ path('password_reset') }}" class="btn btn-link">Forgot password?</a>
-#}
+
                 {#  {{ form_widget(form.resetPassword) }}#}
 
                     {{ form_end(form) }}
-
+                    <a href="#" onclick="resetPassword()">Forgot Password?</a>
                     <div class="d-flex align-items-center justify-content-center pb-4">
-                        <a  href="{{ path('SignUp') }}"><button style="border-radius:15px;color:blue;border-color:blue;"  >Don't have an account ?</button></a>
+                        <a  href="{{ path('SignUpp') }}"><button style="border-radius:15px;color:blue;border-color:blue;"  >Don't have an account ?</button></a>
                     </div>
-                    <a href="{{ path('password_reset') }}">Forgot Password?</a>
+
 
                 </div>
             </div>

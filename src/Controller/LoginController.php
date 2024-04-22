@@ -20,6 +20,8 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class LoginController extends AbstractController
 {
@@ -33,7 +35,7 @@ class LoginController extends AbstractController
     }
 
     #[Route('/loginn', name: 'login')]
-    public function login(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function login(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
     {
         $request = $this->requestStack->getCurrentRequest();
         $loginForm = $this->createForm(LoginType::class, null, [
@@ -45,6 +47,7 @@ class LoginController extends AbstractController
             $formData = $loginForm->getData();
 
             $email = $formData->getEmail();
+            $password = $formData->getPassword();
 
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
@@ -52,8 +55,11 @@ class LoginController extends AbstractController
                 $this->addFlash('error', 'Account does not exist.');
             } elseif (!$user->getBanState() && $user->getBanState()==!NULL) {
                 return $this->redirectToRoute('ban_view');
+            } elseif (!$passwordHasher->isPasswordValid($user, $password)) {
+                $this->addFlash('error', 'Incorrect password.');
             } else {
                 $this->setSessionUser($user);
+               //  $session->set('user_id', $user->getId());
 
                 switch ($user->getRole()) {
                     case 'Admin':
@@ -78,38 +84,44 @@ class LoginController extends AbstractController
         ]);
     }
 
+    #[Route('/logout', name: 'logout')]
+    public function logout(SessionInterface $session): Response
+    {
+       // $session->remove('user_id');
+
+        return $this->redirectToRoute('login');
+    }
+
     #[Route('/password_reset', name: 'password_reset')]
     public function passwordReset(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
-        $staticEmail = 'khaledhafsia2@gmail.com';
-        $user = $this->getSessionUser();
+        $email = $request->get('email');
 
-        if (!$user) {
-            $this->addFlash('error', 'User not found.');
-            return $this->redirectToRoute('login');
+        if ($email) {
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+            if ($user) {
+                $token = uniqid();
+                $user->setResetToken($token);
+                $user->setTokenExpiration(new \DateTime('+1 day'));
+                $entityManager->flush();
+
+                $tokenizedUrl = $this->generateUrl('update_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $email = (new Email())
+                    ->from('leaguetrading4@gmail.com')
+                    ->to($user->getEmail())
+                    ->subject('Password Reset')
+                    ->html($this->renderView('login/password_reset.twig', [
+                        'tokenizedUrl' => $tokenizedUrl,
+                    ]));
+
+                $mailer->send($email);
+                $this->addFlash('success', 'Password reset email sent.');
+            } else {
+                $this->addFlash('error', 'User not found.');
+            }
         }
-
-        $token = uniqid();
-        $user->setResetToken($token);
-        $user->setTokenExpiration(new \DateTime('9999-12-31 23:59:59'));
-
-        //$user->setTokenExpiration(new \DateTime('+1 day'));
-        $entityManager->flush();
-
-        // Generate the URL with the token parameter
-        $tokenizedUrl = $this->generateUrl('update_password', ['token' => $token], UrlGeneratorInterface::ABSOLUTE_URL);
-
-        $email = (new Email())
-            ->from('leaguetrading4@gmail.com')
-            ->to($staticEmail)
-            ->subject('Password Reset')
-            ->html($this->renderView('login/password_reset.twig', [
-                'tokenizedUrl' => $tokenizedUrl,
-            ]));
-
-        $mailer->send($email);
-
-        $this->addFlash('success', 'Password reset email sent.');
 
         return $this->redirectToRoute('login');
     }
@@ -118,9 +130,9 @@ class LoginController extends AbstractController
     public function updatePassword(ManagerRegistry $doctrine, Request $request, string $token, UserPasswordHasherInterface $passwordHasher): Response
     {
         $entityManager = $doctrine->getManager();
+        $user = $entityManager->getRepository(User::class)->findOneBy(['resetToken' => $token]);
 
-        //$user = $entityManager->getRepository(User::class)->findOneBy(['resetToken' => $token]);
-        $user = $entityManager->getRepository(User::class)->findOneBy(['email' => 'khaledhafsia2@gmail.com']);
+
 
         if (!$user) {
             $this->addFlash('error', 'Invalid or expired token. Please request a new password reset.');
@@ -137,12 +149,11 @@ class LoginController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hash the new password
             $password = $passwordHasher->hashPassword($user, $form->get('password')->getData());
             $user->setPassword($password);
 
             $user->setResetToken(null);
-            $user->setTokenExpiration(null); // Set token expiration to null after password reset
+            $user->setTokenExpiration(null);
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -155,7 +166,6 @@ class LoginController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
     #[Route('/dashboardOwner', name: 'dashboardOwner')]
     public function dashboardOwner(): Response
     {
@@ -165,6 +175,19 @@ class LoginController extends AbstractController
         }
 
         return $this->render('Dashboard/dashboardOwner.twig', [
+            'user' => $user,
+        ]);
+
+    }
+    #[Route('/dashboardFunder', name: 'dashboardOwner')]
+    public function dashboardFunder(): Response
+    {
+        $user = $this->getSessionUser();
+        if (!$user) {
+            return $this->redirectToRoute('loginn');
+        }
+
+        return $this->render('Dashboard/dashboardFunder.twig', [
             'user' => $user,
         ]);
 
@@ -184,6 +207,8 @@ class LoginController extends AbstractController
         return $this->render('login/banview.twig');
     }
 
+
+
     private function setSessionUser(User $user): void
     {
         $request = $this->requestStack->getCurrentRequest();
@@ -195,5 +220,6 @@ class LoginController extends AbstractController
         $request = $this->requestStack->getCurrentRequest();
         return $request->getSession()->get('user');
     }
+
 
 }

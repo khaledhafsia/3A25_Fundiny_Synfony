@@ -51,17 +51,27 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-6 mb-4 pb-2">
-                                    <div class="form-outline">
-                                        {{ form_widget(form.password, {'attr': {'class': 'form-control form-control-lg', 'id': 'emailAddress'}}) }}
-                                        <label class="form-label" for="emailAddress">Password</label>
-                                        {{ form_errors(form.password) }}
-                                    </div>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4 pb-2">
+                            <div class="form-outline">
+                                {{ form_widget(form.password.first, {'attr': {'class': 'form-control form-control-lg', 'id': 'password'}}) }}
+                                <label class="form-label" for="password">{{ form_label(form.password.first) }}</label>
+                                {{ form_errors(form.password.first) }}
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4 pb-2">
+                            <div class="form-outline">
+                                {{ form_widget(form.password.second, {'attr': {'class': 'form-control form-control-lg', 'id': 'passwordConfirmation'}}) }}
+                                <label class="form-label" for="passwordConfirmation">{{ form_label(form.password.second) }}</label>
+                                {{ form_errors(form.password.second) }}
+                            </div>
+                        </div>
+                    </div>
 
-                            {{ form_end(form) }}
+
+                    {{ form_end(form) }}
                     <div class="d-flex align-items-center justify-content-center pb-4">
 
                         <a  href="{{ path('login') }}"><button style="border-radius:15px;color:blue;border-color:blue;"  >Already have  an account ?</button></a>
