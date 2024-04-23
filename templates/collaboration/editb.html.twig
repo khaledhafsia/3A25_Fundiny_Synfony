@@ -3,11 +3,19 @@
 {% block title %}Edit Collaboration{% endblock %}
 
 {% block body %}
-    <h1>Edit Collaboration</h1>
+    <h1 class="text-center mb-5">Edit Collaboration</h1>
 
-    {{ include('collaboration/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('app_collaboration_indexb') }}">back to list</a>
+    <div class="card" style="width: 18rem;">
+        <div class="card-header">
+            Edit Collaboration
+        </div>
+        <div class="card-body">
+            {{ include('collaboration/_form.html.twig', {'button_label': 'Update'}) }}
+        </div>
+        <div class="card-footer">
+            <a href="{{ path('app_collaboration_indexb') }}" class="btn btn-primary btn-sm">back to list</a>
+        </div>
+    </div>
 
     {{ include('collaboration/_delete_form.html.twig') }}
 {% endblock %}

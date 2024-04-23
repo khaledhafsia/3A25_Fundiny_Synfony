@@ -3,39 +3,34 @@
 {% block title %}Collaboration index{% endblock %}
 
 {% block body %}
-    <h1>Collaboration index</h1>
+    <h1 class="text-center mb-5">Collaboration index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <!--<th>Id</th>-->
-                <th>Nomcoll</th>
-                <th>Typecoll</th>
-                <th>Datecoll</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="row">
         {% for collaboration in collaborations %}
-            <tr>
-               <!-- <td>{{ collaboration.id }}</td>-->
-                <td>{{ collaboration.nomcoll }}</td>
-                <td>{{ collaboration.typecoll }}</td>
-                <td>{{ collaboration.datecoll ? collaboration.datecoll|date('Y-m-d') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_collaboration_show', {'id': collaboration.id}) }}">show</a>
-                    <a href="{{ path('app_collaboration_edit', {'id': collaboration.id}) }}">edit</a>
-                </td>
-            </tr>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ collaboration.nomcoll }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ collaboration.typecoll }}</h6>
+                        <p class="card-text">Date: {{ collaboration.datecoll ? collaboration.datecoll|date('Y-m-d') : '' }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ path('app_collaboration_show', {'id': collaboration.id}) }}" class="btn btn-primary btn-sm">Show</a>
+                        <a href="{{ path('app_collaboration_edit', {'id': collaboration.id}) }}" class="btn btn-secondary btn-sm">Edit</a>
+                    </div>
+                </div>
+            </div>
         {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
+            <div class="col-12">
+                <p class="lead text-center">No records found</p>
+            </div>
         {% endfor %}
-        </tbody>
-    </table>
+    </div>
 
-    <a href="{{ path('app_collaboration_new') }}">Create new</a>
-        <a href="{{ path('app_statistics') }}" class="btn btn-success">stat </a>     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <div class="text-center mt-5">
+        <a href="{{ path('app_collaboration_new') }}" class="btn btn-success">Create new</a>
+        <a href="{{ path('app_statistics') }}" class="btn btn-success ml-3">Stat </a>
+    </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 {% endblock %}
