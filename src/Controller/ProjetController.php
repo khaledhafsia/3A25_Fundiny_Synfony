@@ -51,8 +51,16 @@ class ProjetController extends AbstractController
 
     #[Route('/front/Projet/{id}', name: 'app_projet_show', methods: ['GET'])]
 #[ParamConverter('projet', class: Projet::class, options: ['id' => 'id'])]
-public function show(Projet $projet): Response
+public function show(Request $request, EntityManagerInterface $entityManager): Response
 {
+    $id = $request->get('id');
+    $projet = $entityManager->getRepository(Projet::class)->find($id);
+
+    if (!$projet) {
+        throw $this->createNotFoundException(
+            'No project found for id '.$id
+        );
+    }
     return $this->render('projet/show.html.twig', [
         'projet' => $projet,
     ]);
@@ -127,6 +135,22 @@ public function show(Projet $projet): Response
         // Redirect to the show route
         return $this->redirect($showUrl);
     }
+   // Controller action for handling the search
+    public function searchAction(Request $request)
+    {
+     $nomPr = $request->query->get('nomPr');
+    
+     // Recherchez les projets en fonction de $nomPr
+     $entityManager = $this->getDoctrine()->getManager();
+     $projets = $entityManager->getRepository(Projet::class)->findBy(['nomPr' => $nomPr]);
+    
+     return $this->render('votre_template.html.twig', [
+        'projets' => $projets,
+        'nomPr' => $nomPr
+    ]);
+   }
+
+    
     
 
 }

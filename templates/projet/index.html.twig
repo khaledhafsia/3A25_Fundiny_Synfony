@@ -5,37 +5,90 @@
 {% block body %}
     <h1>Projet index</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <!--<th>Id</th>-->
-                <th>Nompr</th>
-                <th>Nompo</th>
-                <th>Dated</th>
-                <th>Ca</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for projet in projets %}
-            <tr>
-                <!--<td>{{ projet.id }}</td>-->
-                <td>{{ projet.nompr }}</td>
-                <td>{{ projet.nompo }}</td>
-                <td>{{ projet.dated ? projet.dated|date('Y-m-d') : '' }}</td>
-                <td>{{ projet.ca }}</td>
-                <td>
-                    <a href="{{ path('app_projet_show', {'id': projet.id}) }}">show</a>
-                    <a href="{{ path('app_projet_edit', {'id': projet.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <form method="get" action="">
+        <input id="search-input" type="text" class="form-control" placeholder="Search...">
+    </form>
 
-    <a href="{{ path('app_projet_new') }}">Create new</a>
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="sortByDateCheckbox">
+        <label class="form-check-label" for="sortByDateCheckbox">
+            Sort by Date
+        </label>
+    </div>
+
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="sortByCACheckbox">
+        <label class="form-check-label" for="sortByCACheckbox">
+            Sort by CA
+        </label>
+    </div>
+
+    <div class="row" id="projectsContainer">
+        {% if projets is not empty %}
+            {% for projet in projets %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ projet.nompr }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ projet.nompo }}</h6>
+                            <p class="card-text">Date: {{ projet.dated ? projet.dated|date('Y-m-d') : '' }}</p>
+                            <p class="card-text">CA: {{ projet.ca }}</p>
+                            <a href="{{ path('app_projet_show', {'id': projet.id}) }}" class="btn btn-primary">Show</a>
+                            <a href="{{ path('app_projet_edit', {'id': projet.id}) }}" class="btn btn-secondary">Edit</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col">
+                <div class="alert alert-warning" role="alert">
+                    No records found
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <a href="{{ path('app_projet_new') }}" class="btn btn-success">Create new</a>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#search-input").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".card").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+
+            $("#sortByDateCheckbox").change(function() {
+                if ($(this).is(":checked")) {
+                    sortByDate();
+                }
+            });
+
+            $("#sortByCACheckbox").change(function() {
+                if ($(this).is(":checked")) {
+                    sortByCA();
+                }
+            });
+
+            function sortByDate() {
+                var sortedCards = $(".card").detach().sort(function(a, b) {
+                    var dateA = $(a).find(".card-text:first").text();
+                    var dateB = $(b).find(".card-text:first").text();
+                    return new Date(dateA) - new Date(dateB);
+                });
+                $("#projectsContainer").append(sortedCards);
+            }
+
+            function sortByCA() {
+                var sortedCards = $(".card").detach().sort(function(a, b) {
+                    var caA = parseFloat($(a).find(".card-text:eq(1)").text().replace(/[^0-9.-]+/g,""));
+                    var caB = parseFloat($(b).find(".card-text:eq(1)").text().replace(/[^0-9.-]+/g,""));
+                    return caA - caB;
+                });
+                $("#projectsContainer").append(sortedCards);
+            }
+        });
+    </script>
 {% endblock %}
