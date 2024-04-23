@@ -31,11 +31,11 @@
         <table class="table table-striped">
             <thead class="table-warning">
             <tr>
-                <th>IdReponse</th>
-                <th>Email compagnant</th>
-                <th>Email</th>
-                <th>Utilisate</th>
-                <th>Date</th>
+                <th>{{ knp_pagination_sortable(reponses, 'IdReponse', 'IdReponse') }}</th>
+                <th>{{ knp_pagination_sortable(reponses, 'Email compagnant', 'Email compagnant') }}</th>
+                <th>{{ knp_pagination_sortable(reponses, 'Email', 'Email') }}</th>
+                <th>{{ knp_pagination_sortable(reponses, 'Utilisateur', 'Utilisateur') }}</th>
+                <th>{{ knp_pagination_sortable(reponses, 'Date', 'Date') }}</th>
                 <th>Actions</th>
             </tr>
             </thead>

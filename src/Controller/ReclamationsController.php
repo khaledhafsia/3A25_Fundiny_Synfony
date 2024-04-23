@@ -31,24 +31,25 @@ class ReclamationsController extends AbstractController
         // Get the search query from the request
         $searchQuery = $request->query->get('query');
 
-        // Fetch all reclamations or search based on the query
         if ($searchQuery) {
+            // If there's a search query, fetch by it (assuming a custom method in the repository)
             $reclamations = $reclamationsRepository->searchById($searchQuery);
         } else {
-            $reclamations = $reclamationsRepository->findAll();
+            // Otherwise, fetch all reclamations sorted by date of creation (descending order)
+            $reclamations = $reclamationsRepository->findBy([], ['dateCreation' => 'ASC']);
         }
 
         // Paginate the results
         $pagination = $paginator->paginate(
             $reclamations,
-            $request->query->getInt('page', 1), // Current page number, default is 1
-            10 // Number of items per page
+            $request->query->getInt('page', 1), // Current page, default is 1
+            5 // Number of items per page
         );
 
-        // Render the view with the search results
+        // Render the view with the paginated results and the search query
         return $this->render('reclamations/index.html.twig', [
             'reclamations' => $pagination,
-            'searchQuery' => $searchQuery, // Pass the search query to the view for display
+            'searchQuery' => $searchQuery,
         ]);
     }
 
@@ -64,10 +65,26 @@ class ReclamationsController extends AbstractController
 
         // Si la requête est POST, nous voulons traiter le formulaire
         if ($request->isMethod('POST')) {
+            dump($request->request->all()); // Pour voir les données POST
+
             // Récupérer les données du formulaire
-            $email = $request->request->get('objet');
+            $idUtilisateur = $request->request->get('reclamations')['idUtilisateur'];
+            dump($idUtilisateur);
+            $email = $request->request->get('email');
             $objet = $request->request->get('objet');
             $texte = $request->request->get('texte');
+
+            // Valider que l'ID de l'utilisateur n'est pas vide ou nul
+            if (!$idUtilisateur) {
+                throw $this->createNotFoundException('ID d\'utilisateur non fourni.');
+            }
+
+            // Récupérer l'utilisateur à partir de la base de données
+            $utilisateur = $entityManager->getRepository(User::class)->find($idUtilisateur);
+
+            if (!$utilisateur) {
+                throw $this->createNotFoundException('Utilisateur non trouvé.');
+            }
 
             // Créer une nouvelle entrée Reponses
             $reponse = new Reponses();
@@ -75,6 +92,7 @@ class ReclamationsController extends AbstractController
             $reponse->setEmail($email);
             $reponse->setObjet($objet);
             $reponse->setTexte($texte);
+            $reponse->setIdUtilisateur($utilisateur); // Associer l'utilisateur à la réponse
 
             // Persister dans la base de données
             $entityManager->persist($reponse);
@@ -84,8 +102,9 @@ class ReclamationsController extends AbstractController
             $this->addFlash('success', 'Réponse enregistrée avec succès.');
 
             // Rediriger vers une autre page après soumission
-            return $this->redirectToRoute('app_reclamations_index');
+            return $this->redirectToRoute('app_reponses_index');
         }
+
 
         // Récupérer les utilisateurs associés à cette réclamation pour le formulaire
         $users = $entityManager->getRepository(User::class)->findAll();
@@ -308,7 +327,7 @@ class ReclamationsController extends AbstractController
         $pagination = $paginator->paginate(
             $results,
             $request->query->getInt('page', 1), // Current page number, default is 1
-            2 // Number of items per page
+            5 // Number of items per page
         );
 
         // Rendre la vue avec les résultats de la recherche paginés

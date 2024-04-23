@@ -62,104 +62,92 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <h1>Réclamation</h1> <!-- Titre centré -->
-        </div>
-        <div class="row">
-            <span class="label">IdRéclamation:</span>
-            <span class="field field-with-margin-left">{{ reclamation.idReclamation }}</span>
+    <div class="container p-0"> <!-- Suppression du padding -->
+        <h3 class="text-center m-0"style="color: #B0413E">Réclamation</h3> <!-- Titre centré -->
+
+        <!-- Lignes simples sans traits ni bordures -->
+        <div class="d-flex p-0 m-0"> <!-- Suppression de marges/paddings -->
+            <span class="label">ID Réclamation:</span>
+            <span class="field ml-2">{{ reclamation.idReclamation }}</span>
         </div>
 
-        <div class="row">
+        <div class="d-flex p-0 m-0"> <!-- Pas de bordures ou séparations -->
             <span class="label">Email:</span>
-            <span class="field field-with-margin-left">{{ reclamation.email }}</span>
+            <span class="field ml-2">{{ reclamation.email }}</span>
         </div>
 
-        <div class="row">
-            <span class="label">IdProjet:</span>
-            <span class="field field-with-margin-left">{{ reclamation.idProjet.nompr }}</span>
+        <div class="d-flex p-0 m-0"> <!-- Suppression de traits entre les lignes -->
+            <span class="label">Projet:</span>
+            <span class="field ml-2">{{ reclamation.idProjet.nompr }}</span>
         </div>
 
-        <div class="row">
-            <span class="label">IdTypeReclamation:</span>
-            <span class="field field-with-margin-left">{{ reclamation.idTypeReclamation.NomTypeReclamation }}</span>
+        <div class="d-flex p-0 m-0"> <!-- Aucun ajout de bordures -->
+            <span class="label">Type:</span>
+            <span class="field ml-2">{{ reclamation.idTypeReclamation.NomTypeReclamation }}</span>
         </div>
 
-        <div class="row">
-            <span class="label">IdUtilisateur:</span>
-            <span class="field field-with-margin-left">{{ reclamation.idUtilisateur.nom }}</span>
+        <div class="d-flex p-0 m-0"> <!-- Aucune bordure ou séparation -->
+            <span class="label" style="font-weight: bold;">Utilisateur:</span>
+            <span class="field ml-2">{{ reclamation.idUtilisateur.nom }}</span>
         </div>
 
-        <div class="row">
+        <div class="d-flex p-0 m-0"> <!-- Pas de traits entre les lignes -->
             <span class="label">Objet:</span>
-            <span class="field field-with-margin-left">{{ reclamation.objet }}</span>
+            <span class="field ml-2">{{ reclamation.objet }}</span>
         </div>
 
-        <div class="row">
+        <div class="d-flex p-0 m-0"> <!-- Suppression des bordures -->
             <span class="label">Texte:</span>
-            <span class="field field-with-margin-left">{{ reclamation.texte }}</span>
+            <span class="field ml-2">{{ reclamation.texte }}</span>
         </div>
 
-        <div class="row">
+        <div class="d-flex p-0 m-0"> <!-- Pas de traits ou bordures -->
             <span class="label">État:</span>
-            <span class="field field-with-margin-left">{{ reclamation.etat }}</span>
+            <span class="field ml-2">{{ reclamation.etat }}</span>
         </div>
 
-        <!-- Ajouter la d   ate -->
-        <div class="row">
+        <div class="d-flex p-0 m-0"> <!-- Aucun trait entre les lignes -->
             <span class="label">Date:</span>
-            <span class="field field-with-margin-left">{{ reclamation.dateCreation|date('d-m-Y H:i') }}</span> <!-- Format de la date -->
-        </div>
-
-
-        <div class="btn-container">
-            <a href="{{ path('app_reclamations_index') }}" class="btn btn-info">Retour à la liste</a>
-            <a href="{{ path('app_reclamations_edit', {'idReclamation': reclamation.idReclamation}) }}" class="btn btn-warning">Modifier</a>
-            <div class="btn-group">
-                {{ include('reclamations/_delete_form.html.twig') }}
-            </div>
+            <span class="field ml-2">{{ reclamation.dateCreation | date('d-m-Y H:i') }}</span>
         </div>
     </div>
 
-    <div class="container">
-        <form action="{{ path('app_reclamations_repondre', { 'idReclamation': reclamation.idReclamation }) }}" method="post">
-            <!-- Champ pour l'objet -->
-            <div>
-                <div class="form-group row">
-                    <label for="Utilisateur" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Utilisateur</label>
-                    <select id="idUtilisateur" name="reclamations[idUtilisateur]" class="form-control" required>
-                        <option value="">Sélectionnez un utilisateur</option> <!-- Option par défaut -->
+    <hr style="border: 1px solid red; margin: 20px 0;"> <!-- Trait entre les conteneurs -->
 
-                        <!-- Parcourir la liste des utilisateurs -->
-                        {% for user in users %}
-                            <option value="{{ user.id }}"> {{ user.nom }} </option> <!-- Afficher le nom de l'utilisateur -->
-                        {% endfor %}
-                    </select>
-                </div>
-
+    <h3 class="text-center m-0" style="color: #B0413E">Reponse : </h3>
+    <div class="container p-0"> <!-- Deuxième conteneur -->
+        <form action="{{ path('app_reclamations_repondre', { 'idReclamation': reclamation.idReclamation }) }}" method="post" >
+            <!-- Aligner les labels avec les mêmes règles -->
+            <div class="d-flex p-0 m-0">
+                <label for="idUtilisateur" class="label">Compagnant :</label>
+                <select id="idUtilisateur" name="reclamations[idUtilisateur]" class="form-control ml-2" required>
+                    <option value="">Sélectionnez un utilisateur</option> <!-- Option par défaut -->
+                    {% for user in users %}
+                        <option value="{{ user.id }}"> {{ user.nom }}</option> <!-- Afficher le nom de l'utilisateur -->
+                    {% endfor %}
+                </select>
             </div>
 
-            <div>
-                <label for="objet">email compagnant :</label>
-                <input type="text" id="objet" name="objet" placeholder="Entrez l'objet" required>
+            <div class="d-flex p-0 m-0">
+                <label for="email" class="label">Email compagnon:</label> <!-- Labels en gras -->
+                <input type="text" id="email" name="email" class="form-control ml-2" placeholder="Entrez l'email" required>
             </div>
 
-            <div>
-                <label for="objet">Objet :</label>
-                <input type="text" id="objet" name="objet" placeholder="Entrez l'objet" required>
+            <!-- Autres champs avec la même structure -->
+            <div class="d-flex p-0 m-0">
+                <label for="objet" class="label">Objet:</label> <!-- Labels en gras -->
+                <input type="text" id="objet" name="objet" class="form-control ml-2" placeholder="Entrez l'objet" required>
             </div>
 
-            <!-- Champ pour le texte -->
-            <div>
-                <label for="texte">Texte :</label>
-                <textarea id="texte" name="texte" rows="5" cols="33" placeholder="Entrez votre texte" required></textarea>
+            <div class="d-flex p-0 m-0">
+                <label for="texte" class="label">Texte:</label> <!-- Labels en gras -->
+                <textarea id="texte" name="texte" class="form-control ml-2" rows="5" placeholder="Entrez votre texte" required></textarea>
             </div>
 
-            <!-- Bouton de soumission -->
-            <div>
-                <button type="submit">Save reponse</button>
+            <div class="d-flex justify-content-center p-0"> <!-- Aligner le bouton au centre -->
+                <button type="submit" class="btn btn-primary">Sauvegarder</button>
             </div>
+
         </form>
     </div>
 {% endblock %}

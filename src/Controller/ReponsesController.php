@@ -35,7 +35,7 @@ class ReponsesController extends AbstractController
         $pagination = $paginator->paginate(
             $reponses,
             $request->query->getInt('page', 1), // Current page number, default is 1
-            2// Number of items per page
+            5// Number of items per page
         );
 
         // Render the view with the search results
@@ -209,7 +209,7 @@ class ReponsesController extends AbstractController
         $pagination = $paginator->paginate(
             $results,
             $request->query->getInt('page', 1), // Current page number, default is 1
-            2 // Number of items per page
+            5 // Number of items per page
         );
 
         // Rendre la vue avec les résultats de la recherche paginés
