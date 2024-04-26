@@ -93,10 +93,10 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $id = $user->getTitre();
-            $password = $form->get('password')->getData();
+           // $password = $form->get('password')->getData();
 
-            $hashedPassword = $passwordHasher->hashPassword($user, $password);
-            $user->setPassword($hashedPassword);
+            //$hashedPassword = $passwordHasher->hashPassword($user, $password);
+            //$user->setPassword($hashedPassword);
 
             $em = $doctrine->getManager();
             $user = $form->getData();
@@ -155,7 +155,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute('list_user');
     }
 
-    #[Route('/unban_user/{id}', name: 'ban_user')]
+    #[Route('/unban_user/{id}', name: 'unban_user')]
     public function UnbanUser(ManagerRegistry $doctrine, $id): Response
     {
         $entityManager = $doctrine->getManager();
@@ -165,7 +165,7 @@ class UserController extends AbstractController
             throw $this->createNotFoundException('User not found');
         }
 
-        $user->setBanState(false);
+        $user->setBanState(null);
         $entityManager->flush();
 
         $this->addFlash('success', 'User banned successfully.');

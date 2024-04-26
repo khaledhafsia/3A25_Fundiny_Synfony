@@ -1,7 +1,19 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+index:
+  path: /
+  controller: App\Controller\DefaultController::index
+
 dashboardFunder:
   path: /dashboardFunder
   methods: [GET]
   defaults: { _controller: 'App\Controller\LoginController::dashboardFunder' }
+
+dashboardOwner:
+  path: /dashboardOwner
+  methods: [GET]
+  defaults: { _controller: 'App\Controller\LoginController::dashboardOwner' }
+
+
+test:
+  path: /google_login
+  methods: [GET]
+  defaults: { _controller: 'App\Controller\LoginController::google_login' }

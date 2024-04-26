@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,8 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-
+use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
+use League\OAuth2\Client\Provider\Google;
 class LoginController extends AbstractController
 {
     private RequestStack $requestStack;
@@ -34,60 +36,61 @@ class LoginController extends AbstractController
         $this->logger = $logger;
     }
 
-    #[Route('/loginn', name: 'login')]
-    public function login(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
-    {
-        $request = $this->requestStack->getCurrentRequest();
-        $loginForm = $this->createForm(LoginType::class, null, [
-            'reset_password_route' => $this->generateUrl('password_reset'),
-        ]);
-        $loginForm->handleRequest($request, $authenticationUtils);
+        #[Route('/loginn', name: 'login')]
+        public function login(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, SessionInterface $session): Response
+        {
+            $request = $this->requestStack->getCurrentRequest();
+            $loginForm = $this->createForm(LoginType::class, null, [
+                'reset_password_route' => $this->generateUrl('password_reset'),
+            ]);
+            $loginForm->handleRequest($request, $authenticationUtils);
 
-        if ($request->isMethod('POST')) {
-            $formData = $loginForm->getData();
+            if ($request->isMethod('POST')) {
+                $formData = $loginForm->getData();
 
-            $email = $formData->getEmail();
-            $password = $formData->getPassword();
+                $email = $formData->getEmail();
+                $password = $formData->getPassword();
 
-            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+                $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
-            if (!$user) {
-                $this->addFlash('error', 'Account does not exist.');
-            } elseif (!$user->getBanState() && $user->getBanState()==!NULL) {
-                return $this->redirectToRoute('ban_view');
-            } elseif (!$passwordHasher->isPasswordValid($user, $password)) {
-                $this->addFlash('error', 'Incorrect password.');
-            } else {
-                $this->setSessionUser($user);
-               //  $session->set('user_id', $user->getId());
+                if (!$user) {
+                    $this->addFlash('error', 'Account does not exist.');
+                    // } elseif (!$user->getBanState() && $user->getBanState()==!NULL) {
+                } elseif (!$user->getBanState() == false && $user->getBanState() == !NULL) {
+                    return $this->redirectToRoute('ban_view');
+                } elseif (!$passwordHasher->isPasswordValid($user, $password)) {
+                    $this->addFlash('error', 'Incorrect password.');
+                } else {
+                    $this->setSessionUser($user);
+                    $session->set('user_id', $user->getId());
 
-                switch ($user->getRole()) {
-                    case 'Admin':
-                        return $this->redirectToRoute('list_user');
-                    case 'Funder':
-                        return $this->redirectToRoute('dashboardFunder');
-                    case 'Owner':
-                        return $this->redirectToRoute('dashboardOwner');
-                    default:
-                        return $this->redirectToRoute('dashboard');
+                    switch ($user->getRole()) {
+                        case 'Admin':
+                            return $this->redirectToRoute('list_user');
+                        case 'Funder':
+                            return $this->redirectToRoute('dashboardFunder');
+                        case 'Owner':
+                            return $this->redirectToRoute('dashboardOwner');
+                        default:
+                            return $this->redirectToRoute('dashboard');
+                    }
                 }
             }
-        }
-        if ($request->query->get('password_reset')) {
-            return $this->redirectToRoute('password_reset');
-        }
-        $error = $authenticationUtils->getLastAuthenticationError();
+            if ($request->query->get('password_reset')) {
+                return $this->redirectToRoute('password_reset');
+            }
+            $error = $authenticationUtils->getLastAuthenticationError();
 
-        return $this->render('login/login.twig', [
-            'form' => $loginForm->createView(),
-            'error' => $error,
-        ]);
-    }
+            return $this->render('login/login.twig', [
+                'form' => $loginForm->createView(),
+                'error' => $error,
+            ]);
+        }
 
     #[Route('/logout', name: 'logout')]
     public function logout(SessionInterface $session): Response
     {
-       // $session->remove('user_id');
+        $session->remove('user_id');
 
         return $this->redirectToRoute('login');
     }
@@ -96,6 +99,7 @@ class LoginController extends AbstractController
     public function passwordReset(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $email = $request->get('email');
+        $this->addFlash('success', 'Password reset email sent.');
 
         if ($email) {
             $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
@@ -133,7 +137,6 @@ class LoginController extends AbstractController
         $user = $entityManager->getRepository(User::class)->findOneBy(['resetToken' => $token]);
 
 
-
         if (!$user) {
             $this->addFlash('error', 'Invalid or expired token. Please request a new password reset.');
             return $this->redirectToRoute('password_reset');
@@ -166,19 +169,19 @@ class LoginController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     #[Route('/dashboardOwner', name: 'dashboardOwner')]
     public function dashboardOwner(): Response
     {
         $user = $this->getSessionUser();
-        if (!$user) {
-            return $this->redirectToRoute('loginn');
-        }
+
 
         return $this->render('Dashboard/dashboardOwner.twig', [
             'user' => $user,
         ]);
 
     }
+
     #[Route('/dashboardFunder', name: 'dashboardOwner')]
     public function dashboardFunder(): Response
     {
@@ -200,13 +203,11 @@ class LoginController extends AbstractController
     }
 
 
-
     #[Route('/ban_view', name: 'ban_view')]
     public function bannedview(): Response
     {
         return $this->render('login/banview.twig');
     }
-
 
 
     private function setSessionUser(User $user): void
@@ -221,5 +222,49 @@ class LoginController extends AbstractController
         return $request->getSession()->get('user');
     }
 
+    #[Route('/google_login', name: 'google_login')]
+    public function test(): RedirectResponse
+    {
+        $provider = new Google([
+            'clientId' => $_ENV['GOOGLE_CLIENT_ID'],
+            'clientSecret' => $_ENV['GOOGLE_CLIENT_SECRET'],
+            'redirectUri' => $_ENV['GOOGLE_REDIRECT_URI'],
+        ]);
+
+        $authorizationUrl = $provider->getAuthorizationUrl();
+
+        $_SESSION['oauth2state'] = $provider->getState();
+
+        return $this->redirect($authorizationUrl);
+    }
+
+    #[Route('/login-google-check', name: 'google_auth_callback')]
+    public function googleAuthCallback(Request $request): Response
+    {
+        if (empty($_SESSION['oauth2state']) || ($request->query->get('state') !== $_SESSION['oauth2state'])) {
+            unset($_SESSION['oauth2state']);
+            exit('Invalid state');
+        }
+
+        $provider = new Google([
+            'clientId' => $_ENV['GOOGLE_CLIENT_ID'],
+            'clientSecret' => $_ENV['GOOGLE_CLIENT_SECRET'],
+            'redirectUri' => $_ENV['GOOGLE_REDIRECT_URI'],
+        ]);
+
+        try {
+            $accessToken = $provider->getAccessToken('authorization_code', [
+                'code' => $request->query->get('code'),
+            ]);
+
+            $user = $provider->getResourceOwner($accessToken);
+
+            $email = $user->getEmail();
+
+            return $this->redirectToRoute('dashboardOwner');
+        } catch (IdentityProviderException $e) {
+            exit($e->getMessage());
+        }
+    }
 
 }

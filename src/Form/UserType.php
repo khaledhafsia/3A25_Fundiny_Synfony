@@ -54,6 +54,8 @@ class UserType extends AbstractType
                     'Funder' => 'Funder',
                     //'Autre' => 'autre',
                 ]
+            ])        ->add('submit', SubmitType::class, [
+                'label' => 'register '
             ])
 
 

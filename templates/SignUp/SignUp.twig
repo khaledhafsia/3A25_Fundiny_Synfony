@@ -1,8 +1,10 @@
 {% block stylesheet %}
     <link rel="stylesheet" href="{{ asset('signup/css/signup.css') }}" media="screen">
+    <link rel="stylesheet" href="{{ asset('login/css/loginbutton.css') }}" media="screen">
 
 {% endblock %}
 {% block body %}
+    <link rel="stylesheet" href="{{ asset('login/css/loginbutton.css') }}">
 
 
     <section class="vh-100 gradient-custom">
@@ -69,12 +71,13 @@
                             </div>
                         </div>
                     </div>
+                    {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary bn30'}}) }}
 
 
                     {{ form_end(form) }}
                     <div class="d-flex align-items-center justify-content-center pb-4">
+                        <a  href="{{ path('login') }}"> <button type="button" class="bn30" >Already have an account ?</button></a>
 
-                        <a  href="{{ path('login') }}"><button style="border-radius:15px;color:blue;border-color:blue;"  >Already have  an account ?</button></a>
 
                     </div>
                         </div>

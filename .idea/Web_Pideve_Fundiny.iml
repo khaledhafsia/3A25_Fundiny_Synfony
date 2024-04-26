@@ -2,9 +2,8 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="App\" />
-      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="App\Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/Test123/src" isTestSource="false" packagePrefix="App\" />
+      <sourceFolder url="file://$MODULE_DIR$/Test123/tests" isTestSource="true" packagePrefix="App\Tests\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/cache" />
@@ -88,6 +87,50 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/mailer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/mime" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/polyfill-intl-idn" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/guzzle" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/promises" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/guzzlehttp/psr7" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/oauth2-client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/league/oauth2-google" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-client" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-factory" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-message" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/ralouphie/getallheaders" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/composer" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/psr/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/psr/container" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/psr/event-dispatcher" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/psr/log" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/cache" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/cache-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/config" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/console" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/dependency-injection" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/deprecation-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/dotenv" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/error-handler" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/event-dispatcher" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/event-dispatcher-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/filesystem" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/finder" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/flex" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/framework-bundle" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/http-foundation" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/http-kernel" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/polyfill-intl-grapheme" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/polyfill-intl-normalizer" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/polyfill-mbstring" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/polyfill-php73" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/polyfill-php80" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/polyfill-php81" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/routing" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/runtime" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/service-contracts" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/string" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/var-dumper" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/var-exporter" />
+      <excludeFolder url="file://$MODULE_DIR$/Test123/vendor/symfony/yaml" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

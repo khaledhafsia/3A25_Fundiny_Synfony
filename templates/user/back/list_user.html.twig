@@ -5,7 +5,6 @@
 
         <script>
             $(document).ready(function() {
-                // Search functionality
                 $('#searchInput').on('input', function () {
                     var searchInput = $(this).val();
 
@@ -16,10 +15,8 @@
                             searchInput: searchInput
                         },
                         success: function (response) {
-                            // Clear existing user list
                             $('#dataTable tbody').empty();
 
-                            // Populate user list with filtered users
                             response.forEach(function (user) {
                                 var row = '<tr>' +
                                     '<td>' + user.nom + '</td>' +
@@ -42,7 +39,6 @@
     <script>
 
         $(document).ready(function() {
-            // Search functionality (existing code)
 
 
             // Filter by role functionality
@@ -56,10 +52,8 @@
                         role: role
                     },
                     success: function(response) {
-                        // Clear existing user list
                         $('#dataTable tbody').empty();
 
-                        // Populate user list with filtered users
                         response.forEach(function(user) {
                             var row = '<tr>' +
                                 '<td>' + user.id + '</td>' +
@@ -82,6 +76,7 @@
 {% endblock %}
 
         {% block body %}
+            <a  href="{{ path('logout') }}" class="btn btn-link"><span>Logout</span> </a>
 
         <header class="top-header">
 
@@ -144,7 +139,7 @@
                                                        <a href="{{ path('ban_user', {'id': u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;">Ban</button></a>
                                                    {% endif %}
                                                    {% if  u.banState %}
-                                                       <a href="{{ path('ban_user', {'id': u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;">unBan</button></a>
+                                                       <a href="{{ path('unban_user', {'id': u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;">unBan</button></a>
                                                    {% endif %}
                                                 </td>
 

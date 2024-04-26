@@ -11,11 +11,10 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            # ...
             form_login:
                 login_path: loginn # Route name for login page
                 check_path: loginn # Route name for login form submission
-                default_target_path: dashboard # Default route after successful login
+                default_target_path: dashboardOwner # Default route after successful login
             logout:
                 path: logout # Route name for logout
                 target: login # Route name to redirect after logout
