@@ -13,6 +13,7 @@
         "doctrine/orm": "^2.13",
         "dompdf/dompdf": "^2.0",
         "eckinox/pdf-bundle": "*",
+        "kilik/table": "^3.2",
         "knplabs/knp-paginator-bundle": "^5.9",
         "massive/pdf-bundle": "*",
         "phpdocumentor/reflection-docblock": "^5.3",
@@ -103,7 +104,7 @@
         "symfony/browser-kit": "5.4.*",
         "symfony/css-selector": "5.4.*",
         "symfony/debug-bundle": "5.4.*",
-        "symfony/maker-bundle": "^1.0",
+        "symfony/maker-bundle": "^1.50",
         "symfony/phpunit-bridge": "^6.1",
         "symfony/stopwatch": "5.4.*",
         "symfony/web-profiler-bundle": "5.4.*"

@@ -32,7 +32,7 @@ class ReclamationsRepository extends ServiceEntityRepository
     public function search($searchTerm)
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.email LIKE :searchTerm')
+            ->andWhere('r.email LIKE :searchTerm or r.idReclamation like :searchTerm')
             ->setParameter('searchTerm', '%'.$searchTerm.'%')
             ->getQuery()
             ->getResult();

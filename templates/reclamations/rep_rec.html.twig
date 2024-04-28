@@ -68,7 +68,7 @@
         <!-- Lignes simples sans traits ni bordures -->
         <div class="d-flex p-0 m-0"> <!-- Suppression de marges/paddings -->
             <span class="label">ID Réclamation:</span>
-            <span class="field ml-2">{{ reclamation.idReclamation }}</span>
+            <span class="field ml-2">{{ reclamation.id }}</span>
         </div>
 
         <div class="d-flex p-0 m-0"> <!-- Pas de bordures ou séparations -->
@@ -116,22 +116,10 @@
 
     <h3 class="text-center m-0" style="color: #B0413E">Reponse : </h3>
     <div class="container p-0"> <!-- Deuxième conteneur -->
-        <form action="{{ path('app_reclamations_repondre', { 'idReclamation': reclamation.idReclamation }) }}" method="post" >
+        <form action="{{ path('app_reclamations_repondre_admin', { 'id': reclamation.id }) }}" method="post" >
             <!-- Aligner les labels avec les mêmes règles -->
-            <div class="d-flex p-0 m-0">
-                <label for="idUtilisateur" class="label">Compagnant :</label>
-                <select id="idUtilisateur" name="reclamations[idUtilisateur]" class="form-control ml-2" required>
-                    <option value="">Sélectionnez un utilisateur</option> <!-- Option par défaut -->
-                    {% for user in users %}
-                        <option value="{{ user.id }}"> {{ user.nom }}</option> <!-- Afficher le nom de l'utilisateur -->
-                    {% endfor %}
-                </select>
-            </div>
+            
 
-            <div class="d-flex p-0 m-0">
-                <label for="email" class="label">Email compagnon:</label> <!-- Labels en gras -->
-                <input type="text" id="email" name="email" class="form-control ml-2" placeholder="Entrez l'email" required>
-            </div>
 
             <!-- Autres champs avec la même structure -->
             <div class="d-flex p-0 m-0">

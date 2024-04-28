@@ -68,7 +68,7 @@
         </div>
         <div class="row">
             <span class="label">IdReponse:</span>
-            <span class="field field-with-margin-left">{{ reponse.idReponse }}</span>
+            <span class="field field-with-margin-left">{{ reponse.id }}</span>
         </div>
 
         <div class="row">
@@ -93,9 +93,7 @@
 
         <div class="btn-container">
             <a href="{{ path('app_reponses_index') }}" class="btn btn-info">Back to list</a>
-            <a href="{{ path('app_reponses_edit', {'idReponse': reponse.idReponse}) }}" class="btn btn-warning">Edit</a>
             <div class="btn-group">
-                {{ include('reponses/_delete_form.html.twig') }}
 
             </div>
         </div>

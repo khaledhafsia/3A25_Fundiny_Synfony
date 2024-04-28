@@ -1,0 +1,40 @@
+{% extends "@KilikTable/_defaultTable.html.twig" %}
+
+{% block tableTitle %}
+    <b>Reponses list</b>
+{% endblock tableTitle %}
+
+{# custom filters are here ! #}
+
+
+{# add a column to the left #}
+{% block tableHeadStdColumns %}
+    <th>
+        Action
+    </th>
+    {{ parent() }}
+{% endblock tableHeadStdColumns %}
+{% block tableHeadStdFilters %}
+    <td>
+        &nbsp;
+    </td>
+    {{ parent() }}
+{% endblock tableHeadStdFilters %}
+{% block tableBodyStdColumns %}
+    <td>
+    {% if is_granted('ROLE_ADMIN') %}
+
+<a href="{{ path('app_reponses_delete', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-trash"></span></a>
+
+<a href="{{ path('app_reponses_edit', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-pencil"></span></a>
+<a href="{{ path('app_reponses_show', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-duplicate"></span></a>
+
+{% else %}
+<a href="{{ path('app_reponses_show_user', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-duplicate"></span></a>
+{% endif %}
+
+    </td>
+    {{ parent() }}
+
+
+{% endblock tableBodyStdColumns %}

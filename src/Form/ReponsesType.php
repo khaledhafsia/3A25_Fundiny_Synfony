@@ -14,12 +14,12 @@ class ReponsesType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
-            ->add('idUtilisateur', EntityType::class, [
+           // ->add('email')
+            /*->add('idUtilisateur', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => 'nom', // Assurez-vous que 'nomPr' est le champ contenant le nom du projet
                 'label' => 'nom utilisateur', // Customize the label as needed
-            ])
+            ]) */
             ->add('objet')
             ->add('texte')
         ;

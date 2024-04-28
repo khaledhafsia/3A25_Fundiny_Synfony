@@ -22,16 +22,10 @@
             <br>
             <br>
 
-            <div class="form-group row">
-                <label for="email" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Email</label>
-                <div class="col-sm-6">
-                    {{ form_widget(form.email, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter your email'}}) }}
-                    {{ form_errors(form.email, {'attr': {'class': 'text-danger'}}) }}
-                </div>
-            </div>
+           
 
             <div class="form-group row">
-                <label for="idProjet" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">IdProjet</label>
+                {{form_label(form.idProjet)}}
                 <div class="col-sm-6">
                     {{ form_widget(form.idProjet, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Choose project'}}) }}
                     {{ form_errors(form.idProjet, {'attr': {'class': 'text-danger'}}) }}
@@ -39,23 +33,16 @@
             </div>
 
             <div class="form-group row">
-                <label for="idTypeReclamation" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">IdTypeReclamation</label>
+                {{form_label(form.idTypeReclamation)}}
                 <div class="col-sm-6">
                     {{ form_widget(form.idTypeReclamation, {'attr': {'class': 'form-control-no-border select2', 'placeholder': 'Choose type of claim'}}) }}
                     {{ form_errors(form.idTypeReclamation, {'attr': {'class': 'text-danger'}}) }}
                 </div>
             </div>
 
-            <div class="form-group row">
-                <label for="idUtilisateur" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">IdUtilisateur</label>
-                <div class="col-sm-6">
-                    {{ form_widget(form.idUtilisateur, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Choose user'}}) }}
-                    {{ form_errors(form.idUtilisateur, {'attr': {'class': 'text-danger'}}) }}
-                </div>
-            </div>
 
             <div class="form-group row">
-                <label for="objet" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Objet</label>
+            {{form_label(form.objet)}}
                 <div class="col-sm-6">
                     {{ form_widget(form.objet, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter the subject'}}) }}
                     {{ form_errors(form.objet, {'attr': {'class': 'text-danger'}}) }}
@@ -63,21 +50,14 @@
             </div>
 
             <div class="form-group row">
-                <label for="texte" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Texte</label>
+            {{form_label(form.texte)}}
                 <div class="col-sm-6">
                     {{ form_widget(form.texte, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter the text'}}) }}
                     {{ form_errors(form.texte, {'attr': {'class': 'text-danger'}}) }}
                 </div>
             </div>
 
-        <!-- Ajouter le champ "état" juste après le champ "texte" -->
-        <div class="form-group row">
-            <label for="etat" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">État</label>
-            <div class="col-sm-6">
-                {{ form_widget(form.etat, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter the status'}}) }}
-                {{ form_errors(form.etat, {'attr': {'class': 'text-danger'}}) }}
-            </div>
-        </div>
+
 
             <br>
             <br>

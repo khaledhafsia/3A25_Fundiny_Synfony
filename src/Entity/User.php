@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * User
@@ -10,7 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="user")
  * @ORM\Entity
  */
-class User
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+class User implements UserInterface
 {
     /**
      * @var int
@@ -76,6 +79,17 @@ class User
      * @ORM\Column(name="ban_state", type="boolean", nullable=true)
      */
     private $banState;
+
+    
+    /**
+     * @var json|null
+     *
+     * @ORM\Column(name="roles", type="json", nullable=true)
+     */
+    private $roles = [];
+
+
+
 
     public function getId(): ?int
     {
@@ -177,6 +191,56 @@ class User
 
         return $this;
     }
+
+    
+    public function getRoles()
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';   
+        return array_unique($roles);
+
+     }
+
+     public function setRoles(array $roles): self
+     {
+         $this->roles = $roles;
+ 
+         return $this;
+     }
+
+    public function getSalt()
+    {
+        return null ;
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUsername()
+    {
+        // TODO: Implement getUsername() method.
+    }
+
+    public function __construct()
+{
+    $this->roles = ['ROLE_USER']; // Set a default role, if necessary
+}
+
+
+    public function __call(string $name, array $arguments)
+    {
+
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+
+    
 
 
 }

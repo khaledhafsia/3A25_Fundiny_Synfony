@@ -9,7 +9,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity
  * @ORM\Table(name="reclamations")
- * @UniqueEntity(fields={"email"}, message="Cette adresse email est déjà utilisée.")
  */
 class Reclamations
 {
@@ -18,11 +17,11 @@ class Reclamations
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(name="ID_Reclamation", type="integer", nullable=false)
      */
-    private $idReclamation;
+    private $id;
 
     /**
      * @ORM\Column(name="email", type="string", length=50, nullable=true)
-     * @Assert\NotBlank(message="L'adresse email ne peut pas être vide.")
+     * 
      * @Assert\Regex(
      *     pattern="/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/",
      *     message="L'adresse email '{{ value }}' n'est pas valide."
@@ -74,9 +73,15 @@ class Reclamations
 
     // Getters and setters...
 
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+
     public function getIdReclamation(): ?int
     {
-        return $this->idReclamation;
+        return $this->id;
     }
 
     public function getEmail(): ?string

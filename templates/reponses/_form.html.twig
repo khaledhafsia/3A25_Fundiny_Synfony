@@ -22,22 +22,7 @@
         <br>
         <br>
 
-        <div class="form-group row">
-            <label for="email" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Email</label>
-            <div class="col-sm-6">
-                {{ form_widget(form.email, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter your email'}}) }}
-                {{ form_errors(form.email, {'attr': {'class': 'text-danger'}}) }}
-            </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="Utilisateur" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Demandeur</label>
-            <div class="col-sm-6">
-                {{ form_widget(form.idUtilisateur, {'attr': {'class': 'form-control-no-border select2', 'placeholder': 'Choose user'}}) }}
-                {{ form_errors(form.idUtilisateur, {'attr': {'class': 'text-danger'}}) }}
-
-            </div>
-        </div>
 
         <div class="form-group row">
             <label for="objet" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Objet</label>

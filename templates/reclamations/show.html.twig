@@ -64,11 +64,11 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <h1>Réclamation</h1> <!-- Titre centré -->
+            <h1>Mes réclamations</h1> <!-- Titre centré -->
         </div>
         <div class="row">
             <span class="label">IdRéclamation:</span>
-            <span class="field field-with-margin-left">{{ reclamation.idReclamation }}</span>
+            <span class="field field-with-margin-left">{{ reclamation.id }}</span>
         </div>
 
         <div class="row">
@@ -113,8 +113,12 @@
         </div>
 
         <div class="btn-container">
+        {% if is_granted('ROLE_USER') %}
             <a href="{{ path('app_reclamations_index') }}" class="btn btn-info">Retour à la liste</a>
-            <a href="{{ path('app_reclamations_edit', {'idReclamation': reclamation.idReclamation}) }}" class="btn btn-warning">Modifier</a>
+            {% else %}
+                        <a href="{{ path('app_reclamations_admin') }}" class="btn btn-info">Retour à la liste</a>
+        {% endif %}
+            <a href="{{ path('app_reclamations_edit', {'id': reclamation.id}) }}" class="btn btn-warning">Modifier</a>
             <div class="btn-group">
                 {{ include('reclamations/_delete_form.html.twig') }}
             </div>

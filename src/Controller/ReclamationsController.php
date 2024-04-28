@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Reclamations;
 use App\Entity\Projet;
 use App\Entity\User;
@@ -10,6 +11,8 @@ use App\Entity\Typesreclamation;
 use App\Form\ReclamationsType;
 use App\Repository\ReclamationsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,14 +24,176 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Knp\Component\Pager\PaginatorInterface;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Kilik\TableBundle\Components\Column;
+use Kilik\TableBundle\Components\Filter;
+use Kilik\TableBundle\Components\FilterCheckbox;
+use Kilik\TableBundle\Components\FilterSelect;
+use Kilik\TableBundle\Components\MassAction;
+use Kilik\TableBundle\Components\Table;
+use Kilik\TableBundle\Services\TableService;
+use PHPUnit\Framework\Constraint\Callback;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
-#[Route('/reclamations')]
 class ReclamationsController extends AbstractController
-{
-    #[Route('/', name: 'app_reclamations_index', methods: ['GET'])]
-    public function index(Request $request, ReclamationsRepository $reclamationsRepository, PaginatorInterface $paginator): Response
+{   private Callback $callback;
+
+    private ManagerRegistry $managerRegistry;
+
+    private AuthorizationCheckerInterface $authChecker;
+
+
+    public function __construct(ManagerRegistry $managerRegistry,AuthorizationCheckerInterface $authChecker)
     {
-        // Get the search query from the request
+        $this->managerRegistry=$managerRegistry;
+        $this->authChecker = $authChecker;
+    }
+
+    
+
+    public function getReclamationsTable(ReclamationsRepository $Repo){
+                /** @var Users $user */
+                $user = $this->getUser();
+        if ($this->authChecker->isGranted('ROLE_ADMIN')) {
+            $queryBuilder = $Repo->createQueryBuilder('r')
+            ->select('r', 'p', "CASE WHEN r.etat = 0 THEN 'En attente' ELSE 'Repondu' END AS status")
+            ->leftJoin('r.idTypeReclamation', 'p');      
+          } else {
+
+
+            $queryBuilder = $Repo->createQueryBuilder('r')
+                ->select('r', 'p', "CASE WHEN r.etat = 0 THEN 'En attente' ELSE 'Repondu' END AS status")
+                ->leftJoin('r.idTypeReclamation', 'p')
+                ->where('r.idUtilisateur = :userId')
+                ->setParameter('userId', $user->getId()); 
+        }
+
+        $table = (new Table())
+            ->setRowsPerPage(5)// custom rows per page
+            ->setId('reclamations_list')
+            ->setPath($this->generateUrl('reclamations_list_ajax'))
+            ->setTemplate('admin/reclamationTableAJAXCustoms.html.twig')
+            ->setQueryBuilder($queryBuilder, 'r')
+            ->addColumn(
+                (new Column())->setLabel('id')
+                ->setSort(['r.id' => 'asc', 'r.id' => 'asc'])
+                ->setSortReverse(['r.id' => 'desc', 'r.id' => 'desc'])
+                    ->setFilter(
+                        (new Filter())
+                            ->setField('r.id')
+                            ->setName('r_id')
+                    )
+            )
+            
+            ->addColumn(
+                (new Column())->setLabel('email')
+                ->setSort(['r.email' => 'asc', 'r.id' => 'asc'])
+                ->setSortReverse(['r.email' => 'desc', 'r.id' => 'asc'])
+
+                    ->setFilter(
+                        (new Filter())
+                            ->setField('r.email')
+                            ->setName('r_email')
+                    )
+            )
+
+
+            ->addColumn(
+                (new Column())->setLabel('Type Reclamation')
+                ->setSort(['p.nomTypeReclamation' => 'asc', 'r.id' => 'asc'])
+                ->setSortReverse(['p.nomTypeReclamation' => 'desc', 'r.id' => 'asc'])
+                    ->setFilter(
+                        (new Filter())
+                            ->setField('p.nomTypeReclamation')
+                            ->setName('p_nomTypeReclamation')
+                    )
+            )
+
+            
+            ->addColumn(
+                (new Column())->setLabel('Texte')
+                    ->setFilter(
+                        (new Filter())
+                            ->setField('r.texte')
+                            ->setName('r_texte')
+                    )
+            )
+
+
+            ->addColumn(
+                (new Column())->setLabel('Objet')
+                    ->setFilter(
+                        (new Filter())
+                            ->setField('r.objet')
+                            ->setName('r_objet')
+                    )
+            )
+
+            
+            ->addColumn(
+                (new Column())->setLabel('status')
+                    ->setFilter(
+                        (new Filter())
+                            ->setField('status')
+                            ->setName('status')
+                    )
+            )
+            ->addColumn(
+                (new Column())->setLabel('Creation Date')
+                    ->setSort(['r.id' => 'asc', 'r.id' => 'asc'])
+                    ->setSortReverse(['r.id' => 'desc', 'r.id' => 'asc'])
+                    ->setDisplayFormat(Column::FORMAT_DATE)
+                    ->setDisplayFormatParams('d/m/Y')
+                    ->setFilter(
+                        (new Filter())
+                            ->setField('r.dateCreation')
+                            ->setName('r_dateCreation')
+                            ->setDataFormat(Filter::FORMAT_DATE)
+                    )
+
+            );
+                return $table;
+    }
+
+    #[Route('/admin/reclamationsAJAX', name: 'reclamations_list')]
+    public function listAction(TableService $tableService,ReclamationsRepository $repo)
+    {
+        return $this->render(
+            'admin/reclamationTableAJAX.html.twig',
+            [
+                'table' => $tableService->createFormView($this->getReclamationsTable($repo)),
+            ]
+        );
+    }
+
+    #[Route('/admin/reclamationsAJAX/AJAX', name: 'reclamations_list_ajax')]
+    public function _listAction(Request $request, TableService $tableService,ReclamationsRepository $re)
+    {
+      return $tableService->handleRequest($this->getReclamationsTable($re),$request);
+    }
+
+
+    #[Route('/admin/reclamations', name: 'app_reclamations_index_admin', methods: ['GET'])]
+    public function indexAdmin(Request $request, ReclamationsRepository $reclamationsRepository, PaginatorInterface $paginator): Response
+    {
+        if (!$this->getUser())
+        return $this->redirectToRoute('app_login');
+
+
+        return $this->render('admin/index.html.twig', [
+        ]);
+    }
+
+    
+
+    
+
+
+    #[Route('/reclamations/pdf', name: 'app_reclamations_export_pdf', methods: ['GET'])]
+    public function generateRolePdf(ReclamationsRepository $reclamationsRepository, Request $request): Response
+    {
+        // Récupérer le paramètre de requête 'query' depuis la requête
         $searchQuery = $request->query->get('query');
 
         if ($searchQuery) {
@@ -37,6 +202,55 @@ class ReclamationsController extends AbstractController
         } else {
             // Otherwise, fetch all reclamations sorted by date of creation (descending order)
             $reclamations = $reclamationsRepository->findBy([], ['dateCreation' => 'ASC']);
+        }
+
+        // Vérifier si un objet Reponses a été trouvé
+        if (!$reclamations) {
+            throw $this->createNotFoundException('Aucune reclamation trouvée pour le paramètre donné.');
+        }
+
+        // Rendre la vue pour l'export PDF
+        $html = $this->renderView('reclamations/pdf_export.html.twig', [
+            'reclamations' => $reclamations
+        ]);
+        dump($html);
+
+        // Configuration de Dompdf
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+
+        // Création de Dompdf
+        $dompdf = new Dompdf($options);
+
+        // Charger le contenu HTML dans Dompdf
+        $dompdf->loadHtml($html);
+
+        // Rendre le PDF
+        $dompdf->render();
+
+        // Créer la réponse PDF
+        $response = new Response($dompdf->output());
+        $response->headers->set('Content-Type', 'application/pdf');
+        $response->headers->set('Content-Disposition', 'attachment; filename="reponse.pdf"');
+
+        return $response;
+    }
+
+
+    #[Route('/reclamations', name: 'app_reclamations_index', methods: ['GET'])]
+    public function index(Request $request, ReclamationsRepository $reclamationsRepository, PaginatorInterface $paginator): Response
+    {           if (!$this->getUser())
+        return $this->redirectToRoute('app_login');
+
+        // Get the search query from the request
+        $searchQuery = $request->query->get('query');
+
+        if ($searchQuery) {
+            // If there's a search query, fetch by it (assuming a custom method in the repository)
+            $reclamations = $reclamationsRepository->searchById($searchQuery);
+        } else {
+            // Otherwise, fetch all reclamations sorted by date of creation (descending order)
+            $reclamations = $reclamationsRepository->findBy(['email' => $this->getUser()->getUserIdentifier()], ['dateCreation' => 'ASC']);
         }
 
         // Paginate the results
@@ -53,82 +267,29 @@ class ReclamationsController extends AbstractController
         ]);
     }
 
-    #[Route('/reclamations/{idReclamation}/repondre', name: 'app_reclamations_repondre', methods: ['GET', 'POST'])]
-    public function repondre(int $idReclamation, EntityManagerInterface $entityManager, Request $request): Response
-    {
-        // Récupérer la réclamation par son ID
-        $reclamation = $entityManager->getRepository(Reclamations::class)->find($idReclamation);
 
-        if (!$reclamation) {
-            throw $this->createNotFoundException('Réclamation introuvable');
-        }
-
-        // Si la requête est POST, nous voulons traiter le formulaire
-        if ($request->isMethod('POST')) {
-            dump($request->request->all()); // Pour voir les données POST
-
-            // Récupérer les données du formulaire
-            $idUtilisateur = $request->request->get('reclamations')['idUtilisateur'];
-            dump($idUtilisateur);
-            $email = $request->request->get('email');
-            $objet = $request->request->get('objet');
-            $texte = $request->request->get('texte');
-
-            // Valider que l'ID de l'utilisateur n'est pas vide ou nul
-            if (!$idUtilisateur) {
-                throw $this->createNotFoundException('ID d\'utilisateur non fourni.');
-            }
-
-            // Récupérer l'utilisateur à partir de la base de données
-            $utilisateur = $entityManager->getRepository(User::class)->find($idUtilisateur);
-
-            if (!$utilisateur) {
-                throw $this->createNotFoundException('Utilisateur non trouvé.');
-            }
-
-            // Créer une nouvelle entrée Reponses
-            $reponse = new Reponses();
-            $reponse->setIdReclamation($reclamation); // Utiliser l'objet réclamation
-            $reponse->setEmail($email);
-            $reponse->setObjet($objet);
-            $reponse->setTexte($texte);
-            $reponse->setIdUtilisateur($utilisateur); // Associer l'utilisateur à la réponse
-
-            // Persister dans la base de données
-            $entityManager->persist($reponse);
-            $entityManager->flush();
-
-            // Rediriger ou afficher un message de succès
-            $this->addFlash('success', 'Réponse enregistrée avec succès.');
-
-            // Rediriger vers une autre page après soumission
-            return $this->redirectToRoute('app_reponses_index');
-        }
-
-
-        // Récupérer les utilisateurs associés à cette réclamation pour le formulaire
-        $users = $entityManager->getRepository(User::class)->findAll();
-
-        // Rendre le gabarit avec les données appropriées
-        return $this->render('reclamations/rep_rec.html.twig', [
-            'reclamation' => $reclamation,
-            'users' => $users,
-        ]);
-    }
-
-    #[Route('/new', name: 'app_reclamations_new', methods: ['GET', 'POST'])]
+    #[Route('/reclamations/new', name: 'app_reclamations_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
+        if (!$this->getUser())
+            return $this->redirectToRoute('app_login');
+
         $reclamation = new Reclamations();
         $form = $this->createForm(ReclamationsType::class, $reclamation, [
             'disable_etat' => true, // Désactiver le champ 'etat' lors de la création
         ]);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
+             /** @var \App\Entity\User $user */
+            $user = $this->getUser();
             if ($reclamation->getEtat() === null) {
                 $reclamation->setEtat(0); // Assurez-vous que 'etat' a une valeur par défaut
             }
+            $reclamation->setEmail($user->getEmail());
+            $reclamation->setIdUtilisateur($user);
+
             $entityManager->persist($reclamation);
             $entityManager->flush();
 
@@ -136,15 +297,20 @@ class ReclamationsController extends AbstractController
         }
 
         return $this->render('reclamations/new.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form->createView()
         ]);
     }
 
-    #[Route('/{idReclamation}', name: 'app_reclamations_show', methods: ['GET'])]
-    public function show($idReclamation, ReclamationsRepository $reclamationsRepository): Response
+    #[Route('/admin/allReclamations', name: 'admin_reclamations_all')]
+    public function adminReclamationBackEnd(){
+        return $this->render('admin/allReclamations.html.twig'); 
+    }
+
+    #[Route('/reclamations/{id}', name: 'app_reclamations_show', methods: ['GET'])]
+    public function show($id, ReclamationsRepository $reclamationsRepository): Response
     {
         // Fetch the Reclamations entity by ID
-        $reclamation = $reclamationsRepository->find($idReclamation);
+        $reclamation = $reclamationsRepository->find($id);
 
         // Check if the entity exists
         if (!$reclamation) {
@@ -157,11 +323,12 @@ class ReclamationsController extends AbstractController
         ]);
     }
 
-    #[Route('/reclamations/{idReclamation}', name: 'app_reclamations_display', methods: ['GET'])]
-    public function display($idReclamation, ReclamationsRepository $reclamationsRepository): Response
+
+    #[Route('/admin/reclamations/{id}', name: 'app_reclamations_admin_show', methods: ['GET'])]
+    public function adminShow($id, ReclamationsRepository $reclamationsRepository): Response
     {
         // Fetch the Reclamations entity by ID
-        $reclamation = $reclamationsRepository->find($idReclamation);
+        $reclamation = $reclamationsRepository->find($id);
 
         // Check if the entity exists
         if (!$reclamation) {
@@ -169,12 +336,16 @@ class ReclamationsController extends AbstractController
         }
 
         // Render the template with the fetched entity
-        return $this->render('reclamations/rep-rec.html.twig', [
+        return $this->render('admin/show.html.twig', [
             'reclamation' => $reclamation,
         ]);
     }
 
-    #[Route('/{idReclamation}/edit', name: 'app_reclamations_edit', methods: ['GET', 'POST'])]
+
+
+
+
+    #[Route('/reclamations/{id}/edit', name: 'app_reclamations_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Reclamations $reclamation, EntityManagerInterface $entityManager): Response
     {
         // Passer l'option 'disable_etat' à 'true' pour désactiver le champ
@@ -194,16 +365,45 @@ class ReclamationsController extends AbstractController
         ]);
     }
 
-    #[Route('/{idReclamation}', name: 'app_reclamations_delete', methods: ['POST'])]
-    public function delete(Request $request, Reclamations $reclamation, EntityManagerInterface $entityManager): Response
+
+    #[Route('/admin/reclamations/{id}/edit', name: 'app_reclamations_edit_admin', methods: ['GET', 'POST'])]
+    public function editAdmin(Request $request, Reclamations $reclamation, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $reclamation->getIdReclamation(), $request->request->get('_token'))) {
-            $entityManager->remove($reclamation);
+        // Passer l'option 'disable_etat' à 'true' pour désactiver le champ
+        $form = $this->createForm(ReclamationsType::class, $reclamation, [
+            'disable_etat' => true, // Désactiver le champ 'état'
+        ]);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            return $this->redirectToRoute('app_reclamations_index', [], Response::HTTP_SEE_OTHER);
         }
 
+        return $this->renderForm('admin/edit.html.twig', [
+            'reclamation' => $reclamation,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/admin/reclamations/delete/{id}', name: 'app_reclamations_delete_admin', methods: ['POST','GET'])]
+    public function deleteAdmin(Request $request, Reclamations $reclamation, EntityManagerInterface $entityManager): Response
+    {
+            $entityManager->remove($reclamation);
+            $entityManager->flush();
+        
+
+        return $this->redirectToRoute('admin_reclamations_all', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/reclamations/delete/{id}', name: 'app_reclamations_delete', methods: ['POST','GET'])]
+    public function delete(Request $request, Reclamations $reclamation, EntityManagerInterface $entityManager): Response
+    {
+            $entityManager->remove($reclamation);
+            $entityManager->flush();
         return $this->redirectToRoute('app_reclamations_index', [], Response::HTTP_SEE_OTHER);
     }
+    
 
     #[Route('/export/excel', name: 'app_reclamations_export_excel', methods: ['GET'])]
     public function exportToExcel(ReclamationsRepository $reclamationsRepository): Response
@@ -237,105 +437,18 @@ class ReclamationsController extends AbstractController
         return $response;
     }
 
-    #[Route('/export/pdf', name: 'app_reclamations_export_pdf', methods: ['GET'])]
-    public function exportToPdf(ReclamationsRepository $reclamationsRepository): Response
-    {
-        // Fetch all reclamations
-        $reclamations = $reclamationsRepository->findAll();
 
-        // Render the PDF template with the fetched data
-        $html = $this->renderView('reclamations/pdf_export.html.twig', [
-            'reclamations' => $reclamations
-        ]);
 
-        // Configure Dompdf
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
 
-        // Create Dompdf
-        $dompdf = new Dompdf($options);
 
-        // Load HTML content into Dompdf
-        $dompdf->loadHtml($html);
-
-        // Render the PDF
-        $dompdf->render();
-
-        // Create the PDF response
-        $response = new Response($dompdf->output());
-        $response->headers->set('Content-Type', 'application/pdf');
-        $response->headers->set('Content-Disposition', 'attachment; filename="reclamations.pdf"');
-
-        return $response;
-    }
-
-    /**
-     * @Route("/reclamations/pdf", name="reclamations_pdf")
-     */
-    public function generateRolePdf(ReclamationsRepository $reclamationsRepository, Request $request): Response
-    {
-        // Récupérer le paramètre de requête 'query' depuis la requête
-        $query = $request->query->get('query');
-
-        // Recherche de l'objet reclamations manuellement
-        $reponse = $reclamationsRepository->findOneById($query);
-
-        // Vérifier si un objet reclamations a été trouvé
-        if (!$reponse) {
-            throw $this->createNotFoundException('Aucune réponse trouvée pour le paramètre donné.');
-        }
-
-        // Rendre la vue pour l'export PDF
-        $html = $this->renderView('reclamations/pdf_export.html.twig', [
-            'reclamations' => $reponse
-        ]);
-        dump($html);
-
-        // Configuration de Dompdf
-        $options = new Options();
-        $options->set('isHtml5ParserEnabled', true);
-
-        // Création de Dompdf
-        $dompdf = new Dompdf($options);
-
-        // Charger le contenu HTML dans Dompdf
-        $dompdf->loadHtml($html);
-
-        // Rendre le PDF
-        $dompdf->render();
-
-        // Créer la réponse PDF
-        $response = new Response($dompdf->output());
-        $response->headers->set('Content-Type', 'application/pdf');
-        $response->headers->set('Content-Disposition', 'attachment; filename="reponse.pdf"');
-
-        return $response;
-    }
-
-    /**
-     * @Route("/reclamations/search", name="app_reclamations_search")
-     */
-    public function search(Request $request, ReclamationsRepository $reclamationsRepository, PaginatorInterface $paginator): Response
-    {
-        // Récupérer le terme de recherche depuis la requête
-        $searchTerm = $request->query->get('q');
-
-        // Effectuer la recherche dans le dépôt de réponses
-        $results = $reclamationsRepository->search($searchTerm);
-
-        // Paginer les résultats
-        $pagination = $paginator->paginate(
-            $results,
-            $request->query->getInt('page', 1), // Current page number, default is 1
-            5 // Number of items per page
-        );
-
-        // Rendre la vue avec les résultats de la recherche paginés
-        return $this->render('reclamations/index.html.twig', [
-            'pagination'=>$pagination,
-            'reclamations' => $pagination,
-            'searchTerm' => $searchTerm
-        ]);
-    }
 
 }
+
+
+
+
+
+
+
+
+

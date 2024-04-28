@@ -20,7 +20,7 @@ class Reponses
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $idReponse;
+    private $id;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Reclamations")
@@ -65,9 +65,9 @@ class Reponses
 
     // Getters and setters...
 
-    public function getIdReponse(): ?int
+    public function getId(): ?int
     {
-        return $this->idReponse;
+        return $this->id;
     }
 
     public function getEmail(): ?string

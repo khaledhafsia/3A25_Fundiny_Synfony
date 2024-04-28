@@ -41,7 +41,7 @@
     <tbody>
     {% for reponse in reponses %}
         <tr>
-            <td>{{ reponse.idReponse }}</td>
+            <td>{{ reponse.id }}</td>
             <td>{{ reponse.email }}</td>
             <td>{{ reponse.idUtilisateur ? reponse.idUtilisateur.nom : 'N/A' }}</td>
             <td>{{ reponse.objet }}</td>

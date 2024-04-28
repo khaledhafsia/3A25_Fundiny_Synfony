@@ -15,4 +15,5 @@ return [
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
     Knp\Bundle\SnappyBundle\KnpSnappyBundle::class => ['all' => true],
     Eckinox\PdfBundle\PdfBundle::class => ['all' => true],
+    Kilik\TableBundle\KilikTableBundle::class => ['all' => true],
 ];

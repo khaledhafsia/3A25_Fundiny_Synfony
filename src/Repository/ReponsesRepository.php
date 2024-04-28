@@ -24,7 +24,7 @@ class ReponsesRepository extends ServiceEntityRepository
     public function findOneById($query): array
     {
         return $this->createQueryBuilder('u')
-            ->andWhere('u.idReponse LIKE :query')
+            ->andWhere('u.id LIKE :query')
             ->setParameter('query', '%'.$query.'%')
             ->getQuery()
             ->getResult();

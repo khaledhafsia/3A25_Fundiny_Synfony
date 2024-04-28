@@ -24,32 +24,46 @@ class ReclamationsType extends AbstractType
         $this->entityManager = $entityManager;
     }
 
+    
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', TextType::class) // Correction du type de champ
             ->add('idProjet', EntityType::class, [
                 'class' => Projet::class,
-                'choice_label' => 'nompr', // Afficher le nom du projet
+                'choice_label' => 'nompr',
+                'label' => 'Projet',
+                'label_attr' => [
+                'class' => 'col-sm-4 col-form-label',
+                'style' => 'font-weight: bold; font-size: 18px;'
+                ] 
             ])
             ->add('idTypeReclamation', EntityType::class, [
                 'class' => Typesreclamation::class,
-                'choice_label' => 'NomTypeReclamation', // Afficher le type de réclamation
+                'choice_label' => 'NomTypeReclamation',
+                'label' => 'Type',
+                'label_attr' => [
+                'class' => 'col-sm-4 col-form-label',
+                'style' => 'font-weight: bold; font-size: 18px;'
+                ] 
             ])
-            ->add('idUtilisateur', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'nom', // Afficher le nom de l'utilisateur
-            ])
-            ->add('objet', TextType::class) // Champ de texte pour l'objet
-            ->add('texte', TextareaType::class); // Champ de texte plus grand pour le contenu de la réclamation
 
-        if ($options['disable_etat']) {
-            $builder->add('etat', null, [
-                'disabled' => true, // Désactiver le champ 'etat'
-            ]);
-        } else {
-            $builder->add('etat'); // Activer le champ 'etat'
-        }
+            ->add('objet', TextType::class, [
+                'label' => 'Subject',
+                'label_attr' => [
+                'class' => 'col-sm-4 col-form-label',
+                'style' => 'font-weight: bold; font-size: 18px;'
+                ] 
+            ]) // Champ de texte pour l'objet
+            ->add('texte', TextareaType::class,[
+                'label' => 'Body',
+                'label_attr' => [
+                'class' => 'col-sm-4 col-form-label',
+                'style' => 'font-weight: bold; font-size: 18px;'
+                ] 
+            ]); // Champ de texte plus grand pour le contenu de la réclamation
+
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
