@@ -8,10 +8,10 @@
 
     <div class="container">
 
-        <h1>Welcome to Your Owner Dashboard, {{ user.nom }}!</h1>
+        <h1>Welcome to Your Owner Dashboard, {{ user.name }}!</h1>
 
         <p>Email: {{ user.email }}</p>
-        <p>Role: {{ user.role }}</p>
-        {# Add more user information as needed #}
+        {# You may not have a "role" property from Google OAuth, so remove this line if not applicable #}
+
     </div>
 {% endblock %}

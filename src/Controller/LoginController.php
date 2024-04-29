@@ -257,14 +257,37 @@ class LoginController extends AbstractController
                 'code' => $request->query->get('code'),
             ]);
 
+            $this->storeTokens($accessToken);
+
+            if ($accessToken->hasExpired()) {
+                $newAccessToken = $provider->getAccessToken('refresh_token', [
+                    'refresh_token' => $accessToken->getRefreshToken(),
+                ]);
+
+                $this->storeTokens($newAccessToken);
+
+                $accessToken = $newAccessToken;
+            }
+
             $user = $provider->getResourceOwner($accessToken);
 
             $email = $user->getEmail();
 
-            return $this->redirectToRoute('dashboardOwner');
+            return $this->render('dashboard/dashboardOwner.twig', [
+                'user' => $user, // Pass the user object to the template
+            ]);
         } catch (IdentityProviderException $e) {
             exit($e->getMessage());
         }
     }
+    private function storeTokens($accessToken)
+    {
+        $_SESSION['access_token'] = $accessToken->getToken();
+        $_SESSION['refresh_token'] = $accessToken->getRefreshToken();
+    }
 
-}
+
+
+
+
+    }
