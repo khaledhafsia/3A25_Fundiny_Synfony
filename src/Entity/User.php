@@ -11,6 +11,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
+
+
 /**
  * @method string getUserIdentifier()
  */
@@ -56,15 +59,21 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $tokenExpiration = null;
 
+    #[ORM\OneToMany(mappedBy: 'userid', targetEntity: Investissements::class)]
+    private Collection $investissementsList;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Projet::class)]
+    private Collection $projetList;
 
 /*
+
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Investissements::class)]
     private Collection $investissementsList;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Projet::class)]
     private Collection $projetList;
 
-
+*/
 
 
 
@@ -76,7 +85,6 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
     }
 
 
-*/
 
 
 
@@ -224,7 +232,7 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
     {
         return $this->projetList;
     }
-
+/*
     public function addProjetList(Projet $projetList): static
     {
         if (!$this->projetList->contains($projetList)) {
@@ -247,30 +255,25 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
         return $this;
     }
 
-
+*/
     public function getRoles()
     {
-        // TODO: Implement getRoles() method.
     }
 
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
     }
 
     public function eraseCredentials()
     {
-        // TODO: Implement eraseCredentials() method.
     }
 
     public function getUsername()
     {
-        // TODO: Implement getUsername() method.
     }
 
     public function __call(string $name, array $arguments)
     {
-        // TODO: Implement @method string getUserIdentifier()
     }
 
     public function getResetToken(): ?string
@@ -293,6 +296,28 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
     public function setTokenExpiration(?\DateTimeInterface $tokenExpiration): static
     {
         $this->tokenExpiration = $tokenExpiration;
+
+        return $this;
+    }
+
+    public function addProjetList(Projet $projetList): static
+    {
+        if (!$this->projetList->contains($projetList)) {
+            $this->projetList->add($projetList);
+            $projetList->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjetList(Projet $projetList): static
+    {
+        if ($this->projetList->removeElement($projetList)) {
+            // set the owning side to null (unless already changed)
+            if ($projetList->getUser() === $this) {
+                $projetList->setUser(null);
+            }
+        }
 
         return $this;
     }
