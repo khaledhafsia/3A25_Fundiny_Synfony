@@ -1,0 +1,76 @@
+    {% block stylesheet %}
+        <link rel="stylesheet" href="{{ asset('signup/css/signup.css') }}" media="screen">
+        <link rel="stylesheet" href="{{ asset('login/css/google.css') }}" media="screen">
+    {% endblock %}
+
+
+    {% block javascripts %}
+
+    <script>
+        function resetPassword() {
+            var email = document.getElementById('login_email').value;
+            window.location.href = "{{ path('password_reset') }}?email=" + email;
+        }
+    </script>
+
+    {% endblock %}
+
+    {% block body %}
+        <title>Login page</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <link rel="stylesheet" href="{{ asset('login/css/loginbutton.css') }}">
+
+        <section class="vh-100 gradient-custom">
+            <div class='bold-line'></div>
+            <div class='container'>
+                <div class='window'>
+                    <div class='overlay'></div>
+                    <div class='content'>
+
+                        <div class='welcome'>Hello There!</div>
+                        <div class='subtitle'>Enter your information to use the app.</div>
+                        <img src="{{ asset('/back/img/logo_projet.png') }}" alt="">
+
+                        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'login_form'}}) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-4 pb-2">
+                                <div class="form-outline">
+                                    {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-lg', 'id': 'emailAddress'}}) }}
+                                    <label class="form-label" for="emailAddress">.      ....Email</label>
+                                    {{ form_errors(form.email) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 7px;"></div>
+                        <div class="col-md-6">
+                            <div class="mb-4 pb-2">
+                                <div class="form-outline">
+                                    {{ form_widget(form.password, {'attr': {'class': 'form-control form-control-lg', 'id': 'password'}}) }}
+                                    <label class="form-label" for="password">Password</label>
+                                    {{ form_errors(form.password) }}
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        {% for flashError in app.flashes('error') %}
+                            <div class="alert alert-danger">{{ flashError }}</div>
+                        {% endfor %}
+                        <a href="#" onclick="resetPassword()">Forgot Password?</a>
+
+                        {{ form_widget(form.submit, {'attr': {'class': 'btn btn-primary bn30'}}) }}
+
+
+                        {{ form_end(form) }}
+
+                        <div class="d-flex align-items-center justify-content-center pb-4">
+                            <a  href="{{ path('google_login') }}"> <button type="button" class="login-with-google-btn" >Sign in with Google</button></a>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center pb-4">
+                            <a  href="{{ path('SignUpp') }}"> <button type="button" class="bn30" >Don't have an account ?</button></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    {% endblock %}
