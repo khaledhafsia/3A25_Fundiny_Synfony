@@ -54,31 +54,58 @@ public function new(Request $request): Response
 }
     
     #[Route('/{commentid}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, int $commentid): Response
     {
-        $form = $this->createForm(CommentType::class, $comment);
+        // Get the comment entity from the database
+        $entityManager = $this->getDoctrine()->getManager();
+        $comment = $entityManager->getRepository(Comment::class)->find($commentid);
+
+        // Check if the comment exists
+        if (!$comment) {
+            throw $this->createNotFoundException('Comment not found');
+        }
+
+        // Create the comment edit form
+        $form = $this->createForm(CommentType::class, $comment, [
+            'action' => $this->generateUrl('app_comment_edit', ['commentid' => $commentid]),
+            'method' => 'POST',
+        ]);
+
+        // Handle form submission
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Save the edited comment
+            $entityManager->persist($comment);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+            // Redirect or return a response as needed
+            return $this->redirectToRoute('app_article_index'); // Example redirect
         }
 
-        return $this->renderForm('comment/edit.html.twig', [
-            'comment' => $comment,
-            'form' => $form,
+        // Render the edit comment form
+        return $this->render('comment/edit.html.twig', [
+            'form' => $form->createView(),
         ]);
-    }
-
-    #[Route('/{commentid}', name: 'app_comment_delete', methods: ['POST'])]
-    public function delete(Request $request, Comment $comment, EntityManagerInterface $entityManager): Response
+    
+}
+    #[Route('/{commentid}', name: 'app_comment_delete', methods: ['POST'])] 
+        public function delete(Request $request, int $commentid): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$comment->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($comment);
-            $entityManager->flush();
+        // Get the comment entity from the database
+        $entityManager = $this->getDoctrine()->getManager();
+        $comment = $entityManager->getRepository(Comment::class)->find($commentid);
+
+        // Check if the comment exists
+        if (!$comment) {
+            throw $this->createNotFoundException('Comment not found');
         }
 
-        return $this->redirectToRoute('app_comment_index', [], Response::HTTP_SEE_OTHER);
+        // Handle comment deletion logic
+        $entityManager->remove($comment);
+        $entityManager->flush();
+
+        // Redirect or return a response as needed
+        return $this->redirectToRoute('app_article_index'); // Example redirect
     }
 }
