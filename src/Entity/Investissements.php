@@ -24,7 +24,7 @@ class Investissements
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToOne(inversedBy: 'investissementsList')]
-    private ?User $userid = null;
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -69,12 +69,12 @@ class Investissements
 
     public function getUserid(): ?User
     {
-        return $this->userid;
+        return $this->user;
     }
 
-    public function setUserid(?User $userid): static
+    public function setUserid(?User $user): static
     {
-        $this->userid = $userid;
+        $this->user = $user;
 
         return $this;
     }

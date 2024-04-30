@@ -2,16 +2,18 @@
 
 {% block body %}
 
-    {# <a href="https://example.com" id="top-left-link">Your Link Text Here</a> #}
 
-    <h4><a   href="{{ path('login') }}"><span>Logout</span></a></h4>
+    <h4><a href="{{ path('login') }}"><span>Logout</span></a></h4>
 
     <div class="container">
 
         <h1>Welcome to Your Owner Dashboard, {{ user.name }}!</h1>
 
-        <p>Email: {{ user.email }}</p>
-        {# You may not have a "role" property from Google OAuth, so remove this line if not applicable #}
-
+        <h2>Your Projects:</h2>
+        <ul>
+            {% for project in projects %}
+                <li> Project name : {{ project.nompr }} with a capital of {{ project.ca }} created on the date {{ project.dated|date('Y-m-d') }}  </li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock %}

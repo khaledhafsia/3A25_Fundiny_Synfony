@@ -29,6 +29,7 @@ class Projet
     #[ORM\ManyToOne(inversedBy: 'projetList')]
     private ?User $user = null;
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -93,4 +94,5 @@ class Projet
 
         return $this;
     }
+
 }

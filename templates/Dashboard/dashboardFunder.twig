@@ -9,8 +9,11 @@
     <div class="container">
         <h1>Welcome to Your Funder Dashboard, {{ user.nom }}{{ user.prenom }}!</h1>
 
-        <p>Email: {{ user.email }}</p>
-        <p>Role: {{ user.role }}</p>
-        {# Add more user information as needed #}
+        <h2>Your Investments:</h2>
+        <ul>
+            {% for investissement in investissements %}
+                <li>you invested {{ investissement.montant }} on the date : {{ investissement.date|date('Y-m-d') }} </li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock %}

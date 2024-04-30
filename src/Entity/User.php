@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\Projet;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -65,15 +65,7 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Projet::class)]
     private Collection $projetList;
 
-/*
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Investissements::class)]
-    private Collection $investissementsList;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Projet::class)]
-    private Collection $projetList;
-
-*/
 
 
 
@@ -84,6 +76,10 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
         $this->User = new ArrayCollection();
     }
 
+    public function __construct2()
+    {
+        $this->projetList = new ArrayCollection();
+    }
 
 
 
@@ -203,27 +199,6 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
         return $this->investissementsList;
     }
 
-    public function addInvestissementsList(Investissements $investissementsList): static
-    {
-        if (!$this->investissementsList->contains($investissementsList)) {
-            $this->investissementsList->add($investissementsList);
-            $investissementsList->setUserID($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInvestissementsList(Investissements $investissementsList): static
-    {
-        if ($this->investissementsList->removeElement($investissementsList)) {
-            // set the owning side to null (unless already changed)
-            if ($investissementsList->getUserID() === $this) {
-                $investissementsList->setUserID(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Projet>
@@ -232,35 +207,14 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
     {
         return $this->projetList;
     }
-/*
-    public function addProjetList(Projet $projetList): static
-    {
-        if (!$this->projetList->contains($projetList)) {
-            $this->projetList->add($projetList);
-            $projetList->setUserId($this);
-        }
 
-        return $this;
-    }
 
-    public function removeProjetList(Projet $projetList): static
-    {
-        if ($this->projetList->removeElement($projetList)) {
-            // set the owning side to null (unless already changed)
-            if ($projetList->getUserId() === $this) {
-                $projetList->setUserId(null);
-            }
-        }
 
-        return $this;
-    }
-
-*/
     public function getRoles()
     {
     }
 
-    public function getSalt()
+    public function getSalt ()
     {
     }
 
@@ -316,6 +270,27 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($projetList->getUser() === $this) {
                 $projetList->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+    public function addInvestissementsList(Investissements $investissementsList): static
+    {
+        if (!$this->investissementsList->contains($investissementsList)) {
+            $this->investissementsList->add($investissementsList);
+            $investissementsList->setUserID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvestissementsList(Investissements $investissementsList): static
+    {
+        if ($this->investissementsList->removeElement($investissementsList)) {
+            // set the owning side to null (unless already changed)
+            if ($investissementsList->getUserID() === $this) {
+                $investissementsList->setUserID(null);
             }
         }
 
