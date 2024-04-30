@@ -8,6 +8,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
 date_default_timezone_set('Africa/Tunis');
 
@@ -17,9 +18,9 @@ class InvestissementsType extends AbstractType
     {
         $builder
             ->add('montant')
-            ->add('description')
-            ->add('projetid')
-            ->add('userid');
+            ->add('description');
+           // ->add('projetid')
+            //->add('userid');
 
        
         $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {

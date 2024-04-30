@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Investissements;
+use App\Entity\Projet;
+use App\Entity\User;
 use App\Form\InvestissementsType;
 use App\Repository\InvestissementsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +15,11 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Stripe\Checkout\Session;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
 
 
 //#[Route('/investissements')]
@@ -76,19 +83,49 @@ class InvestissementsController extends AbstractController
     }
 
     #[Route('/front/investissements/new', name: 'app_investissements_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, RequestStack $requestStack): Response
     {
+
+        $Projet = $entityManager->getRepository(Projet::class)->find(10);
+        $User = $entityManager->getRepository(User::class)->find(7);
+
+
         $investissement = new Investissements();
+        $investissement->setProjetid($Projet);
+        $investissement->setUserid($User);
+
+
         $form = $this->createForm(InvestissementsType::class, $investissement);
         $form->handleRequest($request);
-
+    
         if ($form->isSubmitted() && $form->isValid()) {
+
+            \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
+    
+            $session = Session::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'usd',
+                        'product_data' => [
+                            'name' => 'investissement',
+                        ],
+                        'unit_amount' => $investissement->getMontant() * 100,
+                    ],
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'success_url' => $this->generateUrl('payment_success', [], UrlGeneratorInterface::ABSOLUTE_URL),
+                'cancel_url' => $this->generateUrl('payment_cancel', [], UrlGeneratorInterface::ABSOLUTE_URL),
+            ]);
+
+
             $entityManager->persist($investissement);
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_investissements_index', [], Response::HTTP_SEE_OTHER);
+        
+            return $this->redirect($session->url);
         }
-
+    
         return $this->renderForm('front/investissements/new.html.twig', [
             'investissement' => $investissement,
             'form' => $form,
@@ -219,6 +256,30 @@ class InvestissementsController extends AbstractController
         return $this->render('back/investissements/_table.html.twig', [
             'investissements' => $investissements,
         ]);
+    }
+
+    #[Route('/pdfinv', name: 'pdf_inv')]
+    public function generatePdf(): Response
+    {
+        $html = $this->renderView('front/investissements/pdf.html.twig', [
+            'investissements' => $this->getDoctrine()->getRepository(Investissements::class)->findAll(),
+        ]);
+
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+
+        $dompdf->setPaper('A4', 'landscape');
+
+        $dompdf->render();
+
+        $dompdf->stream('investissements.pdf', [
+            'Attachment' => true,
+        ]);
+
+        return new Response();
     }
 
     #[Route('/checkout', name: 'checkout')]

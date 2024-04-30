@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777777;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">Your Investments List</div>
+        <div class="subtitle">A list of all investments you have made</div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Montant</th>
+                <th>Description</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for investissement in investissements %}
+                <tr>
+                    <td>{{ investissement.montant }}</td>
+                    <td>{{ investissement.description }}</td>
+                    <td>{{ investissement.date ? investissement.date|date('Y-m-d H:i:s') : '' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="footer">
+        Generated on: {{ "now"|date("Y-m-d H:i:s") }}
+    </div>
+</body>
+</html>
