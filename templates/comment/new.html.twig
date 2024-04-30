@@ -5,7 +5,13 @@
 {% block body %}
     <h1>Create new Comment</h1>
 
-    {{ include('comment/_form.html.twig') }}
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    
+    <input type="hidden" name="postid" value="{{ postId }}">
 
-    <a href="{{ path('app_comment_index') }}">back to list</a>
+    <button type="submit" class="btn btn-success">Submit</button>
+    {{ form_end(form) }}
+
+    <a href="{{ path('app_comment_index') }}">Back to list</a>
 {% endblock %}

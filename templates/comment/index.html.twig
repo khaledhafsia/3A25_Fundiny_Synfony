@@ -8,28 +8,28 @@
     <table class="table">
         <thead>
             <tr>
-             
+                <th>ID</th>
                 <th>Comment</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for comment in comments %}
             <tr>
-                <td>{{ comment.commentid }}</td>
+                <td>{{ comment.id }}</td>
                 <td>{{ comment.comment }}</td>
                 <td>
-                    <a href="{{ path('app_comment_show', {'commentid': comment.commentid}) }}">show</a>
-                    <a href="{{ path('app_comment_edit', {'commentid': comment.commentid}) }}">edit</a>
+                    <a href="{{ path('app_comment_show', {'commentid': comment.id}) }}">Show</a>
+                    <a href="{{ path('app_comment_edit', {'commentid': comment.id}) }}">Edit</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">no records found</td>
+                <td colspan="3">No records found</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_comment_new') }}">Create new</a>
+    <a href="{{ path('app_comment_new') }}" class="btn btn-primary">Create new Comment</a>
 {% endblock %}

@@ -10,7 +10,7 @@ class Comment
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     #[ORM\Column(name: "commentid", type: "integer", nullable: false)]
-    private int $commentid;
+    private int $id;
 
     #[ORM\Column(name: "comment", type: "string", length: 100, nullable: false)]
     private string $comment;
@@ -19,9 +19,9 @@ class Comment
     #[ORM\JoinColumn(name: "postid", referencedColumnName: "id")]
     private ?Article $postid;
 
-    public function getCommentid(): ?int
+    public function getId(): ?int
     {
-        return $this->commentid;
+        return $this->id;
     }
 
     public function getComment(): ?string
@@ -29,10 +29,9 @@ class Comment
         return $this->comment;
     }
 
-    public function setComment(string $comment): static
+    public function setComment(string $comment): self
     {
         $this->comment = $comment;
-
         return $this;
     }
 
@@ -40,13 +39,10 @@ class Comment
     {
         return $this->postid;
     }
-
-    public function setPostid(?Article $postid): static
+    
+    public function setPostid(?Article $postid): self
     {
         $this->postid = $postid;
-
         return $this;
     }
-
-
 }

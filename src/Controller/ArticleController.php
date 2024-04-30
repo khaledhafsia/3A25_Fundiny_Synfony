@@ -1,12 +1,15 @@
 <?php
 
-// src/Controller/ArticleController.php
+
 
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Form\ArticleType;
+use App\Form\CommentType;
 use App\Repository\ArticleRepository;
+use App\Repository\CommentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use SQLite3Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,13 +22,31 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ArticleController extends AbstractController
 {
     #[Route('/', name: 'app_article_index', methods: ['GET'])]
-    public function index(ArticleRepository $articleRepository): Response
+    public function index(ArticleRepository $articleRepository, CommentRepository $commentRepository): Response
     {
+        // Get all articles
+        $articles = $articleRepository->findAll();
+    
+        // Create an associative array to store comments for each article
+        $articleComments = [];
+    
+        // Loop through each article and fetch its associated comments
+        foreach ($articles as $article) {
+            $comments = $commentRepository->findBy(['postid' => $article->getId()]);
+            $articleComments[$article->getId()] = $comments;
+        }
+    
+        // Create a new comment object for the comment form
+        $newComment = new Comment();
+        $commentForm = $this->createForm(CommentType::class, $newComment);
+    
+        // Render the Twig template with articles, comments, and the comment form
         return $this->render('article/index.html.twig', [
-            'articles' => $articleRepository->findAll(),
+            'articles' => $articles,
+            'articleComments' => $articleComments,
+            'commentForm' => $commentForm->createView(),
         ]);
     }
-
     #[Route('/new', name: 'app_article_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {

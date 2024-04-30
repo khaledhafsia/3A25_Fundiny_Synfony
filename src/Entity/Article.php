@@ -14,12 +14,12 @@ class Article
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     #[ORM\Column(name: "id", type: "integer", nullable: false)]
     private int $id;
-
+                                             
     #[Assert\NotBlank(message: 'Ce champ est obligatoire')]
-    #[ORM\Column(name: "description", type: "string", length: 125, nullable: false)]
+    #[ORM\Column(name: "description", type: "string", length: 125, nullable: true)]
     private string $description;
 
-    #[ORM\Column(name: "image", type: "string", length: 125, nullable: true)]
+    #[ORM\Column(name: "image", type: "string", length: 125, nullable: false)]
     private ?string $image = null;
 
     private ?File $imageFile = null;
