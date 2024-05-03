@@ -30,6 +30,16 @@ class InvestissementsRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findByUserId($userId)
+    {
+        return $this->createQueryBuilder('i')
+            ->andWhere('i.userid = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+    
+
 //    /**
 //     * @return Investissements[] Returns an array of Investissements objects
 //     */

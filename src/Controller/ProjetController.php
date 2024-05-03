@@ -29,6 +29,18 @@ class ProjetController extends AbstractController
         ]);
     }
 
+    #[Route('/front/Projet2', name: 'app_projet_index', methods: ['GET'])]
+    public function findByUserId(EntityManagerInterface $entityManager): Response
+    {
+        $projets = $entityManager
+            ->getRepository(Projet::class)
+            ->findByUserId(16);
+
+        return $this->render('front/projet/index.html.twig', [
+            'projets' => $projets,
+        ]);
+    }
+
     #[Route('/front/Projet/new', name: 'app_projet_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

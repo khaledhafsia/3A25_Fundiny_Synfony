@@ -4,12 +4,13 @@ namespace App\Entity;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Projet
- *
+ * 
  * @ORM\Table(name="projet", indexes={@ORM\Index(name="IDX_50159CA9A76ED395", columns={"user_id"})})
- * @ORM\Entity(repositoryClass=App\Repository\ProjetRepository::class)
+ * @ORM\Entity
  */
 class Projet
 {
@@ -22,17 +23,23 @@ class Projet
      */
     private $id;
 
+    #[Assert\NotBlank(message:'description obligatoire')]
+    #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
+    
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="nomPr", type="string", length=255, nullable=false)
+     * @ORM\Column(name="nomPr", type="string", length=255, nullable=true)
      */
     private $nompr;
+    
 
+    #[Assert\NotBlank(message:'description obligatoire')]
+    #[Assert\Regex(pattern: '/^[a-zA-Z]+$/', message: 'The project name can only contain letters.')]
     /**
-     * @var string
+     * @var string|null
      *
-     * @ORM\Column(name="nomPo", type="string", length=50, nullable=false)
+     * @ORM\Column(name="nomPo", type="string", length=50, nullable=true)   
      */
     private $nompo;
 
@@ -43,6 +50,7 @@ class Projet
      */
     private $dated;
 
+    #[Assert\Type(type: 'numeric', message: 'The CA must be a number.')]
     /**
      * @var float
      *
@@ -128,8 +136,9 @@ class Projet
     public function __toString(): string
 {
     return sprintf(
-        "Projet ID: %d, NomPr: %s, NomPo: %s, DateD: %s, CA: %f",
-        $this->id,
+        "Projet NomPr: %s, NomPo: %s, DateD: %s, CA: %f",
+        #"Projet ID: %d, NomPr: %s, NomPo: %s, DateD: %s, CA: %f",
+        # $this->id, 
         $this->nompr,
         $this->nompo,
         $this->dated->format('Y-m-d'),

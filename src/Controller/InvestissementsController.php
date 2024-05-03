@@ -40,9 +40,8 @@ class InvestissementsController extends AbstractController
     #[Route('/front/investissements', name: 'app_investissements_index', methods: ['GET'])]
     public function index(InvestissementsRepository $investissementsRepository, Request $request): Response
     {
-
         
-        $investissements = $investissementsRepository->findAll();
+        $investissements = $investissementsRepository->findByUserId(7);
 
         return $this->render('front/investissements/index.html.twig', [
             'investissements' => $investissements,
