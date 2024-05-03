@@ -20,16 +20,17 @@ class ProjetRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Projet::class);
     }
-
-    public function findByUserId($userId)
-{
-    return $this->createQueryBuilder('p')
-        ->andWhere('p.user = :userId')
-        ->setParameter('userId', $userId)
-        ->getQuery()
-        ->getResult();
-}
     
+    public function findByUserId($userId)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.user = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+    
+
     // Add custom methods as needed
 
     /*

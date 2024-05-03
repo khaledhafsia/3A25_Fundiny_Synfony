@@ -77,6 +77,7 @@ class User
      */
     private $banState;
 
+
     public function getId(): ?int
     {
         return $this->id;

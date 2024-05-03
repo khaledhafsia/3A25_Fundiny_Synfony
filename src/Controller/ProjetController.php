@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Projet;
 use App\Form\ProjetType;
+use App\Repository\ProjetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,17 +30,17 @@ class ProjetController extends AbstractController
         ]);
     }
 
-    #[Route('/front/Projet2', name: 'app_projet_index', methods: ['GET'])]
-    public function findByUserId(EntityManagerInterface $entityManager): Response
+    #[Route('/front/Projet2', name: 'app_projet_index2', methods: ['GET'])]
+    public function index2(ProjetRepository $projetRepository): Response
     {
-        $projets = $entityManager
-            ->getRepository(Projet::class)
-            ->findByUserId(16);
+        
+        $projet = $projetRepository->findByUserId(16);
 
         return $this->render('front/projet/index.html.twig', [
-            'projets' => $projets,
+            'projets' => $projet,
         ]);
     }
+
 
     #[Route('/front/Projet/new', name: 'app_projet_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
