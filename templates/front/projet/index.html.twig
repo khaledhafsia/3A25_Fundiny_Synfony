@@ -1,0 +1,107 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Projet index{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Import Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif; /* Utilisez la police Roboto */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <h1>Projet index</h1>
+
+    <form method="get" action="">
+        <input id="search-input" type="text" class="form-control" placeholder="Search...">
+    </form>
+
+    {# Checkbox for sorting by date #}
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="sortByDateCheckbox">
+        <label class="form-check-label" for="sortByDateCheckbox">Sort by Date</label>
+    </div>
+
+    {# Checkbox for sorting by CA #}
+    <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="sortByCACheckbox">
+        <label class="form-check-label" for="sortByCACheckbox">Sort by CA</label>
+    </div>
+
+    <div class="row" id="projectsContainer">
+        {% if projets is not empty %}
+            {% for projet in projets %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ projet.nompr }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ projet.nompo }}</h6>
+                            <p class="card-text">Date: {{ projet.dated ? projet.dated|date('Y-m-d') : '' }}</p>
+                            <p class="card-text">CA: {{ projet.ca }}</p>
+                            {# Show and Edit buttons #}
+                            <a href="{{ path('app_projet_show', {'id': projet.id}) }}" class="btn btn-primary">Show</a>
+                            <a href="{{ path('app_projet_edit', {'id': projet.id}) }}" class="btn btn-secondary">Edit</a>
+                            <a href="{{ path('app_investissements_new', {'id': projet.id}) }}" class="btn btn-primary">Invest</a>
+
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="col">
+                <div class="alert alert-warning" role="alert">No records found</div>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Button to create new project #}
+    <a href="{{ path('app_projet_new') }}" class="btn btn-success">Create new</a>
+    <a href="{{ path('app_projet_export') }}" class="btn btn-success">Excel </a>    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Function to sort by date
+            $("#sortByDateCheckbox").change(function() {
+                if ($(this).is(":checked")) {
+                    sortCards(".card", ".card-text:first", "date");
+                }
+            });
+
+            // Function to sort by CA
+            $("#sortByCACheckbox").change(function() {
+                if ($(this).is(":checked")) {
+                    sortCards(".card", ".card-text:eq(1)", "CA");
+                }
+            });
+
+            // Function to sort cards by given criteria
+            function sortCards(cardSelector, textSelector, criteria) {
+                var sortedCards = $(cardSelector).detach().sort(function(a, b) {
+                    var valueA = $(a).find(textSelector).text();
+                    var valueB = $(b).find(textSelector).text();
+                    if (criteria === "date") {
+                        return new Date(valueA) - new Date(valueB);
+                    } else if (criteria === "CA") {
+                        var numA = parseFloat(valueA.replace(/[^0-9.-]+/g, ""));
+                        var numB = parseFloat(valueB.replace(/[^0-9.-]+/g, ""));
+                        return numA - numB;
+                    }
+                });
+                $("#projectsContainer").append(sortedCards);
+            }
+
+            // Filter cards based on search input
+            $("#search-input").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $(".card").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+{% endblock %}

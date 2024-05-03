@@ -40,6 +40,8 @@ class InvestissementsController extends AbstractController
     #[Route('/front/investissements', name: 'app_investissements_index', methods: ['GET'])]
     public function index(InvestissementsRepository $investissementsRepository, Request $request): Response
     {
+
+        
         $investissements = $investissementsRepository->findAll();
 
         return $this->render('front/investissements/index.html.twig', [
@@ -82,11 +84,11 @@ class InvestissementsController extends AbstractController
         ]);
     }
 
-    #[Route('/front/investissements/new', name: 'app_investissements_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, RequestStack $requestStack): Response
+    #[Route('/front/investissements/new/{id}', name: 'app_investissements_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, RequestStack $requestStack, $id): Response
     {
 
-        $Projet = $entityManager->getRepository(Projet::class)->find(10);
+        $Projet = $entityManager->getRepository(Projet::class)->find($id);
         $User = $entityManager->getRepository(User::class)->find(7);
 
 

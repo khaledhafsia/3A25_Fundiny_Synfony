@@ -1,0 +1,33 @@
+{% extends 'back/baseBack.html.twig' %}
+
+{% block title %}Collaboration index{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5">Collaboration index</h1>
+
+    <div class="row">
+        {% for collaboration in collaborations %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ collaboration.nomcoll }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ collaboration.typecoll }}</h6>
+                        <p class="card-text">Date: {{ collaboration.datecoll? collaboration.datecoll|date('Y-m-d') : '' }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{{ path('app_collaboration_showb', {'id': collaboration.id}) }}" class="btn btn-primary btn-sm">show</a>
+                        <a href="{{ path('app_collaboration_editb', {'id': collaboration.id}) }}" class="btn btn-secondary btn-sm">edit</a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <p class="lead text-center">No records found</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{{ path('app_collaboration_newb') }}" class="btn btn-success">Create new</a>
+    </div>
+{% endblock %}

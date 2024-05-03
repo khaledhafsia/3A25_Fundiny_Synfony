@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Statistics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+
+        canvas {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+       .table-container {
+            width: 60%;
+            margin: 0 auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 5px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+   .chart-container {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Collaboration Statistics</h1>
+    <div class="chart-container">
+        <canvas id="collaborationChart"></canvas>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Project ID</th>
+                    <th>Number of Collaborations</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set totalCollaborations = 0 %}
+                {% for collaboration in collaborationsByProjectId %}
+                    {% set totalCollaborations = totalCollaborations + collaboration.numCollaborations %}
+                    <tr>
+                        <td>{{ collaboration.idProjet }}</td>
+                        <td>{{ collaboration.numCollaborations }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function calculateTotalCollaborations(collaborations) {
+            return collaborations.reduce((acc, curr) => acc + curr.numCollaborations, 0);
+        }
+
+        const ctx = document.getElementById('collaborationChart').getContext('2d');
+        const collaborationChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: '# of Collaborations',
+                    data: [],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        const collaborationsByProjectId = {{ collaborationsByProjectId|json_encode|raw }};
+
+        const totalCollaborations = calculateTotalCollaborations(collaborationsByProjectId);
+
+        collaborationChart.data.labels = collaborationsByProjectId.map(collaboration => collaboration.idProjet);
+        collaborationChart.data.datasets[0].data = collaborationsByProjectId.map(collaboration => collaboration.numCollaborations);
+
+        collaborationChart.data.datasets[0].data.forEach((value, index) => {
+            const percentage = (value / totalCollaborations) * 100;
+            collaborationChart.data.labels[index] += ` (${percentage.toFixed(2)}%)`;
+        });
+
+        collaborationChart.update();
+    </script>
+            <a href="{{ path('app_collaboration_index') }}" class="btn btn-success">retour </a>     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+</body>
+</html>

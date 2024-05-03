@@ -1,0 +1,22 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Collaboration{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-5">Collaboration</h1>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ collaboration.nomcoll }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ collaboration.typecoll }}</h6>
+            <p class="card-text">Id: {{ collaboration.id }}</p>
+            <p class="card-text">Date: {{ collaboration.datecoll? collaboration.datecoll|date('Y-m-d') : '' }}</p>
+        </div>
+        <div class="card-footer">
+            <a href="{{ path('app_collaboration_index') }}" class="btn btn-primary btn-sm">back to list</a>
+            <a href="{{ path('app_collaboration_edit', {'id': collaboration.id}) }}" class="btn btn-secondary btn-sm">edit</a>
+        </div>
+    </div>
+
+    {{ include('front/collaboration/_delete_form.html.twig') }}
+{% endblock %}
