@@ -24,7 +24,7 @@ class ProjetController extends AbstractController
             ->getRepository(Projet::class)
             ->findAll();
 
-        return $this->render('projet/index.html.twig', [
+        return $this->render('front/projet/index.html.twig', [
             'projets' => $projets,
         ]);
     }
@@ -43,7 +43,7 @@ class ProjetController extends AbstractController
             return $this->redirectToRoute('app_projet_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('projet/new.html.twig', [
+        return $this->renderForm('front/projet/new.html.twig', [
             'projet' => $projet,
             'form' => $form,
         ]);
@@ -61,7 +61,7 @@ public function show(Request $request, EntityManagerInterface $entityManager): R
             'No project found for id '.$id
         );
     }
-    return $this->render('projet/show.html.twig', [
+    return $this->render('front/projet/show.html.twig', [
         'projet' => $projet,
     ]);
 }
@@ -79,7 +79,7 @@ public function show(Request $request, EntityManagerInterface $entityManager): R
             return $this->redirectToRoute('app_projet_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('projet/edit.html.twig', [
+        return $this->renderForm('front/projet/edit.html.twig', [
             'projet' => $projet,
             'form' => $form,
         ]);

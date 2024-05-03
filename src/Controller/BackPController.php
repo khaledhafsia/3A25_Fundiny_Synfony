@@ -19,7 +19,7 @@ class BackPController extends AbstractController
             ->getRepository(Projet::class)
             ->findAll();
 
-        return $this->render('projet/indexb.html.twig', [
+        return $this->render('back/projet/indexb.html.twig', [
             'projets' => $projets,
         ]);
     }
@@ -38,7 +38,7 @@ class BackPController extends AbstractController
             return $this->redirectToRoute('app_projet_indexb', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('projet/newb.html.twig', [
+        return $this->renderForm('back/projet/newb.html.twig', [
             'projet' => $projet,
             'form' => $form,
         ]);
@@ -47,7 +47,7 @@ class BackPController extends AbstractController
     #[Route('/back/Projet/{id}', name: 'app_projet_showb', methods: ['GET'])]
     public function show(Projet $projet): Response
     {
-        return $this->render('projet/showb.html.twig', [
+        return $this->render('back/projet/showb.html.twig', [
             'projet' => $projet,
         ]);
     }
@@ -64,7 +64,7 @@ class BackPController extends AbstractController
             return $this->redirectToRoute('app_projet_indexb', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('projet/editb.html.twig', [
+        return $this->renderForm('back/projet/editb.html.twig', [
             'projet' => $projet,
             'form' => $form,
         ]);

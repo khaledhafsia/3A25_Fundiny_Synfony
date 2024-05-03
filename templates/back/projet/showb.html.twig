@@ -1,4 +1,4 @@
-{% extends 'back/base.html.twig' %}
+{% extends 'back/baseBack.html.twig' %}
 
 {% block title %}Projet{% endblock %}
 
@@ -34,5 +34,5 @@
 
     <a href="{{ path('app_projet_editb', {'id': projet.id}) }}">edit</a>
 
-    {{ include('projet/_delete_form.html.twig') }}
+    {{ include('back/projet/_delete_form.html.twig') }}
 {% endblock %}

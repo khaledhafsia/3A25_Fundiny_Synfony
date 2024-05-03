@@ -23,7 +23,7 @@ class BackController extends AbstractController
             ->getRepository(Collaboration::class)
             ->findAll();
 
-        return $this->render('collaboration/indexb.html.twig', [
+        return $this->render('back/collaboration/indexb.html.twig', [
             'collaborations' => $collaborations,
         ]);
     }
@@ -42,7 +42,7 @@ class BackController extends AbstractController
             return $this->redirectToRoute('app_collaboration_indexb', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('collaboration/newb.html.twig', [
+        return $this->renderForm('back/collaboration/newb.html.twig', [
             'collaboration' => $collaboration,
             'form' => $form,
         ]);
@@ -51,7 +51,7 @@ class BackController extends AbstractController
     #[Route('/back/collaboration/{id}', name: 'app_collaboration_showb', methods: ['GET'])]
     public function showb(Collaboration $collaboration): Response
     {
-        return $this->render('collaboration/showb.html.twig', [
+        return $this->render('back/collaboration/showb.html.twig', [
             'collaboration' => $collaboration,
         ]);
     }
@@ -68,7 +68,7 @@ class BackController extends AbstractController
             return $this->redirectToRoute('app_collaboration_indexb', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('collaboration/editb.html.twig', [
+        return $this->renderForm('back/collaboration/editb.html.twig', [
             'collaboration' => $collaboration,
             'form' => $form,
         ]);
