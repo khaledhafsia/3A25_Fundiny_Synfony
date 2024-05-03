@@ -28,13 +28,13 @@ class InvestissementsController extends AbstractController
     #[Route('/home', name: 'home')]
     public function home(): Response
     {
-        return $this->render('base.html.twig');
+        return $this->render('front/base.html.twig');
     }
 
     #[Route('/back', name: 'back')]
     public function back(): Response
     {
-        return $this->render('baseBack.html.twig');
+        return $this->render('back/baseBack.html.twig');
     }
 
     #[Route('/front/investissements', name: 'app_investissements_index', methods: ['GET'])]
