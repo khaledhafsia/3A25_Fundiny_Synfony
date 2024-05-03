@@ -1,8 +1,16 @@
 <?php
 
 namespace App\Entity;
-
+use App\Entity\Projet;
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 /**
  * User
@@ -77,6 +85,30 @@ class User
      */
     private $banState;
 
+        /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $resetToken = null;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private ?\DateTimeInterface $tokenExpiration = null;
+    /**
+     * @ORM\OneToMany(targetEntity=Investissements::class, mappedBy="userid")
+     */
+    private Collection $investissementsList;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Projet::class, mappedBy="user")
+     */
+    private Collection $projetList;
+
+    public function __construct()
+    {
+        $this->investissementsList = new ArrayCollection();
+        $this->projetList = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -175,6 +207,29 @@ class User
     public function setBanState(?bool $banState): static
     {
         $this->banState = $banState;
+
+        return $this;
+    }
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    public function getTokenExpiration(): ?\DateTimeInterface
+    {
+        return $this->tokenExpiration;
+    }
+
+    public function setTokenExpiration(?\DateTimeInterface $tokenExpiration): static
+    {
+        $this->tokenExpiration = $tokenExpiration;
 
         return $this;
     }

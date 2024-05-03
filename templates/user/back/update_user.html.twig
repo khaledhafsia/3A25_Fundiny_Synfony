@@ -1,0 +1,53 @@
+
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+
+    <section style="background-color: #2779e2; margin: 0 auto;">
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-xl-9">
+
+                    <h1 class="text-white mb-4" style="margin: 0 auto; text-align: center;">Modifier User </h1>
+
+                    <div class="card" style="border-radius: 15px;">
+                        {% for message in app.flashes('info') %}
+                            <div class='alert alert-success'>
+                                {{ message }}
+
+                                <script>
+                                    // Hide the alert after 5 seconds
+                                    setTimeout(function() {
+                                        document.querySelector('.alert').remove();
+                                    }, 3000);
+                                </script>
+                            </div>
+                        {% endfor %}
+                        <div class="card-body">
+                {{ form_start(form,{'attr':{'novalidate':'novalidate'}}) }}
+                <div class="u-form-group u-form-name u-form-partition-factor-2">
+                    <label for="name-ced4" class="u-custom-font u-font-courier-new u-label">Name</label>
+                    {{ form_widget(form.nom) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+                <div class="u-form-group u-form-partition-factor-2 u-form-group-2">
+                    <label for="text-fb09" class="u-custom-font u-font-courier-new u-label">Prenom</label>
+                    {{ form_widget(form.prenom) }}
+                    {{ form_errors(form.nom) }}
+                </div>
+
+
+                {{ form_end(form) }}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+{% endblock %}
+
+

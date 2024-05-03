@@ -1,0 +1,159 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                $('#searchInput').on('input', function () {
+                    var searchInput = $(this).val();
+
+                    $.ajax({
+                        url: "{{ path('search_user') }}",
+                        type: "GET",
+                        data: {
+                            searchInput: searchInput
+                        },
+                        success: function (response) {
+                            $('#dataTable tbody').empty();
+
+                            response.forEach(function (user) {
+                                var row = '<tr>' +
+                                    '<td>' + user.nom + '</td>' +
+                                    '<td>' + user.prenom + '</td>' +
+                                    '<td>' + user.email + '</td>' +
+                                    '<td>' + user.role + '</td>' +
+                                    '<td>' + user.banstate + '</td>' +
+                                    '</tr>';
+                                $('#dataTable tbody').append(row);
+                            });
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                });
+            })
+        </script>
+
+    <script>
+
+        $(document).ready(function() {
+
+
+            // Filter by role functionality
+            $('#roleFilter').on('change', function() {
+                var role = $(this).val();
+
+                $.ajax({
+                    url: "{{ path('filter_user_by_role') }}",
+                    type: "GET",
+                    data: {
+                        role: role
+                    },
+                    success: function(response) {
+                        $('#dataTable tbody').empty();
+
+                        response.forEach(function(user) {
+                            var row = '<tr>' +
+                                '<td>' + user.id + '</td>' +
+                                '<td>' + user.nom + '</td>' +
+                                '<td>' + user.prenom + '</td>' +
+                                '<td>' + user.email + '</td>' +
+
+                                '</tr>';
+                            $('#dataTable tbody').append(row);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            });
+        });
+    </script>
+
+{% endblock %}
+
+        {% block body %}
+            <a  href="{{ path('logout') }}" class="btn btn-link"><span>Logout</span> </a>
+
+        <header class="top-header">
+
+            <div id="search-input" class="ytd-searchbox-spt" slot="search-input">
+                    <form>
+                     <h3><label for="searchInput">Search users:</label></h3>
+                    <input type="text" id="searchInput" placeholder="Enter user name...">
+                    <ul id="searchResults"></ul>
+                    </form>
+
+                </div>
+                <div>
+                    <form>
+                    <h3><label for="roleFilter">Filter by Role:</label></h3>
+                    <select id="roleFilter">
+                        <option value="">All</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Funder">Funder</option>
+                        <option value="Owner">Owner</option>
+                    </select>
+                    </form>
+                </div>
+
+        </header>
+
+
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <div class="container-fluid">
+                        <div class="card shadow mb-4">
+                            <div class="card-header py-3">
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Prenom</th>
+                                            <th>Email</th>
+                                            <th>Role</th>
+                                            <th>Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tfoot>
+
+                                        </tfoot>
+                                        <tbody>
+                                        {% for u in user %}
+                                            <tr>
+                                                <td>{{ u.nom }}</td>
+                                                <td>{{ u.prenom }}</td>
+                                                <td>{{ u.email }}</td>
+                                                <td>{{ u.role }}</td>
+
+
+                                               <td> <a href="{{  path('delete_user',{'id':u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;"  >Delete</button></a>
+                                                    <a href="{{  path('update_user',{'id':u.id }) }} "><button style="border-radius:15px;color:blue;border-color:blue;"  >Update</button></a>
+                                                   {% if not u.banState %}
+                                                       <a href="{{ path('ban_user', {'id': u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;">Ban</button></a>
+                                                   {% endif %}
+                                                   {% if  u.banState %}
+                                                       <a href="{{ path('unban_user', {'id': u.id }) }}"><button style="border-radius:15px;color:blue;border-color:blue;">unBan</button></a>
+                                                   {% endif %}
+                                                </td>
+
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        {% endblock %}
+

@@ -1,0 +1,17 @@
+{% extends 'baseUsers.twig' %}
+
+{% block body %}
+
+    {# <a href="https://example.com" id="top-left-link">Your Link Text Here</a> #}
+
+    <h4><a   href="{{ path('login') }}"><span>Logout</span></a></h4>
+
+    <div class="container">
+
+        <h1>Welcome to Your Owner Dashboard, {{ user.name }}!</h1>
+
+        <p>Email: {{ user.email }}</p>
+        {# You may not have a "role" property from Google OAuth, so remove this line if not applicable #}
+
+    </div>
+{% endblock %}
