@@ -12,13 +12,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
+
 /**
  * User
  *
  * @ORM\Table(name="user")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=App\Repository\UserRepository::class)
  */
-class User
+
+class User implements UserInterface ,PasswordAuthenticatedUserInterface
 {
     /**
      * @var int
@@ -139,6 +141,10 @@ class User
         return $this;
     }
 
+
+
+
+
     public function getEmail(): ?string
     {
         return $this->email;
@@ -187,12 +193,12 @@ class User
         return $this;
     }
 
-    public function getMontant(): ?float
+    public function getParticipation(): ?float
     {
         return $this->montant;
     }
 
-    public function setMontant(?float $montant): static
+    public function setParticipation(?float $montant): static
     {
         $this->montant = $montant;
 
@@ -210,6 +216,50 @@ class User
 
         return $this;
     }
+
+
+    /**
+     * @return Collection<int, Investissements>
+     */
+    public function getInvestissementsList(): Collection
+    {
+        return $this->investissementsList;
+    }
+
+
+    /**
+     * @return Collection<int, Projet>
+     */
+    public function getProjetList(): Collection
+    {
+        return $this->projetList;
+    }
+
+
+
+    public function getRoles()
+    {
+    }
+
+    public function getSalt ()
+    {
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    public function getUsername()
+    {
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+    }
+    public function getUserIdentifier()
+    {
+    }
+
     public function getResetToken(): ?string
     {
         return $this->resetToken;
@@ -230,6 +280,49 @@ class User
     public function setTokenExpiration(?\DateTimeInterface $tokenExpiration): static
     {
         $this->tokenExpiration = $tokenExpiration;
+
+        return $this;
+    }
+
+    public function addProjetList(Projet $projetList): static
+    {
+        if (!$this->projetList->contains($projetList)) {
+            $this->projetList->add($projetList);
+            $projetList->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProjetList(Projet $projetList): static
+    {
+        if ($this->projetList->removeElement($projetList)) {
+            // set the owning side to null (unless already changed)
+            if ($projetList->getUser() === $this) {
+                $projetList->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+    public function addInvestissementsList(Investissements $investissementsList): static
+    {
+        if (!$this->investissementsList->contains($investissementsList)) {
+            $this->investissementsList->add($investissementsList);
+            $investissementsList->setUserID($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvestissementsList(Investissements $investissementsList): static
+    {
+        if ($this->investissementsList->removeElement($investissementsList)) {
+            // set the owning side to null (unless already changed)
+            if ($investissementsList->getUserID() === $this) {
+                $investissementsList->setUserID(null);
+            }
+        }
 
         return $this;
     }

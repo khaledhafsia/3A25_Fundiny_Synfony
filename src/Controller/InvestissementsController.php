@@ -19,6 +19,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 
 
@@ -38,10 +39,10 @@ class InvestissementsController extends AbstractController
     }
 
     #[Route('/front/investissements', name: 'app_investissements_index', methods: ['GET'])]
-    public function index(InvestissementsRepository $investissementsRepository, Request $request): Response
+    public function index(InvestissementsRepository $investissementsRepository, SessionInterface $session): Response
     {
-        
-        $investissements = $investissementsRepository->findByUserId(7);
+        $User = $session->get('user_id');
+        $investissements = $investissementsRepository->findByUserId($User);
 
         return $this->render('front/investissements/index.html.twig', [
             'investissements' => $investissements,
@@ -61,11 +62,11 @@ class InvestissementsController extends AbstractController
         ]);
     }
 
-    #[Route('/front/investissements/sort', name: 'app_investissements_sort', methods: ['GET'])]
-    public function sort(Request $request, InvestissementsRepository $investissementsRepository): Response
+    #[Route('/front/investissements/{userId}/sort', name: 'app_investissements_sort', methods: ['GET'])]
+    public function sort(Request $request, InvestissementsRepository $investissementsRepository, $userId): Response
     {
         $sortOrder = $request->query->get('sort');
-
+    
         // Define the sorting criteria
         $orderBy = [];
         if ($sortOrder === 'asc') {
@@ -73,22 +74,24 @@ class InvestissementsController extends AbstractController
         } elseif ($sortOrder === 'desc') {
             $orderBy = ['montant' => 'DESC'];
         }
-
-        // Fetch sorted investissements from the repository
-        $investissements = $investissementsRepository->findBy([], $orderBy);
-
+    
+        // Fetch investissements for the specific user from the repository and sort them
+        $investissements = $investissementsRepository->findBy(['userid' => $userId], $orderBy);
+    
         // Render the sorted data as HTML or return as JSON
         return $this->render('front/investissements/_table.html.twig', [
             'investissements' => $investissements,
         ]);
     }
+    
 
     #[Route('/front/investissements/new/{id}', name: 'app_investissements_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, RequestStack $requestStack, $id): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, $id): Response
     {
-
+        $Userid = $session->get('user_id');
         $Projet = $entityManager->getRepository(Projet::class)->find($id);
-        $User = $entityManager->getRepository(User::class)->find(7);
+        $User = $entityManager->getRepository(User::class)->find($Userid);
+
 
 
         $investissement = new Investissements();
@@ -260,10 +263,13 @@ class InvestissementsController extends AbstractController
     }
 
     #[Route('/pdfinv', name: 'pdf_inv')]
-    public function generatePdf(): Response
+    public function generatePdf(InvestissementsRepository $investissementsRepository, SessionInterface $session): Response
     {
+        $userId = $session->get('user_id');
+        $investissements = $investissementsRepository->findByUserId($userId);
+
         $html = $this->renderView('front/investissements/pdf.html.twig', [
-            'investissements' => $this->getDoctrine()->getRepository(Investissements::class)->findAll(),
+            'investissements' => $investissements,
         ]);
 
         $options = new Options();

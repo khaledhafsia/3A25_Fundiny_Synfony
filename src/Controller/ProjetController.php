@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Projet;
+use App\Entity\User;
 use App\Form\ProjetType;
 use App\Repository\ProjetRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,6 +15,8 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
 
 
 class ProjetController extends AbstractController
@@ -31,10 +34,10 @@ class ProjetController extends AbstractController
     }
 
     #[Route('/front/Projet2', name: 'app_projet_index2', methods: ['GET'])]
-    public function index2(ProjetRepository $projetRepository): Response
+    public function index2(ProjetRepository $projetRepository, SessionInterface $session): Response
     {
-        
-        $projet = $projetRepository->findByUserId(16);
+        $User = $session->get('user_id');
+        $projet = $projetRepository->findByUserId($User);
 
         return $this->render('front/projet/index.html.twig', [
             'projets' => $projet,
@@ -43,9 +46,15 @@ class ProjetController extends AbstractController
 
 
     #[Route('/front/Projet/new', name: 'app_projet_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): Response
     {
+        $Userid = $session->get('user_id');
+        $User = $entityManager->getRepository(User::class)->find($Userid);
+
+
         $projet = new Projet();
+        $projet->setUser($User);
+
         $form = $this->createForm(ProjetType::class, $projet);
         $form->handleRequest($request);
 
@@ -53,7 +62,7 @@ class ProjetController extends AbstractController
             $entityManager->persist($projet);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_projet_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_projet_index2', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('front/projet/new.html.twig', [
@@ -162,6 +171,49 @@ public function show(Request $request, EntityManagerInterface $entityManager): R
         'nomPr' => $nomPr
     ]);
    }
+
+   #[Route('/front/projet/export2', name: 'app_projet_export2', methods: ['GET'])]
+    public function export2(EntityManagerInterface $entityManager,ProjetRepository $ProjetRepository, UrlGeneratorInterface $urlGenerator, SessionInterface $session): Response
+    {
+        $userId = $session->get('user_id');
+        $projets = $ProjetRepository->findByUserId($userId);
+    
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Id');
+        $sheet->setCellValue('B1', 'Nompr');
+        $sheet->setCellValue('C1', 'Nompo');
+        $sheet->setCellValue('D1', 'Dated');
+        $sheet->setCellValue('E1', 'Ca');
+    
+        $row = 2;
+        foreach ($projets as $projet) {
+            $sheet->setCellValue('A'. $row, $projet->getId());
+            $sheet->setCellValue('B'. $row, $projet->getNompr());
+            $sheet->setCellValue('C'. $row, $projet->getNompo());
+            $sheet->setCellValue('D'. $row, $projet->getDated()->format('Y-m-d'));
+            $sheet->setCellValue('E'. $row, $projet->getCa());
+            $row++;
+        }
+    
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'export_projet.xlsx';
+        $writer->save($filename);
+    
+        $response = new Response(file_get_contents($filename));
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment;filename="'. $filename. '"');
+        $response->headers->set('Cache-Control', 'max-age=0');
+    
+        return $response->send();
+        
+        $projectId = 1; // Replace this with the actual project ID
+        $showUrl = $urlGenerator->generate('app_projet_show', ['id' => $projectId]);
+    
+        // Redirect to the show route
+        return $this->redirect($showUrl);
+    }
+   
 
     
     

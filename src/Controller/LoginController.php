@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Controller;
-
+use App\Entity\Investissements;
+use App\Entity\Projet;
 use App\Entity\User;
 use App\Form\LoginType;
 use App\Form\UpdatePasswordType;
@@ -68,9 +69,9 @@ class LoginController extends AbstractController
                         case 'Admin':
                             return $this->redirectToRoute('list_user');
                         case 'Funder':
-                            return $this->redirectToRoute('dashboardFunder');
+                            return $this->redirectToRoute('app_projet_index');
                         case 'Owner':
-                            return $this->redirectToRoute('dashboardOwner');
+                            return $this->redirectToRoute('app_projet_index2');
                         default:
                             return $this->redirectToRoute('dashboard');
                     }
@@ -171,27 +172,30 @@ class LoginController extends AbstractController
     }
 
     #[Route('/dashboardOwner', name: 'dashboardOwner')]
-    public function dashboardOwner(): Response
+    public function dashboardOwner(ManagerRegistry $doctrine): Response
     {
         $user = $this->getSessionUser();
+        $projects = $doctrine->getRepository(Projet::class)->findBy(['user' => $user]);
 
 
         return $this->render('Dashboard/dashboardOwner.twig', [
             'user' => $user,
+            'projects' => $projects,
         ]);
-
     }
 
+
     #[Route('/dashboardFunder', name: 'dashboardOwner')]
-    public function dashboardFunder(): Response
+    public function dashboardFunder(ManagerRegistry $doctrine): Response
     {
         $user = $this->getSessionUser();
-        if (!$user) {
-            return $this->redirectToRoute('loginn');
-        }
+        $investissements = $doctrine->getRepository(Investissements::class)->findBy(['user' => $user]);
+
 
         return $this->render('Dashboard/dashboardFunder.twig', [
             'user' => $user,
+            'investissements' => $investissements,
+
         ]);
 
     }

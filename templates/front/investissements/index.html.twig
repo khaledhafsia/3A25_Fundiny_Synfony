@@ -62,26 +62,28 @@
     {#<a href="{{ path('app_investissements_new') }}">Create new</a>#}
     <br><br><br><br><br><br>
 
-    <script>
-    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
-        radio.addEventListener('click', function() {
-            var sortOrder = this.value;
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', '{{ path('app_investissements_sort') }}' + '?sort=' + sortOrder, true);
-            xhr.onload = function() {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    document.querySelector('.table').innerHTML = xhr.responseText;
-                } else {
-                    console.error(xhr.statusText);
-                }
-            };
-            xhr.onerror = function() {
+<script>
+document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+    radio.addEventListener('click', function() {
+        var sortOrder = this.value;
+        var userId = {{ app.session.get('user_id') }};
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '{{ path('app_investissements_sort', {'userId': app.session.get('user_id')}) }}' + '?sort=' + sortOrder, true);
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                document.querySelector('.table').innerHTML = xhr.responseText;
+            } else {
                 console.error(xhr.statusText);
-            };
-            xhr.send();
-        });
+            }
+        };
+        xhr.onerror = function() {
+            console.error(xhr.statusText);
+        };
+        xhr.send();
     });
+});
 </script>
+
 <script>
 document.getElementById('searchInput').addEventListener('input', function() {
     var searchValue = this.value.toLowerCase();
