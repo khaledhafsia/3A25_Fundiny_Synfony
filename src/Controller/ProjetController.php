@@ -39,7 +39,7 @@ class ProjetController extends AbstractController
         $User = $session->get('user_id');
         $projet = $projetRepository->findByUserId($User);
 
-        return $this->render('front/projet/index.html.twig', [
+        return $this->render('front/projet/index2.html.twig', [
             'projets' => $projet,
         ]);
     }
@@ -98,7 +98,7 @@ public function show(Request $request, EntityManagerInterface $entityManager): R
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_projet_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_projet_index2', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('front/projet/edit.html.twig', [
@@ -114,7 +114,7 @@ public function show(Request $request, EntityManagerInterface $entityManager): R
             $entityManager->remove($projet);
             $entityManager->flush();
         }
-        return $this->redirectToRoute('app_projet_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_projet_index2', [], Response::HTTP_SEE_OTHER);
     }//l'exception ici
     
     #[Route('/front/projet/export', name: 'app_projet_export', methods: ['GET'])]

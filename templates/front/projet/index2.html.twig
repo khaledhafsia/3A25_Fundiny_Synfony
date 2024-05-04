@@ -1,4 +1,4 @@
-{% extends 'front/base.html.twig' %}
+{% extends 'front/baseOwner.html.twig' %}
 
 {% block title %}Projet index{% endblock %}
 
@@ -44,7 +44,8 @@
                             <p class="card-text">Date: {{ projet.dated ? projet.dated|date('Y-m-d') : '' }}</p>
                             <p class="card-text">CA: {{ projet.ca }}</p>
                             {# Show and Edit buttons #}
-                            <a href="{{ path('app_investissements_new', {'id': projet.id}) }}" class="btn btn-primary">Invest</a>
+                            <a href="{{ path('app_projet_show', {'id': projet.id}) }}" class="btn btn-primary">Show</a>
+                            <a href="{{ path('app_projet_edit', {'id': projet.id}) }}" class="btn btn-secondary">Edit</a>
 
                         </div>
                     </div>
@@ -58,7 +59,8 @@
     </div>
 
     {# Button to create new project #}
-    <a href="{{ path('app_projet_export') }}" class="btn btn-success">Excel </a>    
+    <a href="{{ path('app_projet_new') }}" class="btn btn-success">Create new</a>
+    <a href="{{ path('app_projet_export2') }}" class="btn btn-success">Excel </a>    
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {

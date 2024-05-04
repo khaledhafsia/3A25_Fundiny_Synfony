@@ -1,4 +1,4 @@
-{% extends 'front/base.html.twig' %}
+{% extends 'front/baseOwner.html.twig' %}
 
 {% block title %}Edit Projet{% endblock %}
 
@@ -7,7 +7,7 @@
 
     {{ include('front/projet/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_projet_index') }}">back to list</a>
+    <a href="{{ path('app_projet_index2') }}">back to list</a>
 
     {{ include('front/projet/_delete_form.html.twig') }}
 {% endblock %}

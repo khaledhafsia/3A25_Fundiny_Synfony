@@ -98,7 +98,7 @@ class TachesController extends AbstractController
 
 
 
-    #[Route('/front/taches/new', name: 'app_taches_new', methods: ['GET', 'POST'])]
+    #[Route('/back/taches/new', name: 'app_taches_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $tach = new Taches();
@@ -109,10 +109,10 @@ class TachesController extends AbstractController
             $entityManager->persist($tach);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_taches_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('front/taches/new.html.twig', [
+        return $this->renderForm('back/taches/new.html.twig', [
             'tach' => $tach,
             'form' => $form,
         ]);

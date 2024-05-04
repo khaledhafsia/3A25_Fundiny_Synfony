@@ -26,8 +26,14 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 //#[Route('/investissements')]
 class InvestissementsController extends AbstractController
 {
-    #[Route('/home', name: 'home')]
+    #[Route('/homeowner', name: 'homeowner')]
     public function home(): Response
+    {
+        return $this->render('front/baseOwner.html.twig');
+    }
+
+    #[Route('/homefunder', name: 'homefunder')]
+    public function home2(): Response
     {
         return $this->render('front/base.html.twig');
     }
@@ -62,8 +68,30 @@ class InvestissementsController extends AbstractController
         ]);
     }
 
-    #[Route('/front/investissements/{userId}/sort', name: 'app_investissements_sort', methods: ['GET'])]
-    public function sort(Request $request, InvestissementsRepository $investissementsRepository, $userId): Response
+    #[Route('/front/investissements/sort', name: 'app_investissements_sort', methods: ['GET'])]
+    public function sort(Request $request, InvestissementsRepository $investissementsRepository): Response
+    {
+        $sortOrder = $request->query->get('sort');
+
+        // Define the sorting criteria
+        $orderBy = [];
+        if ($sortOrder === 'asc') {
+            $orderBy = ['montant' => 'ASC'];
+        } elseif ($sortOrder === 'desc') {
+            $orderBy = ['montant' => 'DESC'];
+        }
+
+        // Fetch sorted investissements from the repository
+        $investissements = $investissementsRepository->findBy([], $orderBy);
+
+        // Render the sorted data as HTML or return as JSON
+        return $this->render('front/investissements/_table.html.twig', [
+            'investissements' => $investissements,
+        ]);
+    }
+
+    #[Route('/front/investissements/{userId}/sort', name: 'app_investissements_sort2', methods: ['GET'])]
+    public function sort2(Request $request, InvestissementsRepository $investissementsRepository, $userId): Response
     {
         $sortOrder = $request->query->get('sort');
     
