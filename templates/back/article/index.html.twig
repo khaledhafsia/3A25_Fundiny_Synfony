@@ -1,0 +1,111 @@
+{% extends 'back/baseBack.html.twig' %}
+
+{% block title %}Article Index{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search by description">
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <table class="table">
+                    <tbody>
+                        {% if articles is not empty %} 
+                            {% for article in articles %}
+                                <tr class="article-row">
+                                    <td colspan="4">
+                                        <hr> <!-- Line separator -->
+                                        <h4>{{ article.description }}</h4>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        {% if article.image %}
+                                            <img src="{{ asset('images/front/' ~ article.image) }}" alt="Article Image" style="max-width: 400px;">
+                                        {% else %}
+                                            No image
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="comment-buttons">
+                                            <a href="{{ path('app_articleback_edit', {'id': article.id}) }}" class="btn btn-primary">Edit Article</a>
+                                        </div>
+                                        <form action="{{ path('app_articleback_delete', {'id': article.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this article?');">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                            <div class="comment-buttons">
+                                                <button type="submit" class="btn btn-danger">Delete Article</button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4">
+                                        <h4>Comments</h4>
+                                        {% for comment in articleComments[article.id] %}
+                                            <div class="comment">
+                                                <p>{{ comment.comment }}</p>
+                                                <form action="{{ path('app_commentback_delete', {'commentid': comment.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                                    <input type="hidden" name="_method" value="DELETE">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                                    <div class="comment-buttons">
+                                                        <button type="submit" class="btn btn-danger">Delete Comment</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <hr> <!-- Line separator -->
+                                        {% else %}
+                                            <p>No comments</p>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4">No records found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <a href="{{ path('app_articleback_new') }}" class="btn btn-primary">Create New Article</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const articleRows = document.querySelectorAll('.article-row');
+
+        searchInput.addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+
+            articleRows.forEach(row => {
+                const description = row.querySelector('h4').textContent.trim().toLowerCase();
+                const words = description.split(' ');
+
+                const isVisible = words.some(word => word.includes(query));
+
+                if (isVisible) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .comment-buttons .btn {
+            padding: 3px 6px;
+            font-size: 12px;
+        }
+    </style>
+{% endblock %}
