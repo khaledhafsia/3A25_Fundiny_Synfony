@@ -17,10 +17,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 
 #[Route('/article')]
 class ArticleController extends AbstractController
 {
+ 
+    #[Route('/home', name: 'home')]
+    public function home(): Response
+    {
+        return $this->render('base.html.twig');
+    }
+
+ 
     #[Route('/', name: 'app_article_index', methods: ['GET'])]
     public function index(ArticleRepository $articleRepository, CommentRepository $commentRepository): Response
     {
@@ -141,4 +151,34 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
     }
+    #[Route('/search', name: 'app_article_search', methods: ['GET','POST'])]
+public function search(Request $request, ArticleRepository $articleRepository): Response
+{
+    $searchTerm = $request->query->get('search');
+
+    // Fetch articles based on the search term
+    $articles = $articleRepository->findByDescription($searchTerm);
+
+    // Create an associative array to store comments for each article
+    $articleComments = [];
+    $commentRepository = $this->getDoctrine()->getRepository(Comment::class);
+
+    // Loop through each fetched article and fetch its associated comments
+    foreach ($articles as $article) {
+        $comments = $commentRepository->findBy(['article' => $article]);
+        $articleComments[$article->getId()] = $comments;
+    }
+
+    // Create a new comment object for the comment form
+    $newComment = new Comment();
+    $commentForm = $this->createForm(CommentType::class, $newComment);
+
+    return $this->render('article/index.html.twig', [
+        'articles' => $articles,
+        'articleComments' => $articleComments,
+        'commentForm' => $commentForm->createView(),
+    ]);
+}
+
+
 }

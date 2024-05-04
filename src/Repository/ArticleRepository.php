@@ -15,12 +15,19 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Article[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ArticleRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry)
+{public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Article::class);
     }
 
+    public function findByDescription($query)
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('LOWER(a.description) LIKE :query')
+            ->setParameter('query', '%' . strtolower($query) . '%')
+            ->getQuery()
+            ->getResult();
+    }
 //    /**
 //     * @return Article[] Returns an array of Article objects
 //     */
