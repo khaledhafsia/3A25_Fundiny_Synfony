@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Reclamations Index
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="text-center">
+            <h1 class="mb-4" style="color: #B0413E;">
+                <i class="fas fa-exclamation-circle"></i> Reponses
+            </h1>
+        </div>
+
+        <div class="row mb-1">
+            <div class="col-md-6 text-left">
+                <a href="{{ path('app_reponses_index') }}" class="btn btn-primary mr-2">Reponses</a>
+                <a href="{{ path('app_reclamations_export_excel') }}" class="btn btn-info mr-2">
+                    <i class="fas fa-file-excel"></i> Export Excel
+                </a>
+                <a href="{{ path('app_reclamations_export_pdf') }}" class="btn btn-danger">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </a>
+            </div>
+        </div>
+
+        {{ render(path('reclamations_list')) }} <!-- Assurez-vous que cette route existe et fonctionne correctement -->
+    </div>
+{% endblock %}

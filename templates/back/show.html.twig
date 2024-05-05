@@ -371,19 +371,70 @@
                             <div class="container">
 
         <div class="text-center">
-            <h1 class="mb-4" style="color: #B0413E;"><i class="fas fa-exclamation-circle"></i> Mes Reponses</h1>
+            <h1 class="mb-4" style="color: #B0413E;"><i class="fas fa-exclamation-circle"></i> Reclamation</h1>
         </div>
 
-        <div class="row mb-1">
-            <div class="col-md-6 text-left">
-                <a href="{{ path('admin_reclamations_all') }}" class="btn btn-primary mr-2">Reclamations</a>
-                <a href="{{ path('app_reclamations_export_excel') }}" class="btn btn-info mr-2"><i class="fas fa-file-excel"></i> Export Excel</a>
-                <a href="{{ path('app_reclamations_export_pdf') }}" class="btn btn-danger"><i class="fas fa-file-pdf"></i> Export PDF</a>
-
-            </div>
             
+    <div class="container">
+        <div class="row">
+        </div>
+        <div class="row">
+            <span class="label">IdRéclamation:</span>
+            <span class="field field-with-margin-left">{{ reclamation.id }}</span>
+        </div>
 
-{{ render(path('reponses_list')) }}
+        <div class="row">
+            <span class="label">Email:</span>
+            <span class="field field-with-margin-left">{{ reclamation.email }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">IdProjet:</span>
+            <span class="field field-with-margin-left">{{ reclamation.idProjet.nompr }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">IdTypeReclamation:</span>
+            <span class="field field-with-margin-left">{{ reclamation.idTypeReclamation.NomTypeReclamation }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">IdUtilisateur:</span>
+            <span class="field field-with-margin-left">{{ reclamation.idUtilisateur.nom }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Objet:</span>
+            <span class="field field-with-margin-left">{{ reclamation.objet }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Texte:</span>
+            <span class="field field-with-margin-left">{{ reclamation.texte }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">État:</span>
+            <span class="field field-with-margin-left">{{ reclamation.etat }}</span>
+        </div>
+
+        <!-- Ajouter la d   ate -->
+        <div class="row">
+            <span class="label">Date:</span>
+            <span class="field field-with-margin-left">{{ reclamation.dateCreation|date('d-m-Y H:i') }}</span> <!-- Format de la date -->
+        </div>
+
+        <div class="btn-container">
+
+            <a href="{{ path('back_reclamations_all') }}" class="btn btn-info">Retour à la liste</a>
+            <a class="btn btn-danger" href="{{ path('app_reclamations_delete_back', {'id': reclamation.id}) }}">Delete</a>
+
+
+        </div>
+    </div>
+
+
+
 
 
 

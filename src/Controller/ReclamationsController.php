@@ -73,7 +73,7 @@ class ReclamationsController extends AbstractController
             ->setRowsPerPage(5)// custom rows per page
             ->setId('reclamations_list')
             ->setPath($this->generateUrl('reclamations_list_ajax'))
-            ->setTemplate('admin/reclamationTableAJAXCustoms.html.twig')
+            ->setTemplate('back/reclamationTableAJAXCustoms.html.twig')
             ->setQueryBuilder($queryBuilder, 'r')
             ->addColumn(
                 (new Column())->setLabel('id')
@@ -156,32 +156,32 @@ class ReclamationsController extends AbstractController
                 return $table;
     }
 
-    #[Route('/admin/reclamationsAJAX', name: 'reclamations_list')]
+    #[Route('/back/reclamationsAJAX', name: 'reclamations_list')]
     public function listAction(TableService $tableService,ReclamationsRepository $repo)
     {
         return $this->render(
-            'admin/reclamationTableAJAX.html.twig',
+            'back/reclamationTableAJAX.html.twig',
             [
                 'table' => $tableService->createFormView($this->getReclamationsTable($repo)),
             ]
         );
     }
 
-    #[Route('/admin/reclamationsAJAX/AJAX', name: 'reclamations_list_ajax')]
+    #[Route('/back/reclamationsAJAX/AJAX', name: 'reclamations_list_ajax')]
     public function _listAction(Request $request, TableService $tableService,ReclamationsRepository $re)
     {
       return $tableService->handleRequest($this->getReclamationsTable($re),$request);
     }
 
 
-    #[Route('/admin/reclamations', name: 'app_reclamations_index_admin', methods: ['GET'])]
+    #[Route('/back/reclamations', name: 'app_reclamations_index_back', methods: ['GET'])]
     public function indexAdmin(Request $request, ReclamationsRepository $reclamationsRepository, PaginatorInterface $paginator): Response
     {
         if (!$this->getUser())
         return $this->redirectToRoute('app_login');
 
 
-        return $this->render('admin/index.html.twig', [
+        return $this->render('back/index.html.twig', [
         ]);
     }
 
@@ -301,9 +301,9 @@ class ReclamationsController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/allReclamations', name: 'admin_reclamations_all')]
+    #[Route('/back/allReclamations', name: 'back_reclamations_all')]
     public function adminReclamationBackEnd(){
-        return $this->render('admin/allReclamations.html.twig'); 
+        return $this->render('back/allReclamations.html.twig');
     }
 
     #[Route('/reclamations/{id}', name: 'app_reclamations_show', methods: ['GET'])]
@@ -324,7 +324,7 @@ class ReclamationsController extends AbstractController
     }
 
 
-    #[Route('/admin/reclamations/{id}', name: 'app_reclamations_admin_show', methods: ['GET'])]
+    #[Route('/back/reclamations/{id}', name: 'app_reclamations_back_show', methods: ['GET'])]
     public function adminShow($id, ReclamationsRepository $reclamationsRepository): Response
     {
         // Fetch the Reclamations entity by ID
@@ -336,7 +336,7 @@ class ReclamationsController extends AbstractController
         }
 
         // Render the template with the fetched entity
-        return $this->render('admin/show.html.twig', [
+        return $this->render('back/show.html.twig', [
             'reclamation' => $reclamation,
         ]);
     }
@@ -366,7 +366,7 @@ class ReclamationsController extends AbstractController
     }
 
 
-    #[Route('/admin/reclamations/{id}/edit', name: 'app_reclamations_edit_admin', methods: ['GET', 'POST'])]
+    #[Route('/back/reclamations/{id}/edit', name: 'app_reclamations_edit_back', methods: ['GET', 'POST'])]
     public function editAdmin(Request $request, Reclamations $reclamation, EntityManagerInterface $entityManager): Response
     {
         // Passer l'option 'disable_etat' à 'true' pour désactiver le champ
@@ -380,20 +380,20 @@ class ReclamationsController extends AbstractController
             return $this->redirectToRoute('app_reclamations_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/edit.html.twig', [
+        return $this->renderForm('back/edit.html.twig', [
             'reclamation' => $reclamation,
             'form' => $form,
         ]);
     }
 
-    #[Route('/admin/reclamations/delete/{id}', name: 'app_reclamations_delete_admin', methods: ['POST','GET'])]
+    #[Route('/back/reclamations/delete/{id}', name: 'app_reclamations_delete_back', methods: ['POST','GET'])]
     public function deleteAdmin(Request $request, Reclamations $reclamation, EntityManagerInterface $entityManager): Response
     {
             $entityManager->remove($reclamation);
             $entityManager->flush();
         
 
-        return $this->redirectToRoute('admin_reclamations_all', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('back_reclamations_all', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/reclamations/delete/{id}', name: 'app_reclamations_delete', methods: ['POST','GET'])]

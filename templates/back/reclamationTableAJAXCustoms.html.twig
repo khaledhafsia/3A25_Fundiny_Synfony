@@ -22,10 +22,10 @@
 {% endblock tableHeadStdFilters %}
 {% block tableBodyStdColumns %}
     <td>
-<a href="{{ path('app_reclamations_delete_admin', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-trash"></span></a>
+<a href="{{ path('app_reclamations_delete_back', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-trash"></span></a>
 {% if is_granted('ROLE_ADMIN') %}
-<a href="{{ path('app_reclamations_admin_show', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-duplicate"></span></a>
-    <a href="{{ path('app_reclamations_repondre_admin', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-play-circle"></span></a>
+<a href="{{ path('app_reclamations_back_show', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-duplicate"></span></a>
+    <a href="{{ path('app_reclamations_repondre_back', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-play-circle"></span></a>
 {% else %}
     
 <a href="{{ path('app_reclamations_show', {'id': row.object.id}) }}"><span class="glyphicon glyphicon-duplicate"></span></a>

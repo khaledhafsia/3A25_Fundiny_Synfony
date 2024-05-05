@@ -60,13 +60,13 @@ class ReponsesController extends AbstractController
         ]);
     }
 
-    #[Route('admin/reclamations/reponses/all', name: 'app_reponses_index_admin', methods: ['GET'])]
+    #[Route('back/reclamations/reponses/all', name: 'app_reponses_index_back', methods: ['GET'])]
     public function indexAdmin(EntityManagerInterface $entityManager, Request $request, ReponsesRepository $reponsesRepository, PaginatorInterface $paginator): Response
     {         if (!$this->getUser())
         return $this->redirectToRoute('user/reclamations/reponsesapp_login');
 
         // Render the view with the search results
-        return $this->render('admin/indexReponses.html.twig', [
+        return $this->render('back/indexReponses.html.twig', [
         ]);
     }
     
@@ -207,7 +207,7 @@ class ReponsesController extends AbstractController
 
 
     
-    #[Route('admin/reclamations/reponses/repondre/{id}', name: 'app_reclamations_repondre_admin', methods: ['GET', 'POST'])]
+    #[Route('back/reclamations/reponses/repondre/{id}', name: 'app_reclamations_repondre_back', methods: ['GET', 'POST'])]
     public function repondre(int $id, EntityManagerInterface $entityManager, Request $request): Response
     {
         // Récupérer la réclamation par son ID
@@ -261,7 +261,7 @@ class ReponsesController extends AbstractController
         $users = $entityManager->getRepository(User::class)->findAll();
 
         // Rendre le gabarit avec les données appropriées
-        return $this->render('admin/createReponse.html.twig', [
+        return $this->render('back/createReponse.html.twig', [
             'reclamation' => $reclamation,
             'users' => $users,
         ]);
@@ -276,15 +276,15 @@ class ReponsesController extends AbstractController
     }
     
 
-    #[Route('admin/reclamations/reponses/{id}', name: 'app_reponses_show', methods: ['GET'])]
+    #[Route('back/reclamations/reponses/{id}', name: 'app_reponses_show', methods: ['GET'])]
     public function show(Reponses $reponse): Response
     {
-        return $this->render('admin/showReponse.html.twig', [
+        return $this->render('back/showReponse.html.twig', [
             'reponse' => $reponse,
         ]);
     }
 
-    #[Route('admin/reclamations/reponses/edit/{id}', name: 'app_reponses_edit', methods: ['GET', 'POST'])]
+    #[Route('back/reclamations/reponses/edit/{id}', name: 'app_reponses_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Reponses $reponse, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ReponsesType::class, $reponse);
@@ -293,16 +293,16 @@ class ReponsesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_reponses_index_admin', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_reponses_index_back', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('admin/editReponse.html.twig', [
+        return $this->renderForm('back/editReponse.html.twig', [
             'reponse' => $reponse,
             'form' => $form,
         ]);
     }
 
-    #[Route('admin/reclamations/reponses/delete/{id}', name: 'app_reponses_delete', methods: ['POST','GET'])]
+    #[Route('back/reclamations/reponses/delete/{id}', name: 'app_reponses_delete', methods: ['POST','GET'])]
     public function delete(Request $request, Reponses $reponse, EntityManagerInterface $entityManager): Response
     {
 
@@ -316,7 +316,7 @@ class ReponsesController extends AbstractController
 
 
 
-        return $this->redirectToRoute('app_reponses_index_admin', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_reponses_index_back', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('user/reclamations/reponses/export/excel', name: 'app_reponses_export_excel', methods: ['GET'])]
