@@ -1,0 +1,21 @@
+{% extends 'back/baseBack.html.twig' %}
+
+{% block title %}Edit Investissements{% endblock %}
+
+{% block body %}
+               <!-- Section Title -->
+               <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Edit Invesment<br></span>
+        <h2 class="">Edit Invesment<br></h2>
+        <p>Edit the selected investment </p>
+      </div><!-- End Section Title -->
+
+    {{ include('back/events/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_eventsB_index') }}">back to list</a>
+    <br>
+
+    {{ include('back/events/_delete_form.html.twig') }}
+    <br><br><br>
+{% endblock %}

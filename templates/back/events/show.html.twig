@@ -1,4 +1,4 @@
-{% extends 'front/base.html.twig' %}
+{% extends 'back/baseBack.html.twig' %}
 
 {% block title %}Events{% endblock %}
 
@@ -36,12 +36,12 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_events_index') }}">back to list</a>
+    <a href="{{ path('app_eventsB_index') }}">back to list</a>
 
-    <a href="{{ path('app_events_edit', {'id': evenement.id}) }}">edit</a>
+    <a href="{{ path('app_eventsB_edit', {'id': evenement.id}) }}">edit</a>
 
 <br><br>
 
-    {{ include('front/events/_delete_form.html.twig') }}
+    {{ include('back/events/_delete_form.html.twig') }}
     <br><br><br>
 {% endblock %}

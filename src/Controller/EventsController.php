@@ -131,94 +131,71 @@ class EventsController extends AbstractController
         return $this->redirectToRoute('app_events_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/back/investissements', name: 'app_investissementsBack_index', methods: ['GET'])]
+    #[Route('/back/events', name: 'app_eventsB_index', methods: ['GET'])]
     public function indexBack(EventsRepository $eventsRepository, Request $request): Response
     {
-        $investissements = $eventsRepository->findAll();
+        $events = $eventsRepository->findAll();
 
-        return $this->render('back/investissements/index.html.twig', [
-            'investissements' => $investissements,
+        return $this->render('back/events/index.html.twig', [
+            'events' => $events,
         ]);
     }
 
-    #[Route('/back/investissements/new', name: 'app_investissementsBack_new', methods: ['GET', 'POST'])]
+    #[Route('/back/events/new', name: 'app_eventsB_new', methods: ['GET', 'POST'])]
     public function newBack(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $investissement = new Investissements();
-        $form = $this->createForm(EventsType::class, $investissement);
+        $evenement = new Evenement();
+        $form = $this->createForm(EventsType::class, $evenement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($investissement);
+            $entityManager->persist($evenement);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_eventsB_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->renderForm('back/investissements/new.html.twig', [
-            'investissement' => $investissement,
+        return $this->renderForm('back/events/new.html.twig', [
+            'evenement' => $evenement,
+            'form' => $form, 
+        ]);
+    }
+
+    #[Route('/back/events/{id}', name: 'app_eventsB_show', methods: ['GET'])]
+    public function showBack(Evenement $evenement): Response
+    {
+        return $this->render('back/events/show.html.twig', [
+            'evenement' => $evenement,
+        ]);
+    }
+
+    #[Route('/back/events/{id}/edit', name: 'app_eventsB_edit', methods: ['GET', 'POST'])]
+    public function editBack(Request $request, Evenement $event, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(EventsType::class, $event);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_eventsB_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('back/events/edit.html.twig', [
+            'evenement' => $event,
             'form' => $form,
         ]);
     }
 
-    #[Route('/back/investissements/{id}/edit', name: 'app_investissementsBack_edit', methods: ['GET', 'POST'])]
-    public function editBack(Request $request, Investissements $investissement, EntityManagerInterface $entityManager): Response
+    #[Route('/back/events/{id}', name: 'app_eventsB_delete', methods: ['POST'])]
+    public function deleteBack(Request $request, Evenement $evenement, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(EventsType::class, $investissement);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('back/investissements/edit.html.twig', [
-            'investissement' => $investissement,
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/back/investissements/{id}', name: 'app_investissementsBack_delete', methods: ['POST'])]
-    public function deleteBack(Request $request, Investissements $investissement, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$investissement->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($investissement);
+        if ($this->isCsrfTokenValid('delete'.$evenement->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($evenement);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_investissementsBack_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_eventsB_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    #[Route('/back/investissements/{id}', name: 'app_investissementsBack_show', methods: ['GET'])]
-    public function showBack(Investissements $investissement): Response
-    {
-        return $this->render('back/investissements/show.html.twig', [
-            'investissement' => $investissement,
-        ]);
-    }
-
-    #[Route('/back/investissements/sort', name: 'app_investissements2_sort', methods: ['GET'])]
-    public function sortBack(Request $request, EventsRepository $eventsRepository): Response
-    {
-        $sortOrder = $request->query->get('sort');
-
-        // Define the sorting criteria
-        $orderBy = [];
-        if ($sortOrder === 'asc') {
-            $orderBy = ['nom' => 'ASC'];
-        } elseif ($sortOrder === 'desc') {
-            $orderBy = ['nom' => 'DESC'];
-        }
-
-        // Fetch sorted investissements from the repository
-        $investissements = $eventsRepository->findBy([], $orderBy);
-
-        // Render the sorted data as HTML or return as JSON
-        return $this->render('back/investissements/_table.html.twig', [
-            'investissements' => $investissements,
-        ]);
-    }
-    
 
 }
