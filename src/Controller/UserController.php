@@ -93,10 +93,10 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $id = $user->getTitre();
-           // $password = $form->get('password')->getData();
+            $password = $form->get('password')->getData();
 
-            //$hashedPassword = $passwordHasher->hashPassword($user, $password);
-            //$user->setPassword($hashedPassword);
+            $hashedPassword = $passwordHasher->hashPassword($user, $password);
+            $user->setPassword($hashedPassword);
 
             $em = $doctrine->getManager();
             $user = $form->getData();

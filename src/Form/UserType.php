@@ -49,7 +49,7 @@ class UserType extends AbstractType
             ->add('role', ChoiceType::class, [
                 'label' => 'role',
                 'choices' => [
-                    //'Admin' => 'Admin',
+                    'Admin' => 'Admin',
                     'Owner' => 'Owner',
                     'Funder' => 'Funder',
                     //'Autre' => 'autre',
