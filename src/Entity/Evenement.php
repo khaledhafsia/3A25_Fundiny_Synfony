@@ -5,103 +5,57 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+// src/Entity/Evenement.php
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+// src/Entity/Evenement.php
+namespace App\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
 /**
- * Evenement
- *
- * @ORM\Table(name="evenement")
  * @ORM\Entity
  */
 class Evenement
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="idEvent", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
-    private $idevent;
+    private $id;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="nom", type="text", length=65535, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $nom;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="description", type="text", length=65535, nullable=true)
+     * @ORM\Column(type="text")
      */
     private $description;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="dateDebut", type="text", length=65535, nullable=true)
+     * @ORM\Column(type="datetime")
      */
-    private $datedebut;
+    private $dateDebut;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(name="dateFin", type="text", length=65535, nullable=true)
+     * @ORM\Column(type="datetime")
      */
-    private $datefin;
+    private $dateFin;
 
     /**
-     * @var int|null
-     *
-     * @ORM\Column(name="objectifFinancement", type="integer", nullable=true)
-     */
-    private $objectiffinancement;
-
-    /**
-     * @var int|null
-     *
-     * @ORM\Column(name="montantCollecte", type="integer", nullable=true)
-     */
-    private $montantcollecte;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="statut", type="text", length=65535, nullable=true)
-     */
-    private $statut;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="categorie", type="text", length=65535, nullable=true)
-     */
-    private $categorie;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="organisateur", type="text", length=65535, nullable=true)
-     */
-    private $organisateur;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="localisation", type="text", length=65535, nullable=true)
-     */
-    private $localisation;
-
-    /**
-     * @var string|null
-     *
-     * @ORM\Column(name="image", type="text", length=65535, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $image;
 
-    public function getIdevent(): ?int
+    // Ajoutez ici les getters et setters pour chaque attribut
+    public function getId(): ?int
     {
-        return $this->idevent;
+        return $this->id;
     }
 
     public function getNom(): ?string
@@ -109,7 +63,7 @@ class Evenement
         return $this->nom;
     }
 
-    public function setNom(?string $nom): static
+    public function setNom(string $nom): self
     {
         $this->nom = $nom;
 
@@ -121,105 +75,33 @@ class Evenement
         return $this->description;
     }
 
-    public function setDescription(?string $description): static
+    public function setDescription(string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getDatedebut(): ?string
+    public function getDateDebut(): ?\DateTimeInterface
     {
-        return $this->datedebut;
+        return $this->dateDebut;
     }
 
-    public function setDatedebut(?string $datedebut): static
+    public function setDateDebut(\DateTimeInterface $dateDebut): self
     {
-        $this->datedebut = $datedebut;
+        $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
-    public function getDatefin(): ?string
+    public function getDateFin(): ?\DateTimeInterface
     {
-        return $this->datefin;
+        return $this->dateFin;
     }
 
-    public function setDatefin(?string $datefin): static
+    public function setDateFin(\DateTimeInterface $dateFin): self
     {
-        $this->datefin = $datefin;
-
-        return $this;
-    }
-
-    public function getObjectiffinancement(): ?int
-    {
-        return $this->objectiffinancement;
-    }
-
-    public function setObjectiffinancement(?int $objectiffinancement): static
-    {
-        $this->objectiffinancement = $objectiffinancement;
-
-        return $this;
-    }
-
-    public function getMontantcollecte(): ?int
-    {
-        return $this->montantcollecte;
-    }
-
-    public function setMontantcollecte(?int $montantcollecte): static
-    {
-        $this->montantcollecte = $montantcollecte;
-
-        return $this;
-    }
-
-    public function getStatut(): ?string
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(?string $statut): static
-    {
-        $this->statut = $statut;
-
-        return $this;
-    }
-
-    public function getCategorie(): ?string
-    {
-        return $this->categorie;
-    }
-
-    public function setCategorie(?string $categorie): static
-    {
-        $this->categorie = $categorie;
-
-        return $this;
-    }
-
-    public function getOrganisateur(): ?string
-    {
-        return $this->organisateur;
-    }
-
-    public function setOrganisateur(?string $organisateur): static
-    {
-        $this->organisateur = $organisateur;
-
-        return $this;
-    }
-
-    public function getLocalisation(): ?string
-    {
-        return $this->localisation;
-    }
-
-    public function setLocalisation(?string $localisation): static
-    {
-        $this->localisation = $localisation;
+        $this->dateFin = $dateFin;
 
         return $this;
     }
@@ -229,12 +111,11 @@ class Evenement
         return $this->image;
     }
 
-    public function setImage(?string $image): static
+    public function setImage(string $image): self
     {
         $this->image = $image;
 
         return $this;
     }
-
-
 }
+
