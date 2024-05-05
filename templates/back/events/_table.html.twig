@@ -1,0 +1,25 @@
+<thead>
+        <tr>
+            <th>nom</th>
+            <th>Description</th>
+            <th>dateDebut</th>
+            <th>dateFin</th>
+          <th>actions</th>
+        </tr>
+</thead>
+<tbody>
+    {% for evenement in evenement %}
+        <tr>
+            <td>{{ evenement.nom }}</td>
+            <td>{{ evenement.description }}</td>
+            <td>{{ evenement.dateDebut ? evenement.date|date('Y-m-d H:i:s') : '' }}</td>
+            <td>
+                <a href="{{ path('app_eventsBack_show', {'id': evenement.id}) }}">show</a>
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="5">no records found</td>
+        </tr>
+    {% endfor %}
+</tbody>

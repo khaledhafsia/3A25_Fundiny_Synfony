@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Events{% endblock %}
+
+{% block body %}
+             <!-- Section Title -->
+             <br><br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Show Event<br></span>
+        <h2 class="">Show Event<br></h2>
+        <p>full details about the selected event </p>
+      </div><!-- End Section Title -->
+
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th>nom</th>
+                <td>{{ evenement.nom }}</td>
+            </tr>
+            <tr>
+                <th>description</th>
+                <td>{{ evenement.description }}</td>
+            </tr>
+           
+            <tr>
+                <th>dateDebut</th>
+
+                <td>{{ evenement.dateDebut ? evenement.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+
+
+            <tr>
+                <th>dateFin</th>
+                <td>{{ evenement.dateFin ? evenement.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_events_index') }}">back to list</a>
+
+    <a href="{{ path('app_events_edit', {'id': evenement.id}) }}">edit</a>
+
+    <a href="{{ path('app_taches_new2', {'id': evenement.id}) }}">add task</a>
+
+   <a href="{{ path('app_taches_index2', {'id': evenement.id}) }}">show tasks</a>
+<br><br>
+
+    {{ include('front/events/_delete_form.html.twig') }}
+    <br><br><br>
+{% endblock %}

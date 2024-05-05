@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Events{% endblock %}
+
+{% block body %}
+          <!-- Section Title -->
+          <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Create New Event<br></span>
+        <h2 class="">Create New Event<br></h2>
+        <p>fill the blanks to complete creating your event </p>
+      </div><!-- End Section Title -->
+
+    {{ include('front/events/_form.html.twig') }}
+    <br>
+
+    <a href="{{ path('app_events_index') }}">back to list</a>
+    <br><br><br><br>
+
+    
+{% endblock %}

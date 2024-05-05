@@ -2,75 +2,80 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
 /**
- * @method string getUserIdentifier()
+ * User
+ *
+ * @ORM\Table(name="user")
+ * @ORM\Entity
  */
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements UserInterface ,PasswordAuthenticatedUserInterface
+class User
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
 
-    #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="nom", type="string", length=255, nullable=false)
+     */
+    private $nom;
 
-    #[ORM\Column(length: 255)]
-    private ?string $prenom = null;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="prenom", type="string", length=255, nullable=false)
+     */
+    private $prenom;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255, nullable=false)
+     */
+    private $email;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="password", type="string", length=255, nullable=false)
+     */
+    private $password;
 
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    /**
+     * @var string|null
+     *
+     * @ORM\Column(name="role", type="string", length=255, nullable=true)
+     */
+    private $role;
 
-    #[ORM\Column(length: 255)]
-    private ?string $password = null;
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="capital", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $capital;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Choice(choices: ['Funder', 'Owner', 'Admin'])]
-    #[Groups("User")]
-    private ?string $role = null;
+    /**
+     * @var float|null
+     *
+     * @ORM\Column(name="montant", type="float", precision=10, scale=0, nullable=true)
+     */
+    private $montant;
 
-    #[ORM\Column(nullable: true)]
-    private ?float $capital = null;
-
-    #[ORM\Column(nullable: true)]
-    public ?float $montant = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?bool $banState = null;
-/*
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Investissements::class)]
-    private Collection $investissementsList;
-
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Projet::class)]
-    private Collection $projetList;
-
-
-
-
-
-    public function __construct()
-    {
-        $this->investissementsList = new ArrayCollection();
-        $this->projetList = new ArrayCollection();
-        $this->User = new ArrayCollection();
-    }
-
-
-*/
-
-
-
+    /**
+     * @var bool|null
+     *
+     * @ORM\Column(name="ban_state", type="boolean", nullable=true)
+     */
+    private $banState;
 
     public function getId(): ?int
     {
@@ -100,10 +105,6 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-
-
-
 
     public function getEmail(): ?string
     {
@@ -153,12 +154,12 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getParticipation(): ?float
+    public function getMontant(): ?float
     {
         return $this->montant;
     }
 
-    public function setParticipation(?float $montant): static
+    public function setMontant(?float $montant): static
     {
         $this->montant = $montant;
 
@@ -177,90 +178,25 @@ class User implements UserInterface ,PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function __toString(): string
+{
+    $banState = $this->banState ? 'Banned' : 'Active';
+    $role = $this->role ?? 'No role specified';
+    $capital = $this->capital ?? 'Not specified';
+    $montant = $this->montant ?? 'Not specified';
 
-    /**
-     * @return Collection<int, Investissements>
-     */
-    public function getInvestissementsList(): Collection
-    {
-        return $this->investissementsList;
-    }
-
-    public function addInvestissementsList(Investissements $investissementsList): static
-    {
-        if (!$this->investissementsList->contains($investissementsList)) {
-            $this->investissementsList->add($investissementsList);
-            $investissementsList->setUserID($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInvestissementsList(Investissements $investissementsList): static
-    {
-        if ($this->investissementsList->removeElement($investissementsList)) {
-            // set the owning side to null (unless already changed)
-            if ($investissementsList->getUserID() === $this) {
-                $investissementsList->setUserID(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Projet>
-     */
-    public function getProjetList(): Collection
-    {
-        return $this->projetList;
-    }
-
-    public function addProjetList(Projet $projetList): static
-    {
-        if (!$this->projetList->contains($projetList)) {
-            $this->projetList->add($projetList);
-            $projetList->setUserId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeProjetList(Projet $projetList): static
-    {
-        if ($this->projetList->removeElement($projetList)) {
-            // set the owning side to null (unless already changed)
-            if ($projetList->getUserId() === $this) {
-                $projetList->setUserId(null);
-            }
-        }
-
-        return $this;
-    }
+    return sprintf(
+        "User ID: %d, Nom: %s, Prenom: %s, Email: %s, Role: %s, Capital: %s, Montant: %s, Ban State: %s",
+        $this->id,
+        $this->nom,
+        $this->prenom,
+        $this->email,
+        $role,
+        $capital,
+        $montant,
+        $banState
+    );
+}
 
 
-    public function getRoles()
-    {
-        // TODO: Implement getRoles() method.
-    }
-
-    public function getSalt()
-    {
-        // TODO: Implement getSalt() method.
-    }
-
-    public function eraseCredentials()
-    {
-        // TODO: Implement eraseCredentials() method.
-    }
-
-    public function getUsername()
-    {
-        // TODO: Implement getUsername() method.
-    }
-
-    public function __call(string $name, array $arguments)
-    {
-        // TODO: Implement @method string getUserIdentifier()
-    }
 }
