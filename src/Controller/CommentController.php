@@ -89,7 +89,7 @@ public function new(Request $request): Response
         ]);
     
 }
-    #[Route('/{commentid}', name: 'app_comment_delete', methods: ['POST'])] 
+   /* #[Route('/{commentid}', name: 'app_comment_delete', methods: ['POST'])] 
         public function delete(Request $request, int $commentid): Response
     {
         // Get the comment entity from the database
@@ -107,7 +107,8 @@ public function new(Request $request): Response
 
         // Redirect or return a response as needed
         return $this->redirectToRoute('app_article_index'); // Example redirect
-    }
+    }*/
+
     #[Route('/back/comment', name: 'app_commentback_index', methods: ['GET'])]
     public function indexback(CommentRepository $commentRepository): Response
     {
