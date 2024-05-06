@@ -81,26 +81,26 @@
     </div>
 
     <script>
+    document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('searchInput');
-        const articleRows = document.querySelectorAll('.article-row');
+        const articleRows = document.querySelectorAll('table tbody tr');
 
         searchInput.addEventListener('input', function () {
-            const query = this.value.trim().toLowerCase();
+            const searchText = searchInput.value.trim().toLowerCase();
 
             articleRows.forEach(row => {
-                const description = row.querySelector('h4').textContent.trim().toLowerCase();
-                const words = description.split(' ');
+                const descriptionCell = row.querySelector('h4');
+                const descriptionText = descriptionCell ? descriptionCell.textContent.trim().toLowerCase() : '';
 
-                const isVisible = words.some(word => word.includes(query));
+                // Check if the description of the article matches the search text
+                const visible = descriptionText.includes(searchText);
 
-                if (isVisible) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                // Show or hide the entire article row based on visibility
+                row.style.display = visible ? '' : 'none';
             });
         });
-    </script>
+    });
+</script>
 
     <style>
         .comment-buttons .btn {

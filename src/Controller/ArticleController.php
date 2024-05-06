@@ -156,33 +156,39 @@ class ArticleController extends AbstractController
 
         return $this->redirectToRoute('app_article_index', [], Response::HTTP_SEE_OTHER);
     }
-    #[Route('front/article/search', name: 'app_article_search', methods: ['GET','POST'])]
-public function search(Request $request, ArticleRepository $articleRepository): Response
+//     #[Route('front/article/search', name: 'app_article_search', methods: ['GET','POST'])]
+// public function search(Request $request, ArticleRepository $articleRepository): Response
+// {
+//     $searchTerm = $request->query->get('search');
+
+//     // Fetch articles based on the search term
+//     $articles = $articleRepository->findByDescription($searchTerm);
+
+//     // Create an associative array to store comments for each article
+//     $articleComments = [];
+//     $commentRepository = $this->getDoctrine()->getRepository(Comment::class);
+
+//     // Loop through each fetched article and fetch its associated comments
+//     foreach ($articles as $article) {
+//         $comments = $commentRepository->findBy(['article' => $article]);
+//         $articleComments[$article->getId()] = $comments;
+//     }
+
+//     // Create a new comment object for the comment form
+//     $newComment = new Comment();
+//     $commentForm = $this->createForm(CommentType::class, $newComment);
+
+//     return $this->render('front/article/index.html.twig', [
+//         'articles' => $articles,
+//         'articleComments' => $articleComments,
+//         'commentForm' => $commentForm->createView(),
+//     ]);
+//}
+
+#[Route('front/article/chabot', name: 'app_chat_bot', methods: ['POST', 'GET'])]
+public function indexbot(Request $request): Response
 {
-    $searchTerm = $request->query->get('search');
-
-    // Fetch articles based on the search term
-    $articles = $articleRepository->findByDescription($searchTerm);
-
-    // Create an associative array to store comments for each article
-    $articleComments = [];
-    $commentRepository = $this->getDoctrine()->getRepository(Comment::class);
-
-    // Loop through each fetched article and fetch its associated comments
-    foreach ($articles as $article) {
-        $comments = $commentRepository->findBy(['article' => $article]);
-        $articleComments[$article->getId()] = $comments;
-    }
-
-    // Create a new comment object for the comment form
-    $newComment = new Comment();
-    $commentForm = $this->createForm(CommentType::class, $newComment);
-
-    return $this->render('front/article/index.html.twig', [
-        'articles' => $articles,
-        'articleComments' => $articleComments,
-        'commentForm' => $commentForm->createView(),
-    ]);
+    return $this->render('front/article/index.html.twig');
 }
 #[Route('/back/article', name: 'app_articleback_index', methods: ['GET'])]
 public function indexback(ArticleRepository $articleRepository, CommentRepository $commentRepository): Response

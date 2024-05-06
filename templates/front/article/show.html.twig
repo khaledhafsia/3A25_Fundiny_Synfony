@@ -1,4 +1,4 @@
-{# {% extends 'base.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Article Details{% endblock %}
 
@@ -21,4 +21,4 @@
         {{ csrf_token('delete' ~ article.getId()) }}
         <button type="submit">Delete</button>
     </form>
-{% endblock %} #}
+{% endblock %}
