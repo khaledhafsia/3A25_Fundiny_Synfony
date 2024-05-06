@@ -13,6 +13,8 @@
         "doctrine/doctrine-migrations-bundle": "^3.3",
         "doctrine/orm": "^2.9",
         "dompdf/dompdf": "*",
+        "kilik/table": "^3.2",
+        "knplabs/knp-paginator-bundle": "^5.9",
         "league/oauth2-google": "4.0",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpoffice/phpspreadsheet": "^2.0",

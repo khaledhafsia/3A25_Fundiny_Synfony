@@ -5,42 +5,31 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Comment
- *
- * @ORM\Table(name="comment", indexes={@ORM\Index(name="fkc", columns={"postid"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Repository\CommentRepository")
  */
 class Comment
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="commentid", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(name="commentid", type="integer", nullable=false)
      */
-    private $commentid;
+    private int $id;
 
     /**
-     * @var string
-     *
      * @ORM\Column(name="comment", type="string", length=100, nullable=false)
      */
-    private $comment;
+    private string $comment;
 
     /**
-     * @var \Article
-     *
-     * @ORM\ManyToOne(targetEntity="Article")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="postid", referencedColumnName="id")
-     * })
+     * @ORM\ManyToOne(targetEntity=Article::class)
+     * @ORM\JoinColumn(name="postid", referencedColumnName="id")
      */
-    private $postid;
+    private ?Article $postid;
 
-    public function getCommentid(): ?int
+    public function getId(): ?int
     {
-        return $this->commentid;
+        return $this->id;
     }
 
     public function getComment(): ?string
@@ -48,10 +37,9 @@ class Comment
         return $this->comment;
     }
 
-    public function setComment(string $comment): static
+    public function setComment(string $comment): self
     {
         $this->comment = $comment;
-
         return $this;
     }
 
@@ -59,13 +47,10 @@ class Comment
     {
         return $this->postid;
     }
-
-    public function setPostid(?Article $postid): static
+    
+    public function setPostid(?Article $postid): self
     {
         $this->postid = $postid;
-
         return $this;
     }
-
-
 }

@@ -1,0 +1,15 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Edit Article{% endblock %}
+
+{% block body %}
+    <div class="container my-4">
+        <h1 class="mb-4">Edit your article</h1>
+
+        {{ include('front/article/_form.html.twig', {'button_label': 'Update'}) }}
+
+        <a class="btn btn-secondary mt-3 me-2" href="{{ path('app_article_index') }}">Back to List</a>
+
+        {{ include('front/article/_delete_form.html.twig') }}
+    </div>
+{% endblock %}

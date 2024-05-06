@@ -1,0 +1,35 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Comment index{% endblock %}
+
+{% block body %}
+    <h1>Comment index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Comment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for comment in comments %}
+            <tr>
+                <td>{{ comment.id }}</td>
+                <td>{{ comment.comment }}</td>
+                <td>
+                    <a href="{{ path('app_comment_show', {'commentid': comment.id}) }}">Show</a>
+                    <a href="{{ path('app_comment_edit', {'commentid': comment.id}) }}">Edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_comment_new') }}" class="btn btn-primary">Create new Comment</a>
+{% endblock %}
