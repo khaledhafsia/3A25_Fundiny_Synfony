@@ -3,20 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="30f9681f-2991-4acd-a3d9-e7277145e4be" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ReclamationsController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReclamationsController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/ReponsesController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/ReponsesController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/_delete.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/_delete.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/allReclamations.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/allReclamations.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/createReponse.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/createReponse.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/editReponse.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/editReponse.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/index.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/index.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/indexReponses.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/indexReponses.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/reclamationTableAJAX.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/reclamationTableAJAX.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/reclamationTableAJAXCustoms.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/reclamationTableAJAXCustoms.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/show.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/admin/showReponse.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/showReponse.html.twig" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/main/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/baseBack.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/back/createReponse.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/createReponse.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/back/editReponse.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/editReponse.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/back/indexReponses.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/indexReponses.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/back/show.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/show.html.twig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/back/showReponse.html.twig" beforeDir="false" afterPath="$PROJECT_DIR$/templates/back/showReponse.html.twig" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -235,7 +226,9 @@
       <workItem from="1714338991431" duration="5654000" />
       <workItem from="1714583387412" duration="603000" />
       <workItem from="1714754613625" duration="691000" />
-      <workItem from="1714932146290" duration="6115000" />
+      <workItem from="1714932146290" duration="6547000" />
+      <workItem from="1714946507240" duration="193000" />
+      <workItem from="1714999556054" duration="698000" />
     </task>
     <servers />
   </component>
@@ -252,5 +245,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/templates/back/showReponse.html.twig</url>
+          <line>2</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

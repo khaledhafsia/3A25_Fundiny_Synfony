@@ -1,136 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}Dashboard{% endblock %}</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-    {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-    {% block stylesheets %}
-        {{ encore_entry_link_tags('app') }}
-        <!-- Custom fonts for this template-->
-        <link href="{{ asset('/back/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-        <link
-                href="{{ asset('https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i') }}"
-                rel="stylesheet">
-
-        <!-- Custom styles for this template-->
-        <link href="{{ asset('/back/css/sb-admin-2.min.css') }}" rel="stylesheet">
-    {% endblock %}
-
-    {% block javascripts %}
-        {{ encore_entry_script_tags('app') }}
-        <!-- Bootstrap core JavaScript-->
-        <script src="{{ asset('/back/vendor/jquery/jquery.min.js') }}"></script>
-        <script src="{{ asset('/back/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-        <!-- Core plugin JavaScript-->
-        <script src="{{ asset('/back/vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-        <!-- Custom scripts for all pages-->
-        <script src="{{ asset('/back/js/sb-admin-2.min.js') }}"></script>
-
-        <!-- Page level plugins -->
-        <script src="{{ asset('/back/vendor/chart.js/Chart.min.js') }}"></script>
-
-        <!-- Page level custom scripts -->
-        <script src="{{ asset('/back/js/demo/chart-area-demo.js') }}"></script>
-        <script src="{{ asset('/back/js/demo/chart-pie-demo.js') }}"></script>
-
-    {% endblock %}
-</head>
-
-{% block menu %}
-    <!-- Page Wrapper -->
-<div id="wrapper">
-
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-            {#<div class="sidebar-brand-icon rotate-n-15">
-            #}{#                            <i class="fas fa-laugh-wink"></i>#}{#
-
-            </div>#}
-            <div >
-                <img src="{{ asset('/back/img/logo_projet.png') }}"  style=" width:100px" style ="height: 100px" >
-            </div>
-
-        </a>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
-
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item active">
-          {#<a class="nav-link" href="{{ path('app_dashbord') }}">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span></a>
-          #}
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Interface
-        </div>
-
-
-
-        <!-- Nav Item - Tables -->
-        <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-table"></i>
-                <span>User</span></a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Project</span></a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Investment</span></a>
-        </li>
-
-
-        <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Blog</span></a>
-        </li>
-
-
-
-        <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Recmlamation</span></a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="">
-                <i class="fas fa-fw fa-table"></i>
-                <span>Event</span></a>
-        </li>
-
-
-        <hr class="sidebar-divider d-none d-md-block">
-
-        <div class="text-center d-none d-md-inline">
-            <button class="nav-link" href=""></button>
-        </div>
-
-
-    </ul>
-    <!-- End of Sidebar -->
-    {% endblock %}
-
+{% extends 'baseBack.html.twig' %}
 
     {% block body %}
 
@@ -403,7 +271,7 @@
         </div>
 
         <div class="btn-container">
-            <a href="{{ path('app_reponses_index_admin') }}" class="btn btn-info">Back to list</a>
+            <a href="{{ path('app_reponses_index_back') }}" class="btn btn-info">Back to list</a>
             <a href="{{ path('app_reponses_edit', {'id': reponse.id}) }}" class="btn btn-warning">Edit</a>
             <div class="btn-group">
                 {{ include('reponses/_delete_form.html.twig') }}
@@ -470,5 +338,3 @@
     </div>
 
 {% endblock %}
-
-</html>
