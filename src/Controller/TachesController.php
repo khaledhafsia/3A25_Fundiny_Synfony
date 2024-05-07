@@ -69,6 +69,7 @@ class TachesController extends AbstractController
         return $this->render('front/taches/index.html.twig', [
             'taches' => $taches,
             'investissement' => $investissement,
+            
         ]);
     }
 
