@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class EventsController extends AbstractController
 {
+
     #[Route('/home', name: 'home')]
     public function home(): Response
     {
