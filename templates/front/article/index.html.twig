@@ -4,151 +4,138 @@
 
 {% block body %}
    
-    <input type="text" id="searchInput" placeholder="Search by description">
-     <div class="container mt-3">
-        <a href="{{ path('app_article_new') }}" class="btn btn-primary mb-3">Create new Article</a>
-    </div>
-    
-    <table class="table">
-        <tbody>
-            {% if articles is not empty %} 
+       <input type="text" id="searchInput" class="form-control" placeholder="Search for your article" aria-label="Search" aria-describedby="searchIcon">
+
+   <div class="container mt-3">
+    <a href="{{ path('app_article_new') }}" class="btn btn-lg btn-success mb-3">
+        <i class="fas fa-plus-circle mr-2"></i>Create new Article
+    </a>
+</div>
+
+
+    <div class="container">
+        <div class="row">
+            {% if articles is not empty %}
                 {% for article in articles %}
-                    <tr>
-                        <td colspan="3">
-                            <hr> <!-- Line separator -->
-                            <h4>{{ article.description }}</h4>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
+                    <div class="col-md-6 mb-3">
+                        <div class="card">
                             {% if article.image %}
-                                <img src="{{ asset('images/front/' ~ article.image) }}" alt="" style="max-width: 400px;">
+                                <img src="{{ asset('images/front/' ~ article.image) }}" class="card-img-top" alt="Article Image">
                             {% else %}
-                                No image
+                                <div class="card-img-top">No image</div>
                             {% endif %}
-                        </td>
-                        <td>
-                            <div class="comment-buttons">
-                                <a href="{{ path('app_article_edit', {'id': article.id}) }}">Edit Article</a>
-                            </div>
-                            <form action="{{ path('app_article_delete', {'id': article.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this article?');">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
-                                <div class="comment-buttons">
-                                    <button type="submit" class="btn btn-danger">Delete Article</button>
-                                </div>
-                            </form>
-                        </td>
-                        <td>
-                            <!-- Facebook and Twitter Share Buttons -->
-                            <div class="mt-2">
-                                <a 
-                                    href="https://twitter.com/intent/tweet?text={{ article.description }} - Check out this article!&url={{ url('app_article_show', {'id': article.id}) }}"
-                                    target="_blank" 
-                                    class="btn btn-info"
-                                    style="background-color: #1DA1F2; border-color: #1DA1F2;"
-                                >
-                                    Share on Twitter
-                                </a>
-                                <a 
-                                    href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_article_show', {'id': article.id})|url_encode }}&quote={{ article.description }} - Check out this article!"
-                                    target="_blank"
-                                    class="btn btn-info"
-                                    style="background-color: #3b5998; border-color: #3b5998;"
-                                >
-                                    Share on Facebook
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-                            <form action="{{ path('app_comment_new') }}" method="post">
-                                <input type="hidden" name="articleId" value="{{ article.id }}">
-                                <div class="form-group">
-                                    <label for="comment">Add Comment:</label>
-                                    <textarea class="form-control" id="comment" name="comment" rows="3"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-success">Submit</button>
-                            </form>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-                            <h4>Comments</h4>
-                            {% for comment in articleComments[article.id] %}
-                                <div class="comment">
-                                    <p>{{ comment.comment }}</p>
-                                    <div class="comment-buttons">
-                                        <a href="{{ path('app_comment_edit', {'commentid': comment.id}) }}" class="btn btn-primary">Edit Comment</a>
-                                    </div>
-                                    <form action="{{ path('app_comment_delete', {'commentid': comment.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ article.description }}</h5>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ path('app_article_edit', {'id': article.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> </a>
+                                    <form action="{{ path('app_article_delete', {'id': article.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this article?');">
                                         <input type="hidden" name="_method" value="DELETE">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
-                                        <div class="comment-buttons">
-                                            <button type="submit" class="btn btn-danger">Delete Comment</button>
-                                        </div>
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ article.id) }}">
+                                        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> </button>
                                     </form>
+                                    <a href="https://twitter.com/intent/tweet?text={{ article.description }} - Check out this article!&url={{ url('app_article_show', {'id': article.id}) }}" target="_blank" class="btn btn-info" style="background-color: #1DA1F2; border-color: #1DA1F2;">
+                                        <i class="fab fa-twitter"></i> Share on Twitter
+                                    </a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ url('app_article_show', {'id': article.id})|url_encode }}&quote={{ article.description }} - Check out this article!" target="_blank" class="btn btn-info" style="background-color: #3b5998; border-color: #3b5998;">
+                                        <i class="fab fa-facebook"></i> Share on Facebook
+                                    </a>
                                 </div>
-                                <hr> <!-- Line separator -->
-                            {% else %}
-                                <p>No comments</p>
-                            {% endfor %}
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="3">No records found</td>
-                    </tr>
-                {% endfor %}
-            {% endif %}
-            <tr>
-                <td colspan="3">
-                    <div class="container mt-5">
-                        <h1 class="text-center">You can also discuss with our chatbot!</h1>
+                                <hr>
+                                <h6>Comments</h6>
+                                <ul class="list-group">
+                                    {% if articleComments[article.id] is not empty %}
+                                        {% for comment in articleComments[article.id] %}
+                                            <li class="list-group-item">
+                                                {{ comment.comment }}
+                                                <div class="comment-buttons">
+                                                    <a href="{{ path('app_comment_edit', {'commentid': comment.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> </a>
+                                                    <form action="{{ path('app_comment_delete', {'commentid': comment.id}) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this comment?');">
+                                                        <input type="hidden" name="_method" value="DELETE">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ comment.id) }}">
+                                                        <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> </button>
+                                                    </form>
+                                                </div>
+                                            </li>
+                                        {% endfor %}
+                                    {% else %}
+                                        <li class="list-group-item">be the first to comment!</li>
+                                    {% endif %}
+                                </ul>
+                                <hr>
+                                <form action="{{ path('app_comment_new') }}" method="post">
+                                    <input type="hidden" name="articleId" value="{{ article.id }}">
+                                    <div class="form-group">
+                                        <label for="comment"></label>
+                                        <textarea class="form-control" id="comment" name="comment" rows="1" placeholder="share your thoughts" oninput="autoResize(this)"></textarea>
 
-                        <div id="chat-box" style="border: 1px solid #ccc; height: 400px; overflow-y: auto; padding: 10px;">
-                            <!-- Chat content will be dynamically inserted here -->
-                        </div>
 
-                        <div class="mt-3">
-                            <form id="chat-form">
-                                <div class="input-group">
-                                    <input type="text" id="chat-input" class="form-control" placeholder="Type a message... Press Enter to send" />
-                                    <button type="button" class="btn btn-primary" id="send-message">Send</button>
-                                </div>
-                            </form>
+                                    </div>
+                                    <button type="submit" class="btn btn-success">add your comment</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                {% endfor %}
+            {% else %}
+                <div class="col">
+                    <p>No records found</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+
+   
+    <!-- Font Awesome stylesheet link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     
+            <tr>
+    <td colspan="3">
+        <div class="container mt-5">
+            <h1 class="text-center">You can also discuss with our chatbot!</h1>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchInput = document.getElementById('searchInput');
-        const articleRows = document.querySelectorAll('table tbody tr');
+            <div id="chat-box" style="border: 1px solid #ccc; height: 200px; overflow-y: auto; padding: 10px;">
+                <!-- Chat content will be dynamically inserted here -->
+            </div>
 
-        searchInput.addEventListener('input', function () {
-            const searchText = searchInput.value.trim().toLowerCase();
+            <div class="mt-3">
+                <form id="chat-form">
+                    <div class="input-group">
+                        <input type="text" id="chat-input" class="form-control" placeholder="Type a message... Press Enter to send" />
+                        <button type="button" class="btn btn-primary" id="send-message">Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </td>
+</tr>
 
-            articleRows.forEach(row => {
-                const descriptionCell = row.querySelector('h4');
-                const descriptionText = descriptionCell ? descriptionCell.textContent.trim().toLowerCase() : '';
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const cardTitles = document.querySelectorAll('.card-title');
 
-                // Check if the description of the article matches the search text
-                const visible = descriptionText.includes(searchText);
+            searchInput.addEventListener('input', function () {
+                const searchText = searchInput.value.trim().toLowerCase();
 
-                // Show or hide the entire article row based on visibility
-                row.style.display = visible ? '' : 'none';
+                cardTitles.forEach(title => {
+                    const visible = title.textContent.trim().toLowerCase().includes(searchText);
+                    const card = title.closest('.card');
+
+                    card.style.display = visible ? '' : 'none';
+                });
             });
         });
-    });
+    </script>
+    <script>
+    function autoResize(textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = (textarea.scrollHeight + 2) + 'px';
+    }
 </script>
 
+  
     <script>
         // Function to generate bot response
         function generateBotResponse(userMessage) {

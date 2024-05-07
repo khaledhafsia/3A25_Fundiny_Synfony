@@ -53,7 +53,7 @@ public function new(Request $request): Response
     return $this->redirectToRoute('app_article_index');
 }
     
-    #[Route('/{commentid}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
+    #[Route('/front/comment/{commentid}/edit', name: 'app_comment_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, int $commentid): Response
     {
         // Get the comment entity from the database
