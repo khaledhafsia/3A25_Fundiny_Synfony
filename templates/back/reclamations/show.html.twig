@@ -1,0 +1,125 @@
+{% extends 'back/baseBack.html.twig' %}
+
+{% block title %}Réclamation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Ajoutez vos styles CSS personnalisés ici */
+        .container {
+            width: 65%;
+            margin: 0 auto;
+            text-align: center; /* Aligner le contenu au centre */
+        }
+
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px; /* Ajuster la largeur si nécessaire */
+            text-align: left; /* Aligner les étiquettes à gauche */
+        }
+
+        .field {
+            display: inline-block;
+            text-align: left; /* Aligner les champs à gauche */
+        }
+
+        .row {
+            margin-bottom: 30px; /* Espacement accru entre les lignes */
+            position: relative; /* Nécessaire pour le positionnement absolu */
+        }
+
+        .row:after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: -15px; /* Ajuster la marge pour la ligne */
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #ccc; /* Couleur de la ligne */
+        }
+
+        h1 {
+            margin-bottom: 20px; /* Ajouter de l'espace en dessous du titre */
+            color: #B0413E; /* Couleur du titre */
+        }
+
+        .btn-container {
+            margin-top: 20px; /* Ajouter de l'espace au-dessus des boutons */
+            text-align: center; /* Aligner les boutons au centre */
+        }
+
+        .btn-container a {
+            margin: 0 10px; /* Ajouter de la marge aux boutons */
+        }
+
+        /* Classe personnalisée pour le champ avec une marge à gauche */
+        .field-with-margin-left {
+            margin-left: 150px; /* Ajouter une marge à gauche */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1>Réclamation</h1> <!-- Titre centré -->
+        </div>
+        <div class="row">
+            <span class="label">IdRéclamation:</span>
+            <span class="field field-with-margin-left">{{ reclamation.idReclamation }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Email:</span>
+            <span class="field field-with-margin-left">{{ reclamation.email }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">IdProjet:</span>
+            <span class="field field-with-margin-left">{{ reclamation.idProjet.nompr }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">IdTypeReclamation:</span>
+            <span class="field field-with-margin-left">{{ reclamation.idTypeReclamation.NomTypeReclamation }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">IdUtilisateur:</span>
+            <span class="field field-with-margin-left">{{ reclamation.idUtilisateur.nom }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Objet:</span>
+            <span class="field field-with-margin-left">{{ reclamation.objet }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Texte:</span>
+            <span class="field field-with-margin-left">{{ reclamation.texte }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">État:</span>
+            <span class="field field-with-margin-left">{{ reclamation.etat }}</span>
+        </div>
+
+        <!-- Ajouter la d   ate -->
+        <div class="row">
+            <span class="label">Date:</span>
+            <span class="field field-with-margin-left">{{ reclamation.dateCreation|date('d-m-Y H:i') }}</span> <!-- Format de la date -->
+        </div>
+
+        <div class="btn-container">
+            <a href="{{ path('app_reclamations_index') }}" class="btn btn-info">Retour à la liste</a>
+            <a href="{{ path('app_reclamations_edit', {'idReclamation': reclamation.idReclamation}) }}" class="btn btn-warning">Modifier</a>
+            <div class="btn-group">
+                {{ include('back/reclamations/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

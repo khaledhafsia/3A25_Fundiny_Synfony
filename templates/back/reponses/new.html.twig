@@ -1,0 +1,15 @@
+{% extends 'back/baseBack.html.twig' %}
+
+{% block title %}New Reponses{% endblock %}
+
+{% block body %}
+    <h1 style="color: #B0413E; text-align: center;">Add new Reponse</h1>
+    {# Ensure 'reclamation' is defined before including the dependent template #}
+    {% if reclamation is defined %}
+        {{ include('back/reclamations/show.html.twig') }}
+    {% else %}
+        <p>Error: Reclamation data not provided.</p>
+    {% endif %}
+    {{ include('back/reponses/_form.html.twig') }}
+
+{% endblock %}

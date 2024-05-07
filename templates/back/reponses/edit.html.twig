@@ -1,0 +1,12 @@
+{% extends 'back/baseBack.html.twig' %}
+
+{% block title %}Edit Reponses{% endblock %}
+
+{% block body %}
+    <h1>Edit Reponses</h1>
+
+    {{ include('back/reponses/_form.html.twig', {'button_label': 'Update'}) }}
+
+
+    {{ include('back/reponses/_delete_form.html.twig') }}
+{% endblock %}

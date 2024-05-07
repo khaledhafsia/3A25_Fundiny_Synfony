@@ -1,0 +1,103 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Reponses{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* CSS styles */
+        .container {
+            width: 65%;
+            margin: 0 auto;
+            text-align: center; /* Center align the content */
+        }
+
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px; /* Adjust width as needed */
+            text-align: left; /* Align labels to the left */
+        }
+
+        .field {
+            display: inline-block;
+            text-align: left; /* Align fields to the left */
+        }
+
+        .row {
+            margin-bottom: 30px; /* Increased spacing between rows */
+            position: relative; /* Needed for absolute positioning */
+        }
+
+        .row:after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: -15px; /* Adjust margin for the line */
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #ccc; /* Line color */
+        }
+
+        h1 {
+            margin-bottom: 20px;/* Add space below the heading */
+            color: #B0413E;
+        }
+
+        .btn-container {
+            margin-top: 20px; /* Add some space above the buttons */
+            text-align: center; /* Center align the buttons */
+        }
+
+        .btn-container a {
+            margin: 0 10px; /* Add margin to the buttons */
+        }
+
+        /* Custom class for field with left margin */
+        .field-with-margin-left {
+            margin-left: 150px; /* Add left margin */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1>Reponses</h1> <!-- Centered heading -->
+        </div>
+        <div class="row">
+            <span class="label">IdReponse:</span>
+            <span class="field field-with-margin-left">{{ reponse.idReponse }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Email:</span>
+            <span class="field field-with-margin-left">{{ reponse.email }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">IdUtilisateur:</span>
+            <span class="field field-with-margin-left">{{ reponse.idUtilisateur.nom }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Objet:</span>
+            <span class="field field-with-margin-left">{{ reponse.objet }}</span>
+        </div>
+
+        <div class="row">
+            <span class="label">Texte:</span>
+            <span class="field field-with-margin-left">{{ reponse.texte }}</span>
+        </div>
+
+        <div class="btn-container">
+            <a href="{{ path('app_reponses_index') }}" class="btn btn-info">Back to list</a>
+            <a href="{{ path('app_reponses_edit', {'idReponse': reponse.idReponse}) }}" class="btn btn-warning">Edit</a>
+            <div class="btn-group">
+                {{ include('front/reponses/_delete_form.html.twig') }}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

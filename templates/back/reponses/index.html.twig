@@ -1,0 +1,70 @@
+{% extends 'back/baseBack.html.twig' %}
+
+{% block title %}Reponses index{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('path/to/your/css/file.css') }}">
+{% endblock %}
+
+{% block body %}
+    <h1 class="text-center mb-4" style="color: #B0413E;">Reponses</h1>
+
+    <div class="container mt-5">
+        <div class="row mb-3">
+            <div class="col-md-6 text-right">
+                <a href="{{ path('app_reponses_new') }}" class="btn btn-primary mr-2">Add</a>
+                <a href="{{ path('app_reponses_export_excel') }}" class="btn btn-info mr-2">Export Excel</a>
+                <a href="{{ path('reponses_pdf') }}" class="btn btn-danger">Export PDF</a>
+            </div>
+            <div class="col-md-6">
+                <form action="{{ path('app_reponses_search') }}" method="get" class="form-inline">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="Recherche...">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">Rechercher</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <table class="table table-striped">
+            <thead class="table-warning">
+            <tr>
+                <th>{{ knp_pagination_sortable(reponses, 'IdReponse', 'IdReponse') }}</th>
+                <th>{{ knp_pagination_sortable(reponses, 'Email compagnant', 'Email compagnant') }}</th>
+                <th>{{ knp_pagination_sortable(reponses, 'Email', 'Email') }}</th>
+                <th>{{ knp_pagination_sortable(reponses, 'Utilisateur', 'Utilisateur') }}</th>
+                <th>{{ knp_pagination_sortable(reponses, 'Date', 'Date') }}</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for reponse in reponses %}
+                <tr>
+                    <td>{{ reponse.idReponse }}</td>
+                    <td>{{ reponse.idReclamation ? reponse.idReclamation.email : 'N/A' }}</td>
+                    <td>{{ reponse.email }}</td>
+                    <td>{{ reponse.idUtilisateur ? reponse.idUtilisateur.nom : 'N/A' }}</td>
+                    <td>{{ reponse.dateReponse|date('d-m-Y H:i') }}</td> <!-- Afficher la date de création -->
+                    <td>
+                        <a href="{{ path('app_reponses_show', {'idReponse': reponse.idReponse}) }}" class="btn btn-success">Show</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No records found</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="row">
+            <div class="col">
+                <div class="pagination mt-3 d-flex justify-content-center table-striped" style="font-size: 24px;">
+                    {{ knp_pagination_render(reponses, 'custom_pagination.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

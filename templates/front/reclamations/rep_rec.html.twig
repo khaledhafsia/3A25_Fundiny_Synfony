@@ -1,0 +1,153 @@
+{% extends 'front/base.html.twig' %}
+
+{% block title %}Réclamation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Ajoutez vos styles CSS personnalisés ici */
+        .container {
+            width: 65%;
+            margin: 0 auto;
+            text-align: center; /* Aligner le contenu au centre */
+        }
+
+        .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 150px; /* Ajuster la largeur si nécessaire */
+            text-align: left; /* Aligner les étiquettes à gauche */
+        }
+
+        .field {
+            display: inline-block;
+            text-align: left; /* Aligner les champs à gauche */
+        }
+
+        .row {
+            margin-bottom: 30px; /* Espacement accru entre les lignes */
+            position: relative; /* Nécessaire pour le positionnement absolu */
+        }
+
+        .row:after {
+            content: "";
+            display: block;
+            position: absolute;
+            bottom: -15px; /* Ajuster la marge pour la ligne */
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #ccc; /* Couleur de la ligne */
+        }
+
+        h1 {
+            margin-bottom: 20px; /* Ajouter de l'espace en dessous du titre */
+            color: #B0413E; /* Couleur du titre */
+        }
+
+        .btn-container {
+            margin-top: 20px; /* Ajouter de l'espace au-dessus des boutons */
+            text-align: center; /* Aligner les boutons au centre */
+        }
+
+        .btn-container a {
+            margin: 0 10px; /* Ajouter de la marge aux boutons */
+        }
+
+        /* Classe personnalisée pour le champ avec une marge à gauche */
+        .field-with-margin-left {
+            margin-left: 150px; /* Ajouter une marge à gauche */
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container p-0"> <!-- Suppression du padding -->
+        <h3 class="text-center m-0"style="color: #B0413E">Réclamation</h3> <!-- Titre centré -->
+
+        <!-- Lignes simples sans traits ni bordures -->
+        <div class="d-flex p-0 m-0"> <!-- Suppression de marges/paddings -->
+            <span class="label">ID Réclamation:</span>
+            <span class="field ml-2">{{ reclamation.idReclamation }}</span>
+        </div>
+
+        <div class="d-flex p-0 m-0"> <!-- Pas de bordures ou séparations -->
+            <span class="label">Email:</span>
+            <span class="field ml-2">{{ reclamation.email }}</span>
+        </div>
+
+        <div class="d-flex p-0 m-0"> <!-- Suppression de traits entre les lignes -->
+            <span class="label">Projet:</span>
+            <span class="field ml-2">{{ reclamation.idProjet.nompr }}</span>
+        </div>
+
+        <div class="d-flex p-0 m-0"> <!-- Aucun ajout de bordures -->
+            <span class="label">Type:</span>
+            <span class="field ml-2">{{ reclamation.idTypeReclamation.NomTypeReclamation }}</span>
+        </div>
+
+        <div class="d-flex p-0 m-0"> <!-- Aucune bordure ou séparation -->
+            <span class="label" style="font-weight: bold;">Utilisateur:</span>
+            <span class="field ml-2">{{ reclamation.idUtilisateur.nom }}</span>
+        </div>
+
+        <div class="d-flex p-0 m-0"> <!-- Pas de traits entre les lignes -->
+            <span class="label">Objet:</span>
+            <span class="field ml-2">{{ reclamation.objet }}</span>
+        </div>
+
+        <div class="d-flex p-0 m-0"> <!-- Suppression des bordures -->
+            <span class="label">Texte:</span>
+            <span class="field ml-2">{{ reclamation.texte }}</span>
+        </div>
+
+        <div class="d-flex p-0 m-0"> <!-- Pas de traits ou bordures -->
+            <span class="label">État:</span>
+            <span class="field ml-2">{{ reclamation.etat }}</span>
+        </div>
+
+        <div class="d-flex p-0 m-0"> <!-- Aucun trait entre les lignes -->
+            <span class="label">Date:</span>
+            <span class="field ml-2">{{ reclamation.dateCreation | date('d-m-Y H:i') }}</span>
+        </div>
+    </div>
+
+    <hr style="border: 1px solid red; margin: 20px 0;"> <!-- Trait entre les conteneurs -->
+
+    <h3 class="text-center m-0" style="color: #B0413E">Reponse : </h3>
+    <div class="container p-0"> <!-- Deuxième conteneur -->
+        <form action="{{ path('app_reclamations_repondre', { 'idReclamation': reclamation.idReclamation }) }}" method="post" >
+            <!-- Aligner les labels avec les mêmes règles -->
+            <div class="d-flex p-0 m-0">
+                <label for="idUtilisateur" class="label">Compagnant :</label>
+                <select id="idUtilisateur" name="reclamations[idUtilisateur]" class="form-control ml-2" required>
+                    <option value="">Sélectionnez un utilisateur</option> <!-- Option par défaut -->
+                    {% for user in users %}
+                        <option value="{{ user.id }}"> {{ user.nom }}</option> <!-- Afficher le nom de l'utilisateur -->
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="d-flex p-0 m-0">
+                <label for="email" class="label">Email compagnon:</label> <!-- Labels en gras -->
+                <input type="text" id="email" name="email" class="form-control ml-2" placeholder="Entrez l'email" required>
+            </div>
+
+            <!-- Autres champs avec la même structure -->
+            <div class="d-flex p-0 m-0">
+                <label for="objet" class="label">Objet:</label> <!-- Labels en gras -->
+                <input type="text" id="objet" name="objet" class="form-control ml-2" placeholder="Entrez l'objet" required>
+            </div>
+
+            <div class="d-flex p-0 m-0">
+                <label for="texte" class="label">Texte:</label> <!-- Labels en gras -->
+                <textarea id="texte" name="texte" class="form-control ml-2" rows="5" placeholder="Entrez votre texte" required></textarea>
+            </div>
+
+            <div class="d-flex justify-content-center p-0"> <!-- Aligner le bouton au centre -->
+                <button type="submit" class="btn btn-primary">Sauvegarder</button>
+            </div>
+
+        </form>
+    </div>
+{% endblock %}

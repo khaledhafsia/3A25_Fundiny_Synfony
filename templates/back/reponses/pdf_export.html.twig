@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exported Responses</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: #B0413E;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+<h1>Exported Responses</h1>
+<table>
+    <thead>
+    <tr>
+        <th>Id Reponse</th>
+        <th>Email</th>
+        <th>User</th>
+        <th>Object</th>
+        <th>Text</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for reponse in reponses %}
+        <tr>
+            <td>{{ reponse.idReponse }}</td>
+            <td>{{ reponse.email }}</td>
+            <td>{{ reponse.idUtilisateur ? reponse.idUtilisateur.nom : 'N/A' }}</td>
+            <td>{{ reponse.objet }}</td>
+            <td>{{ reponse.texte }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

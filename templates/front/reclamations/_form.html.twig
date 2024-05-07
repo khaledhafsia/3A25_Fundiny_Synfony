@@ -1,0 +1,88 @@
+{% block body %}
+    <style>
+        .form-group.row + .form-group.row {
+            border-top: 1px solid #ccc; /* Ajouter une bordure supérieure solide entre les lignes */
+        }
+        .container {
+            width: 65%;
+            margin: 0 auto;
+            text-align: left; /* Aligner le contenu à gauche */
+        }
+        .form-control-no-border {
+            border: none;
+            border-radius: 0;
+            background-color: transparent;
+            height: 40px;
+            padding: 10px;
+        }
+    </style>
+
+    <div class="container">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            <br>
+            <br>
+
+    
+
+            <div class="form-group row">
+                <label for="idProjet" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">IdProjet</label>
+                <div class="col-sm-6">
+                    {{ form_widget(form.idProjet, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Choose project'}}) }}
+                    {{ form_errors(form.idProjet, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="idTypeReclamation" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">IdTypeReclamation</label>
+                <div class="col-sm-6">
+                    {{ form_widget(form.idTypeReclamation, {'attr': {'class': 'form-control-no-border select2', 'placeholder': 'Choose type of claim'}}) }}
+                    {{ form_errors(form.idTypeReclamation, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label for="objet" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Objet</label>
+                <div class="col-sm-6">
+                    {{ form_widget(form.objet, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter the subject'}}) }}
+                    {{ form_errors(form.objet, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="texte" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">Texte</label>
+                <div class="col-sm-6">
+                    {{ form_widget(form.texte, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter the text'}}) }}
+                    {{ form_errors(form.texte, {'attr': {'class': 'text-danger'}}) }}
+                </div>
+            </div>
+
+        <!-- Ajouter le champ "état" juste après le champ "texte" -->
+        <div class="form-group row">
+            <label for="etat" class="col-sm-4 col-form-label" style="font-weight: bold; font-size: 18px;">État</label>
+            <div class="col-sm-6">
+                {{ form_widget(form.etat, {'attr': {'class': 'form-control-no-border', 'placeholder': 'Enter the status'}}) }}
+                {{ form_errors(form.etat, {'attr': {'class': 'text-danger'}}) }}
+            </div>
+        </div>
+
+            <br>
+            <br>
+
+            <div class="form-group row">
+                <div class="col-sm-2" style="margin-left: 100px;"> <!-- Ajouter une marge à gauche de 100px -->
+                    <div class="text-right">
+                        <a href="{{ path('app_reponses_index') }}" class="btn btn-info">Back to list</a>
+                    </div>
+                </div>
+
+                <div class="col-sm-1" style="margin-left: 100px;"> <!-- Ajouter une marge à gauche de 100px -->
+                    <div class="text-left">
+                        <button type="submit" class="btn btn-success">{{ button_label|default('Save') }}</button>
+                    </div>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
