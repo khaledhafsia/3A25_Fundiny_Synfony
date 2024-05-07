@@ -20,7 +20,7 @@ class TachesController extends AbstractController
     #[Route('/front/taches', name: 'app_taches_index', methods: ['GET'])]
     public function index(TachesRepository $tachesRepository): Response
 
-    
+
     {
         return $this->render('front/taches/index.html.twig', [
             'taches' => $tachesRepository->findAll(),
@@ -43,6 +43,7 @@ class TachesController extends AbstractController
 
         return $this->render('front/taches/index.html.twig', [
             'taches' => $taches,
+            
             'investissement' => $investissement,
         ]);
     }
