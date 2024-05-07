@@ -37,6 +37,7 @@ class EventsController extends AbstractController
     #[Route('/front/events', name: 'app_events_index', methods: ['GET'])]
     public function index(EventsRepository $eventsRepository, Request $request): Response
     {
+
         $events = $eventsRepository->findAll();
 
         return $this->render('front/events/index.html.twig', [
