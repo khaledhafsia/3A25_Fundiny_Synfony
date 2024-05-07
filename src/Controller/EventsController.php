@@ -21,9 +21,13 @@ class EventsController extends AbstractController
     {
         
         return $this->render('base.html.twig');
+
+
     }
 
     #[Route('/back', name: 'back')]
+
+
     public function back(): Response
     {
         return $this->render('baseBack.html.twig');
