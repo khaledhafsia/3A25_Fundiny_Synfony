@@ -62,6 +62,7 @@ class TachesController extends AbstractController
         }
 
         $searchTerm = $request->request->get('search');
+        
 
         // Fetch tasks associated with the Investissement ID based on the search term
         $taches = $tachesRepository->searchByTitre($investissement, $searchTerm);
