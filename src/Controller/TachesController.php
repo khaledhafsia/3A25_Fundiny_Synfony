@@ -43,7 +43,7 @@ class TachesController extends AbstractController
 
         return $this->render('front/taches/index.html.twig', [
             'taches' => $taches,
-            
+
             'investissement' => $investissement,
         ]);
     }
@@ -53,6 +53,8 @@ class TachesController extends AbstractController
     {
         // Fetch the Investissement entity based on the provided ID
         $investissement = $this->getDoctrine()->getRepository(Investissements::class)->find($id);
+
+        
 
         // If the investissement is not found, you might want to handle this case appropriately (e.g., show an error message)
         if (!$investissement) {
