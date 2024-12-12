@@ -1,0 +1,44 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}Taches{% endblock %}
+
+{% block body %}
+             <!-- Section Title -->
+             <br><br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Task<br></span>
+        <h2 class="">Task<br></h2>
+        <p>full details about the selected task </p>
+      </div><!-- End Section Title -->
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ tach.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ tach.titre }}</td>
+            </tr>
+            <tr>
+                <th>Priorite</th>
+                <td>{{ tach.priorite }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ tach.statut }}</td>
+            </tr>
+            <tr>
+                <th>Echeanced</th>
+                <td>{{ tach.echeanced ? tach.echeanced|date('Y-m-d') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_eventsBack_index') }}">back to list</a>
+
+    <br><br>
+
+    {{ include('back/taches/_delete_form.html.twig') }}
+    <br><br><br>
+{% endblock %}

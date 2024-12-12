@@ -1,0 +1,18 @@
+{% extends 'baseBack.html.twig' %}
+
+{% block title %}New Taches{% endblock %}
+
+{% block body %}
+          <!-- Section Title -->
+          <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Create New Task<br></span>
+        <h2 class="">Create New Task<br></h2>
+        <p>fill the blanks to complete creating your Task </p>
+      </div><!-- End Section Title -->
+    {{ include('front/taches/_form.html.twig') }}
+    <br>
+
+    <a href="{{ path('app_eventsBack_index') }}">back to list</a>
+    <br><br><br><br>
+{% endblock %}

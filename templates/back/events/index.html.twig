@@ -1,0 +1,96 @@
+{% extends 'baseBack.html.twig' %}
+
+
+{% block body %}
+
+              <!-- Section Title -->
+              <br><br>
+      <div class="container section-title" data-aos="fade-up">
+        <span class="">Your Events List<br></span>
+        <h2 class="">Your Events List<br></h2>
+        <p>a list of all events you have made </p>
+      </div><!-- End Section Title -->
+
+
+<form id="sortForm">
+    <label>
+        Sort by amount ASC:
+        <br><input class="form-check-input" type="radio" name="sort" value="asc">
+    </label>
+    <label>
+        Sort by amount DESC:
+        <br><input class="form-check-input" type="radio" name="sort" value="desc">
+    </label>
+</form>
+<br>
+<input class="form-control" type="text" id="searchInput" placeholder="Search by description...">
+<br><br>
+<div id="investissementsTableContainer">
+    <table class="table table-hover" id="investissementsTable" >
+        <thead>
+            <tr>
+                <th>nom</th>
+                <th>Description</th>
+                <th>dateDebut</th>
+                  <th>dateFin</th>
+                 <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for evenement in evenement %}
+            <tr>
+                <td>{{ evenement.nom }}</td>
+                <td>{{ evenement.description }}</td>
+                <td>{{ evenement.dateDebut ? evenement.date|date('Y-m-d H:i:s') : '' }}</td>
+              <td>{{ evenement.dateFin ? evenement.date|date('Y-m-d H:i:s') : '' }}</td>
+
+                <td>
+                    <a href="{{ path('app_eventsBack_show', {'id': evenement.id}) }}">show</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    
+
+    <script>
+    document.querySelectorAll('input[type="radio"]').forEach(function(radio) {
+        radio.addEventListener('click', function() {
+            var sortOrder = this.value;
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{{ path('app_events_sort') }}' + '?sort=' + sortOrder, true);
+            xhr.onload = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    document.querySelector('.table').innerHTML = xhr.responseText;
+                } else {
+                    console.error(xhr.statusText);
+                }
+            };
+            xhr.onerror = function() {
+                console.error(xhr.statusText);
+            };
+            xhr.send();
+        });
+    });
+</script>
+<script>
+document.getElementById('searchInput').addEventListener('input', function() {
+    var searchValue = this.value.toLowerCase();
+    var rows = document.querySelectorAll('#eventsTable tbody tr');
+
+    rows.forEach(function(row) {
+        var description = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+        if (description.includes(searchValue)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+});
+</script>
+{% endblock %}
